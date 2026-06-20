@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                  String              @id @default(cuid())
+  email               String              @unique
+  name                String?
+  password            String?
+  role                Role                @default(USER)
+  avatar              String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  accounts            Account[]
+  sessions            Session[]
+  sponsorProposals    SponsorProposal[]
+  artistApplication   ArtistApplication?
+}
+
+enum Role {
+  ADMIN
+  BRAND
+  USER
+  ARTIST_APPLICANT
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Artist {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  bio_fr      String?
+  bio_en      String?
+  shortBio_fr String?
+  shortBio_en String?
+  avatar      String?
+  banner      String?
+  instagram   String?
+  spotify     String?
+  soundcloud  String?
+  youtube     String?
+  appleMusic  String?
+  deezer      String?
+  tiktok      String?
+  isActive    Boolean       @default(true)
+  order       Int           @default(0)
+  events      EventArtist[]
+  tracks      Track[]
+  createdAt   DateTime      @default(now())
+}
+
+model Event {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title_fr       String
+  title_en       String
+  venue          String
+  city           String
+  country        String        @default("France")
+  date           DateTime
+  endDate        DateTime?
+  description_fr String?
+  description_en String?
+  ticketUrl      String?
+  eventUrl       String?
+  photos         String?
+  isB2B          Boolean       @default(false)
+  isFeatured     Boolean       @default(false)
+  isActive       Boolean       @default(true)
+  artists        EventArtist[]
+  createdAt      DateTime      @default(now())
+}
+
+model EventArtist {
+  eventId  String
+  artistId String
+  event    Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  artist   Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, artistId])
+}
+
+model Track {
+  id                 String   @id @default(cuid())
+  title              String
+  artistName         String
+  soundcloudEmbedUrl String?
+  spotifyEmbedUrl    String?
+  youtubeEmbedUrl    String?
+  externalUrl        String?
+  cover              String?
+  isActive           Boolean  @default(true)
+  order              Int      @default(0)
+  artistId           String?
+  artist             Artist?  @relation(fields: [artistId], references: [id])
+  createdAt          DateTime @default(now())
+}
+
+model Video {
+  id              String   @id @default(cuid())
+  title           String
+  youtubeEmbedUrl String
+  thumbnail       String?
+  isActive        Boolean  @default(true)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model SponsorProposal {
+  id              String         @id @default(cuid())
+  userId          String
+  brandName       String
+  logo            String?
+  contactEmail    String
+  phone           String?
+  budget          String?
+  campaignType    String?
+  description     String
+  status          ProposalStatus @default(PENDING)
+  adminNote       String?
+  amount          Float?
+  stripePaymentId String?
+  createdAt       DateTime       @default(now())
+  user            User           @relation(fields: [userId], references: [id])
+}
+
+enum ProposalStatus {
+  PENDING
+  REVIEWING
+  VALIDATED
+  REJECTED
+}
+
+model ArtistApplication {
+  id          String            @id @default(cuid())
+  userId      String?           @unique
+  name        String
+  email       String
+  bio         String
+  genres      String
+  soundLinks  String
+  socialLinks String
+  status      ApplicationStatus @default(PENDING)
+  adminNote   String?
+  createdAt   DateTime          @default(now())
+  user        User?             @relation(fields: [userId], references: [id])
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  ACCEPTED
+  REJECTED
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
