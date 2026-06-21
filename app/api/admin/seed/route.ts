@@ -2,17 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
-export async function POST(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  const secret = process.env.SEED_SECRET;
-
-  if (!secret || auth !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+async function runSeed() {
   const existingUsers = await prisma.user.count();
   if (existingUsers > 0) {
-    return NextResponse.json({ message: "Database already seeded", users: existingUsers });
+    return { message: "Database already seeded", users: existingUsers };
   }
 
   const adminPassword = await bcrypt.hash("Admin@Paga2026!", 12);
@@ -88,8 +81,29 @@ export async function POST(req: NextRequest) {
     ],
   });
 
-  return NextResponse.json({
-    message: "Database seeded successfully",
-    created: { users: 3, artists: 2, events: events.length, tracks: 3, videos: 2 },
-  });
+  return { message: "Database seeded successfully", created: { users: 3, artists: 2, events: events.length, tracks: 3, videos: 2 } };
+}
+
+function checkSecret(req: NextRequest): boolean {
+  const secret = process.env.SEED_SECRET;
+  if (!secret) return false;
+  const authHeader = req.headers.get("authorization");
+  const querySecret = req.nextUrl.searchParams.get("secret");
+  return authHeader === `Bearer ${secret}` || querySecret === secret;
+}
+
+export async function GET(req: NextRequest) {
+  if (!checkSecret(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const result = await runSeed();
+  return NextResponse.json(result);
+}
+
+export async function POST(req: NextRequest) {
+  if (!checkSecret(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const result = await runSeed();
+  return NextResponse.json(result);
 }
