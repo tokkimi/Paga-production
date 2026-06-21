@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -34,9 +34,9 @@ export default function Footer() {
   };
 
   return (
-    <footer className="mt-24 border-t border-white/5">
-      <div className="max-w-5xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+    <footer className="border-t border-white/[0.06] pb-24 md:pb-0">
+      <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.15fr_.75fr_1.1fr]">
 
           {/* Brand */}
           <div>
@@ -108,7 +108,7 @@ export default function Footer() {
               Newsletter
             </h4>
             <p className="text-xs text-white/40 mb-4 leading-relaxed">
-              Nouvelles dates et sorties directement dans votre boîte mail.
+              Nouvelles dates et sorties directement dans votre boite mail.
             </p>
             {status === "success" ? (
               <p className="text-xs text-green-400/80">{tCookies("success")}</p>
@@ -135,7 +135,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-6 border-t border-white/5 flex items-center justify-between">
+        <div className="mt-10 flex flex-col gap-2 border-t border-white/5 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-white/25">{t("copyright")}</p>
           <p className="text-xs text-white/20">Made in the South of France</p>
         </div>
@@ -143,3 +143,4 @@ export default function Footer() {
     </footer>
   );
 }
+

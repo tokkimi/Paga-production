@@ -15,7 +15,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-4 left-4 right-4 z-50 rounded-2xl"
+      className="fixed bottom-3 left-3 right-3 z-50 rounded-2xl md:hidden"
       style={{
         background: "rgba(4, 6, 14, 0.88)",
         backdropFilter: "blur(24px)",
@@ -23,11 +23,11 @@ export default function BottomNav() {
         border: "1px solid rgba(255, 255, 255, 0.07)",
       }}
     >
-      <div className="flex items-center justify-around px-2 py-3">
+      <div className="grid grid-cols-3 items-center px-2 py-2">
         <Link
           href={`/${locale}/artistes`}
           className={cn(
-            "flex flex-col items-center gap-1 px-5 py-1 rounded-xl transition-colors",
+            "flex min-w-0 flex-col items-center gap-1 rounded-xl px-2 py-1 transition-colors",
             isArtistes ? "text-primary" : "text-white/50"
           )}
         >
@@ -37,7 +37,7 @@ export default function BottomNav() {
 
         <Link
           href={`/${locale}/dates`}
-          className="flex flex-col items-center gap-1 px-6 py-2 rounded-xl transition-all"
+          className="mx-auto flex min-w-[84px] flex-col items-center gap-1 rounded-xl px-4 py-2 transition-all"
           style={{
             background: isDates ? "rgba(59, 130, 246, 0.25)" : "rgba(59, 130, 246, 0.12)",
             border: "1px solid rgba(59, 130, 246, 0.3)",
@@ -49,7 +49,7 @@ export default function BottomNav() {
 
         <a
           href="mailto:booking@pagaproduction.fr"
-          className="flex flex-col items-center gap-1 px-5 py-1 rounded-xl transition-colors text-white/50 hover:text-white"
+          className="flex min-w-0 flex-col items-center gap-1 rounded-xl px-2 py-1 text-white/50 transition-colors hover:text-white"
         >
           <Mail size={20} />
           <span className="text-[10px] font-semibold uppercase tracking-wider">Contact</span>

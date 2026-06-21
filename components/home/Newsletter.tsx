@@ -38,51 +38,45 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-2xl mx-auto">
+    <section className="px-4 py-14 sm:px-6">
+      <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="glass-card p-10 text-center relative overflow-hidden">
-            {/* Background glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/5" />
-
-            <div className="relative z-10">
-              <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-6">
-                <Send size={24} className="text-primary" />
+          <div className="relative overflow-hidden rounded-2xl border border-cyan-200/15 bg-white/[0.035] px-5 py-7 backdrop-blur-xl sm:px-8">
+            <div className="relative z-10 grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)]">
+              <div>
+                <p className="mb-2 text-[10px] font-black uppercase tracking-[0.32em] text-cyan-300">Paga updates</p>
+                <h2 className="text-lg font-bold uppercase tracking-[0.08em]">{t("title")}</h2>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/48">{t("subtitle")}</p>
               </div>
 
-              <h2 className="text-xl font-bold uppercase tracking-widest mb-3">
-                {t("title")}
-              </h2>
-              <p className="text-white/60 mb-8 text-sm">{t("subtitle")}</p>
-
               {status === "success" ? (
-                <div className="flex items-center justify-center gap-3 text-green-400">
+                <div className="flex items-center gap-3 text-green-400">
                   <CheckCircle size={20} />
                   <span>{t("success")}</span>
                 </div>
               ) : status === "already" ? (
-                <div className="flex items-center justify-center gap-3 text-yellow-400">
+                <div className="flex items-center gap-3 text-yellow-400">
                   <CheckCircle size={20} />
                   <span>{t("already")}</span>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+                <form onSubmit={handleSubmit} className="flex min-w-0 flex-col gap-3 sm:flex-row">
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("placeholder")}
                     required
-                    className="form-input flex-1"
+                    className="form-input min-w-0 flex-1"
                   />
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="btn-primary whitespace-nowrap justify-center"
+                    className="btn-primary shrink-0 justify-center whitespace-nowrap"
                   >
                     {status === "loading" ? (
                       <span className="animate-pulse">...</span>
@@ -97,7 +91,7 @@ export default function Newsletter() {
               )}
 
               {status === "error" && (
-                <div className="flex items-center justify-center gap-2 text-red-400 mt-3 text-sm">
+                <div className="mt-3 flex items-center gap-2 text-sm text-red-400 lg:col-start-2">
                   <AlertCircle size={16} />
                   {t("error")}
                 </div>

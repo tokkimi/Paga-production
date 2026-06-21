@@ -76,8 +76,8 @@ async function runSeed() {
 
   await prisma.video.createMany({
     data: [
-      { title: "Paga @ Delta Festival Marseille", youtubeEmbedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", isActive: true, order: 0 },
-      { title: "Paga × Alexis Dante - Live B2B Ibiza", youtubeEmbedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", isActive: true, order: 1 },
+      { title: "Jimmy Sax x Paga - Better Days", youtubeEmbedUrl: "https://www.youtube.com/embed/NHc6FDWpNCk", isActive: true, order: 0 },
+      { title: "HUGEL - Movin To The Sun (Alexis Dante x Paga Remix)", youtubeEmbedUrl: "https://www.youtube.com/embed/yLuwf5FlG0U", isActive: true, order: 1 },
     ],
   });
 

@@ -21,31 +21,28 @@ function IconYoutube() {
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-20 px-6">
-      <div className="max-w-2xl mx-auto">
+    <section id="contact" className="px-4 py-14 sm:px-6">
+      <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          className="grid items-center gap-7 border-t border-white/[0.07] pt-12 text-left md:grid-cols-[minmax(0,1fr)_auto]"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-3">
-            Booking &amp; Pro
-          </p>
-          <h2 className="section-title mb-4">Contact</h2>
-          <p className="text-white/40 text-sm mb-10">
-            Pour toute demande de booking ou partenariat
-          </p>
-
-          <a
-            href="mailto:booking@pagaproduction.fr"
-            className="btn-primary text-sm px-8 py-3 justify-center inline-flex"
-          >
-            <Mail size={16} />
-            booking@pagaproduction.fr
-          </a>
-
-          <div className="flex items-center justify-center gap-8 mt-10">
+          <div>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-cyan-300">Booking &amp; Pro</p>
+            <h2 className="section-title">Contact</h2>
+            <p className="mt-3 text-sm text-white/42">Pour toute demande de booking ou partenariat.</p>
+          </div>
+          <div className="flex min-w-0 flex-col items-start gap-5 md:items-end">
+            <a
+              href="mailto:booking@pagaproduction.fr"
+              className="btn-primary max-w-full justify-center px-5 py-3 text-sm"
+            >
+              <Mail size={16} />
+              <span className="truncate">booking@pagaproduction.fr</span>
+            </a>
+            <div className="flex items-center gap-7">
             <a
               href="https://www.instagram.com/pagaproduction"
               target="_blank"
@@ -64,6 +61,7 @@ export default function Contact() {
               <IconYoutube />
               <span>YouTube</span>
             </a>
+            </div>
           </div>
         </motion.div>
       </div>

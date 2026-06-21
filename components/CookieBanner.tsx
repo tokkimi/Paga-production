@@ -36,11 +36,11 @@ export default function CookieBanner() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50"
+          className="fixed bottom-24 left-3 right-3 z-[60] md:bottom-6 md:left-auto md:right-6 md:max-w-md"
         >
-          <div className="glass-strong rounded-2xl p-5">
+          <div className="glass-strong rounded-2xl p-4 shadow-2xl shadow-black/40 sm:p-5">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <div className="hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/20 sm:flex">
                 <Cookie size={18} className="text-primary" />
               </div>
               <div className="flex-1">

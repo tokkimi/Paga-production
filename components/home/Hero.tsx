@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { Calendar, Music2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Calendar, MapPin, Music2 } from "lucide-react";
+import { useState } from "react";
 
 const heroDates = [
   { href: "delta-festival-marseille-juin-2026", day: "22", month: "Jun", title: "Delta Festival", meta: "Marseille / TBA" },
@@ -15,11 +16,10 @@ const heroDates = [
 export default function Hero() {
   const t = useTranslations("home.hero");
   const locale = useLocale();
+  const [activeDate, setActiveDate] = useState(0);
 
-  const scrollDates = (direction: number) => {
-    const rail = document.getElementById("hero-date-rail");
-    if (!rail) return;
-    rail.scrollBy({ left: direction * Math.max(220, rail.clientWidth * 0.8), behavior: "smooth" });
+  const changeDate = (direction: number) => {
+    setActiveDate((current) => (current + direction + heroDates.length) % heroDates.length);
   };
 
   return (
@@ -64,40 +64,65 @@ export default function Hero() {
           initial={{ opacity: 0, x: 28 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.65, delay: 0.15, ease: "easeOut" }}
-          className="relative px-6"
+          className="relative mx-auto w-full max-w-[390px] lg:mx-0"
           aria-label="Next dates"
         >
-          <p className="mb-4 text-[10px] font-black uppercase tracking-[0.35em] text-cyan-300/90">
-            Next dates
-          </p>
-          <button
-            type="button"
-            onClick={() => scrollDates(-1)}
-            className="scroll-dot left-0"
-            aria-label="Previous dates"
-          />
-          <div id="hero-date-rail" className="carousel-scroll flex gap-3 pb-2">
-            {heroDates.map((date) => (
-              <Link
-                key={date.href}
-                href={`/${locale}/dates/${date.href}`}
-                className="carousel-item min-h-[160px] w-[205px] shrink-0 rounded-2xl border border-cyan-200/20 bg-white/[0.045] p-4 backdrop-blur-xl transition-colors hover:bg-white/[0.08]"
-              >
-                <time className="text-[10px] font-black uppercase tracking-widest text-cyan-300">
-                  <span className="block text-3xl leading-none text-white">{date.day}</span>
-                  {date.month}
-                </time>
-                <strong className="mt-5 block text-sm leading-tight text-white">{date.title}</strong>
-                <small className="mt-2 block text-xs text-white/48">{date.meta}</small>
-              </Link>
-            ))}
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-cyan-300/90">
+              Next dates
+            </p>
+            <span className="text-[10px] font-bold tabular-nums text-white/35">
+              {String(activeDate + 1).padStart(2, "0")} / {String(heroDates.length).padStart(2, "0")}
+            </span>
           </div>
-          <button
-            type="button"
-            onClick={() => scrollDates(1)}
-            className="scroll-dot right-0"
-            aria-label="Next dates"
-          />
+
+          <div className="grid grid-cols-[18px_minmax(0,1fr)_18px] items-center gap-4">
+            <button
+              type="button"
+              onClick={() => changeDate(-1)}
+              className="scroll-dot"
+              aria-label="Previous dates"
+            />
+            <div className="min-w-0 overflow-hidden">
+              <AnimatePresence mode="wait">
+                {heroDates.map((date, index) => index === activeDate && (
+                  <motion.div
+                    key={date.href}
+                    initial={{ opacity: 0, x: 22 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -22 }}
+                    transition={{ duration: 0.24 }}
+                  >
+              <Link
+                href={`/${locale}/dates/${date.href}`}
+                      className="block min-h-[190px] rounded-2xl border border-cyan-200/20 bg-black/20 p-5 backdrop-blur-xl transition-colors hover:bg-white/[0.07]"
+              >
+                      <div className="flex items-start justify-between">
+                        <time className="text-[10px] font-black uppercase tracking-widest text-cyan-300">
+                          <span className="block text-5xl leading-none text-white">{date.day}</span>
+                          {date.month}
+                        </time>
+                        <span className="rounded-full border border-cyan-200/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-cyan-200">
+                          Details
+                        </span>
+                      </div>
+                      <strong className="mt-7 block text-xl leading-tight text-white">{date.title}</strong>
+                      <small className="mt-3 flex items-center gap-2 text-xs text-white/48">
+                        <MapPin size={12} className="text-cyan-300" />
+                        {date.meta}
+                      </small>
+              </Link>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+            <button
+              type="button"
+              onClick={() => changeDate(1)}
+              className="scroll-dot"
+              aria-label="Next dates"
+            />
+          </div>
         </motion.aside>
       </div>
     </section>

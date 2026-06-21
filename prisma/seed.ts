@@ -72,16 +72,16 @@ async function main() {
   await prisma.track.createMany({ data: [
     { title: "Summer Vibes 2026", artistName: "Paga", soundcloudEmbedUrl: "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/paga_lmsa&color=%23E63946&auto_play=false", isActive: true, order: 0, artistId: paga.id },
     { title: "Ibiza Nights", artistName: "Paga × Alexis Dante", soundcloudEmbedUrl: "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/paga_lmsa&color=%23E63946&auto_play=false", isActive: true, order: 1, artistId: paga.id },
-    { title: "Delta Festival Live Set", artistName: "Paga", youtubeEmbedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", isActive: true, order: 2, artistId: paga.id },
+    { title: "Better Days", artistName: "Jimmy Sax x Paga", youtubeEmbedUrl: "https://www.youtube.com/embed/NHc6FDWpNCk", externalUrl: "https://www.youtube.com/watch?v=NHc6FDWpNCk", isActive: true, order: 2, artistId: paga.id },
     { title: "Afro House Journey", artistName: "Alexis Dante", soundcloudEmbedUrl: "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alexis.dante&color=%23E63946&auto_play=false", isActive: true, order: 3, artistId: alexis.id },
-    { title: "B2B @ Rooftop Ibiza", artistName: "Paga × Alexis Dante", youtubeEmbedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", isActive: true, order: 4, artistId: paga.id },
+    { title: "Movin To The Sun Remix", artistName: "Alexis Dante x Paga", youtubeEmbedUrl: "https://www.youtube.com/embed/yLuwf5FlG0U", externalUrl: "https://www.youtube.com/watch?v=yLuwf5FlG0U", isActive: true, order: 4, artistId: paga.id },
   ]});
   console.log("✅ Tracks created");
 
   await prisma.video.createMany({ data: [
-    { title: "Paga @ Delta Festival Marseille", youtubeEmbedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", isActive: true, order: 0 },
-    { title: "Paga × Alexis Dante - Live B2B Ibiza", youtubeEmbedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", isActive: true, order: 1 },
-    { title: "Scandals Pool Party Lyon - After Movie", youtubeEmbedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", isActive: true, order: 2 },
+    { title: "Jimmy Sax x Paga - Better Days", youtubeEmbedUrl: "https://www.youtube.com/embed/NHc6FDWpNCk", isActive: true, order: 0 },
+    { title: "HUGEL - Movin To The Sun (Alexis Dante x Paga Remix)", youtubeEmbedUrl: "https://www.youtube.com/embed/yLuwf5FlG0U", isActive: true, order: 1 },
+    { title: "Paga x Wick - Evazion", youtubeEmbedUrl: "https://www.youtube.com/embed/ChjDnJHrFCY", isActive: true, order: 2 },
   ]});
   console.log("✅ Videos created");
 
