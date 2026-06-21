@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const existing = await prisma.newsletterSubscriber.findUnique({ where: { email } });
     if (existing) {
       if (existing.isActive) {
-        return NextResponse.json({ message: "already" }, { status: 200 });
+        return NextResponse.json({ message: "already" }, { status: 409 });
       }
       await prisma.newsletterSubscriber.update({ where: { email }, data: { isActive: true } });
       return NextResponse.json({ message: "reactivated" }, { status: 200 });
