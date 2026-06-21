@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Instagram, Youtube } from "lucide-react";
+import { Mail, ExternalLink } from "lucide-react";
 
 export default function Contact() {
   return (
@@ -36,7 +36,7 @@ export default function Contact() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors"
             >
-              <Instagram size={16} />
+              <ExternalLink size={14} />
               <span>Instagram</span>
             </a>
             <a
@@ -45,7 +45,7 @@ export default function Contact() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors"
             >
-              <Youtube size={16} />
+              <ExternalLink size={14} />
               <span>YouTube</span>
             </a>
           </div>
