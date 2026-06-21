@@ -217,10 +217,10 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Mobile hamburger */}
+            {/* Mobile hamburger — hidden, bottom nav handles mobile */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+              className="hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
             >
               {mobileOpen ? (
                 <X size={22} className="text-white" />
