@@ -109,7 +109,7 @@ export default function MusicSection({ tracks }: MusicSectionProps) {
   if (tracks.length === 0) return null;
 
   return (
-    <section id="musique" className="py-20 overflow-hidden">
+    <section id="musique" className="py-20">
       {/* Header — padded */}
       <div className="max-w-7xl mx-auto px-6 mb-10">
         <motion.div

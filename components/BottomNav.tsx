@@ -24,7 +24,6 @@ export default function BottomNav() {
       }}
     >
       <div className="flex items-center justify-around px-2 py-3">
-        {/* Artistes */}
         <Link
           href={`/${locale}/artistes`}
           className={cn(
@@ -36,7 +35,6 @@ export default function BottomNav() {
           <span className="text-[10px] font-semibold uppercase tracking-wider">Artistes</span>
         </Link>
 
-        {/* Dates — center, prominent */}
         <Link
           href={`/${locale}/dates`}
           className="flex flex-col items-center gap-1 px-6 py-2 rounded-xl transition-all"
@@ -49,7 +47,6 @@ export default function BottomNav() {
           <span className="text-[10px] font-bold uppercase tracking-wider text-primary">Dates</span>
         </Link>
 
-        {/* Contact */}
         <a
           href="mailto:booking@pagaproduction.fr"
           className="flex flex-col items-center gap-1 px-5 py-1 rounded-xl transition-colors text-white/50 hover:text-white"
