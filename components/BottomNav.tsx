@@ -15,45 +15,47 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-3 left-3 right-3 z-50 rounded-2xl md:hidden"
+      className="fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-[560px] rounded-[22px] md:bottom-5"
       style={{
-        background: "rgba(4, 6, 14, 0.88)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(255, 255, 255, 0.07)",
+        background: "rgba(5, 10, 20, 0.64)",
+        backdropFilter: "blur(28px) saturate(145%)",
+        WebkitBackdropFilter: "blur(28px) saturate(145%)",
+        border: "1px solid rgba(125, 220, 255, 0.18)",
+        boxShadow: "0 18px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.06)",
       }}
     >
-      <div className="grid grid-cols-3 items-center px-2 py-2">
+      <div className="grid grid-cols-3 items-center gap-1 p-2">
         <Link
           href={`/${locale}/artistes`}
           className={cn(
-            "flex min-w-0 flex-col items-center gap-1 rounded-xl px-2 py-1 transition-colors",
-            isArtistes ? "text-primary" : "text-white/50"
+            "flex min-w-0 items-center justify-center gap-2 rounded-2xl px-3 py-3 transition-all",
+            isArtistes ? "bg-cyan-300/10 text-cyan-200" : "text-white/52 hover:bg-white/[0.05] hover:text-white"
           )}
         >
-          <Users size={20} />
-          <span className="text-[10px] font-semibold uppercase tracking-wider">Artistes</span>
+          <Users size={18} />
+          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">Artistes</span>
         </Link>
 
         <Link
           href={`/${locale}/dates`}
-          className="mx-auto flex min-w-[84px] flex-col items-center gap-1 rounded-xl px-4 py-2 transition-all"
-          style={{
-            background: isDates ? "rgba(59, 130, 246, 0.25)" : "rgba(59, 130, 246, 0.12)",
-            border: "1px solid rgba(59, 130, 246, 0.3)",
-          }}
+          className={cn(
+            "flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 transition-all",
+            isDates
+              ? "border-cyan-200/35 bg-cyan-300/18 text-cyan-100"
+              : "border-cyan-200/20 bg-cyan-300/10 text-cyan-200 hover:bg-cyan-300/16"
+          )}
         >
-          <Calendar size={22} className="text-primary" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-primary">Dates</span>
+          <Calendar size={19} />
+          <span className="text-[10px] font-black uppercase tracking-[0.12em] sm:text-xs">Dates</span>
         </Link>
 
-        <a
-          href="mailto:booking@pagaproduction.fr"
-          className="flex min-w-0 flex-col items-center gap-1 rounded-xl px-2 py-1 text-white/50 transition-colors hover:text-white"
+        <Link
+          href={`/${locale}#contact`}
+          className="flex min-w-0 items-center justify-center gap-2 rounded-2xl px-3 py-3 text-white/52 transition-all hover:bg-white/[0.05] hover:text-white"
         >
-          <Mail size={20} />
-          <span className="text-[10px] font-semibold uppercase tracking-wider">Contact</span>
-        </a>
+          <Mail size={18} />
+          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">Contact</span>
+        </Link>
       </div>
     </nav>
   );

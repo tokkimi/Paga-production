@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar, MapPin, Music2 } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useState } from "react";
 
 const heroDates = [
@@ -14,7 +14,6 @@ const heroDates = [
 ];
 
 export default function Hero() {
-  const t = useTranslations("home.hero");
   const locale = useLocale();
   const [activeDate, setActiveDate] = useState(0);
 
@@ -48,16 +47,6 @@ export default function Hero() {
             Nocturnal tech house, melodic pressure and festival energy between France, Europe and the Mediterranean.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href={`/${locale}/dates`} className="btn-primary justify-center">
-              <Calendar size={15} />
-              {t("cta_dates")}
-            </Link>
-            <Link href={`/${locale}#musique`} className="btn-secondary justify-center">
-              <Music2 size={15} />
-              Latest sounds
-            </Link>
-          </div>
         </motion.div>
 
         <motion.aside

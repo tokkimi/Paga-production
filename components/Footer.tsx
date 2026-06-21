@@ -34,7 +34,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-white/[0.06] pb-24 md:pb-0">
+    <footer className="border-t border-white/[0.06] pb-28">
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.15fr_.75fr_1.1fr]">
 

@@ -28,7 +28,7 @@ export default async function LocaleLayout({
     <Providers locale={locale} messages={messages}>
       <div className="flex min-h-screen flex-col">
         <Navbar />
-        <main className="flex-1 pb-24 md:pb-0">{children}</main>
+        <main className="flex-1 pb-28">{children}</main>
         <Footer />
         <BottomNav />
         <CookieBanner />
