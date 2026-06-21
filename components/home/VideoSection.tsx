@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { Play, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Play, X } from "lucide-react";
 
 interface Video {
   id: string;
@@ -19,41 +18,35 @@ interface VideoSectionProps {
 
 function VideoCard({ video }: { video: Video }) {
   const [modalOpen, setModalOpen] = useState(false);
-
-  const getYoutubeId = (url: string) => {
-    const match = url.match(/embed\/([^?&]+)/);
-    return match ? match[1] : null;
-  };
-
-  const ytId = getYoutubeId(video.youtubeEmbedUrl);
+  const ytId = video.youtubeEmbedUrl.match(/embed\/([^?&]+)/)?.[1] || null;
   const thumbnail = video.thumbnail || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : null);
 
   return (
     <>
-      <div className="flex-shrink-0 w-64 sm:w-72">
-        <div
-          className="glass-card overflow-hidden cursor-pointer group"
+      <article className="carousel-item w-[84vw] flex-shrink-0 sm:w-80">
+        <button
+          className="group block w-full overflow-hidden rounded-2xl border border-cyan-200/15 bg-white/[0.045] text-left backdrop-blur-xl transition-colors hover:bg-white/[0.075]"
           onClick={() => setModalOpen(true)}
         >
           <div className="relative aspect-video overflow-hidden">
             {thumbnail ? (
-              <img src={thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img src={thumbnail} alt={video.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-300/15 to-blue-900/35" />
             )}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
-              <div className="w-12 h-12 rounded-full bg-primary/85 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Play size={20} className="text-white ml-0.5" fill="white" />
-              </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/35 transition-colors group-hover:bg-black/52">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-300/85 transition-transform group-hover:scale-110">
+                <Play size={20} className="ml-0.5 text-white" fill="white" />
+              </span>
             </div>
           </div>
-          <div className="p-3">
-            <h3 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+          <div className="p-4">
+            <h3 className="line-clamp-2 text-sm font-bold leading-snug text-white transition-colors group-hover:text-cyan-200">
               {video.title}
             </h3>
           </div>
-        </div>
-      </div>
+        </button>
+      </article>
 
       <AnimatePresence>
         {modalOpen && (
@@ -61,7 +54,7 @@ function VideoCard({ video }: { video: Video }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
             onClick={() => setModalOpen(false)}
           >
             <motion.div
@@ -71,16 +64,13 @@ function VideoCard({ video }: { video: Video }) {
               className="w-full max-w-4xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-base truncate pr-4">{video.title}</h3>
-                <button
-                  onClick={() => setModalOpen(false)}
-                  className="w-9 h-9 glass-card rounded-full flex items-center justify-center hover:bg-white/10 transition-colors flex-shrink-0"
-                >
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="truncate pr-4 text-base font-semibold">{video.title}</h3>
+                <button onClick={() => setModalOpen(false)} className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.05]">
                   <X size={16} />
                 </button>
               </div>
-              <div className="aspect-video rounded-2xl overflow-hidden">
+              <div className="aspect-video overflow-hidden rounded-2xl">
                 <iframe
                   src={`${video.youtubeEmbedUrl}?autoplay=1&rel=0`}
                   width="100%"
@@ -104,43 +94,30 @@ export default function VideoSection({ videos }: VideoSectionProps) {
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: dir === "right" ? 300 : -300, behavior: "smooth" });
+    scrollRef.current.scrollBy({ left: dir === "right" ? 340 : -340, behavior: "smooth" });
   };
 
   if (videos.length === 0) return null;
 
   return (
     <section className="py-20">
-      {/* Header — padded */}
-      <div className="max-w-7xl mx-auto px-6 mb-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex items-end justify-between"
-        >
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-3">Videos</p>
-            <h2 className="section-title">{t("title")}</h2>
-            <p className="text-white/50 mt-2 text-sm">{t("subtitle")}</p>
-          </div>
-          <div className="hidden md:flex gap-2 flex-shrink-0">
-            <button onClick={() => scroll("left")} className="w-9 h-9 glass-card rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
-              <ChevronLeft size={16} className="text-white/60" />
-            </button>
-            <button onClick={() => scroll("right")} className="w-9 h-9 glass-card rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
-              <ChevronRight size={16} className="text-white/60" />
-            </button>
-          </div>
+      <div className="mx-auto mb-10 flex max-w-7xl items-end justify-between px-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <p className="mb-3 text-xs font-black uppercase tracking-[0.4em] text-cyan-300">Videos</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="mt-2 text-sm text-white/50">{t("subtitle")}</p>
         </motion.div>
+        <div className="hidden flex-shrink-0 gap-4 md:flex">
+          <button onClick={() => scroll("left")} className="scroll-dot" aria-label="Previous videos" />
+          <button onClick={() => scroll("right")} className="scroll-dot" aria-label="Next videos" />
+        </div>
       </div>
 
-      {/* Carousel — full width with left padding */}
-      <div ref={scrollRef} className="carousel-scroll flex gap-4 pb-4 px-6">
+      <div ref={scrollRef} className="carousel-scroll flex gap-4 px-6 pb-4">
         {videos.map((video) => (
           <VideoCard key={video.id} video={video} />
         ))}
-        <div className="flex-shrink-0 w-2" />
+        <div className="w-2 flex-shrink-0" />
       </div>
     </section>
   );

@@ -30,13 +30,13 @@ export default function DatesSection({ events }: DatesSectionProps) {
   const locale = useLocale();
 
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-4xl mx-auto">
+    <section className="px-4 py-20">
+      <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-12 text-center"
         >
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-3">
             Live
@@ -45,7 +45,7 @@ export default function DatesSection({ events }: DatesSectionProps) {
           <p className="text-white/60 max-w-md mx-auto text-sm">{t("subtitle")}</p>
         </motion.div>
 
-        <div className="space-y-3">
+        <div className="grid gap-3">
           {events.length === 0 ? (
             <div className="text-center text-white/40 py-12">{t("no_events")}</div>
           ) : (

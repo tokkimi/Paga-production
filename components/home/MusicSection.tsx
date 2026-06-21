@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { Play, ChevronLeft, ChevronRight, Music, ExternalLink } from "lucide-react";
+import { ExternalLink, Music, Play } from "lucide-react";
 
 interface Track {
   id: string;
@@ -25,45 +25,39 @@ function TrackCard({ track }: { track: Track }) {
   const embedUrl = track.soundcloudEmbedUrl || track.spotifyEmbedUrl || track.youtubeEmbedUrl;
 
   return (
-    <div className="flex-shrink-0 w-56 sm:w-64">
-      <div className="glass-card p-4 group h-full flex flex-col">
-        {/* Cover */}
-        <div className="relative aspect-square rounded-xl overflow-hidden mb-3 bg-gradient-to-br from-primary/20 to-secondary/20">
+    <article className="carousel-item w-[82vw] flex-shrink-0 sm:w-64">
+      <div className="group flex h-full flex-col rounded-2xl border border-cyan-200/15 bg-white/[0.045] p-4 backdrop-blur-xl transition-colors hover:bg-white/[0.075]">
+        <div className="relative mb-3 aspect-square overflow-hidden rounded-xl bg-gradient-to-br from-cyan-300/15 to-blue-900/30">
           {track.cover ? (
-            <img src={track.cover} alt={track.title} className="w-full h-full object-cover" />
+            <img src={track.cover} alt={track.title} className="h-full w-full object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <Music size={36} className="text-white/20" />
+              <Music size={36} className="text-white/22" />
             </div>
           )}
           {embedUrl && !playing && (
             <button
               onClick={() => setPlaying(true)}
-              className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 transition-opacity group-hover:opacity-100"
+              aria-label={`Play ${track.title}`}
             >
-              <div className="w-12 h-12 rounded-full bg-primary/80 flex items-center justify-center">
-                <Play size={18} className="text-white ml-0.5" fill="white" />
-              </div>
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-300/85">
+                <Play size={18} className="ml-0.5 text-white" fill="white" />
+              </span>
             </button>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
         </div>
 
-        {/* Info */}
-        <div className="flex-1 mb-3">
-          <h3 className="font-semibold text-sm truncate leading-tight">{track.title}</h3>
-          <p className="text-xs text-white/50 mt-0.5 truncate">{track.artistName}</p>
+        <div className="mb-3 flex-1">
+          <h3 className="truncate text-sm font-bold leading-tight text-white">{track.title}</h3>
+          <p className="mt-1 truncate text-xs text-white/50">{track.artistName}</p>
         </div>
 
-        {/* Actions */}
         <div className="flex gap-2">
           {embedUrl && !playing && (
-            <button
-              onClick={() => setPlaying(true)}
-              className="flex-1 btn-primary text-xs py-2 justify-center"
-            >
+            <button onClick={() => setPlaying(true)} className="btn-primary flex-1 justify-center py-2 text-xs">
               <Play size={11} fill="white" />
-              Écouter
+              Ecouter
             </button>
           )}
           {track.externalUrl && (
@@ -71,14 +65,13 @@ function TrackCard({ track }: { track: Track }) {
               href={track.externalUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-9 h-9 glass-card rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] transition-colors hover:bg-white/10"
             >
-              <ExternalLink size={13} className="text-white/50" />
+              <ExternalLink size={13} className="text-white/55" />
             </a>
           )}
         </div>
 
-        {/* Embed */}
         {playing && embedUrl && (
           <div className="mt-3">
             {track.soundcloudEmbedUrl && (
@@ -93,7 +86,7 @@ function TrackCard({ track }: { track: Track }) {
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -103,43 +96,30 @@ export default function MusicSection({ tracks }: MusicSectionProps) {
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: dir === "right" ? 280 : -280, behavior: "smooth" });
+    scrollRef.current.scrollBy({ left: dir === "right" ? 300 : -300, behavior: "smooth" });
   };
 
   if (tracks.length === 0) return null;
 
   return (
     <section id="musique" className="py-20">
-      {/* Header — padded */}
-      <div className="max-w-7xl mx-auto px-6 mb-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex items-end justify-between"
-        >
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-3">Music</p>
-            <h2 className="section-title">{t("title")}</h2>
-            <p className="text-white/50 mt-2 text-sm">{t("subtitle")}</p>
-          </div>
-          <div className="hidden md:flex gap-2 flex-shrink-0">
-            <button onClick={() => scroll("left")} className="w-9 h-9 glass-card rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
-              <ChevronLeft size={16} className="text-white/60" />
-            </button>
-            <button onClick={() => scroll("right")} className="w-9 h-9 glass-card rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
-              <ChevronRight size={16} className="text-white/60" />
-            </button>
-          </div>
+      <div className="mx-auto mb-10 flex max-w-7xl items-end justify-between px-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <p className="mb-3 text-xs font-black uppercase tracking-[0.4em] text-cyan-300">Music</p>
+          <h2 className="section-title">{t("title")}</h2>
+          <p className="mt-2 text-sm text-white/50">{t("subtitle")}</p>
         </motion.div>
+        <div className="hidden flex-shrink-0 gap-4 md:flex">
+          <button onClick={() => scroll("left")} className="scroll-dot" aria-label="Previous tracks" />
+          <button onClick={() => scroll("right")} className="scroll-dot" aria-label="Next tracks" />
+        </div>
       </div>
 
-      {/* Carousel — full width with left padding, scrolls right */}
-      <div ref={scrollRef} className="carousel-scroll flex gap-4 pb-4 px-6">
+      <div ref={scrollRef} className="carousel-scroll flex gap-4 px-6 pb-4">
         {tracks.map((track) => (
           <TrackCard key={track.id} track={track} />
         ))}
-        <div className="flex-shrink-0 w-2" />
+        <div className="w-2 flex-shrink-0" />
       </div>
     </section>
   );

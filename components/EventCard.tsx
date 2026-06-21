@@ -34,80 +34,71 @@ export default function EventCard({ event, index = 0, compact = false }: EventCa
   const month = dateObj.toLocaleDateString("fr-FR", { month: "short" }).toUpperCase();
   const title = locale === "en" ? event.title_en : event.title_fr;
   const isPast = dateObj < new Date();
+  const artists = event.artists?.map((item) => item.artist.name).join(" / ");
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.04, duration: 0.45 }}
+      transition={{ delay: index * 0.035, duration: 0.38 }}
     >
-      <Link href={`/${locale}/dates/${event.slug}`}>
+      <Link href={`/${locale}/dates/${event.slug}`} className="block">
         <div
           className={cn(
-            "group flex items-center gap-5 border-b border-white/6 transition-all duration-200",
-            "hover:border-primary/20",
-            compact ? "py-3" : "py-4",
-            isPast && "opacity-40"
+            "group grid items-center gap-4 rounded-2xl border border-cyan-200/15 bg-white/[0.045] backdrop-blur-xl transition-all duration-200 hover:border-cyan-200/35 hover:bg-white/[0.075]",
+            compact ? "grid-cols-[62px_minmax(0,1fr)] px-4 py-3" : "grid-cols-[78px_minmax(0,1fr)_auto] px-5 py-4",
+            isPast && "opacity-45"
           )}
         >
-          {/* Date — typography only, no box */}
-          <div className="flex-shrink-0 w-12 text-center">
-            <div className={cn(
-              "text-2xl font-black leading-none tabular-nums",
-              event.isFeatured ? "text-primary" : "text-white"
-            )}>
+          <div className="text-center">
+            <div className={cn("text-3xl font-black leading-none tabular-nums", event.isFeatured ? "text-cyan-300" : "text-white")}>
               {day}
             </div>
-            <div className="text-[10px] font-bold text-white/40 uppercase tracking-wider mt-0.5">
+            <div className="mt-1 text-[10px] font-black uppercase tracking-widest text-white/42">
               {month}
             </div>
           </div>
 
-          {/* Thin vertical separator */}
-          <div className="w-px h-8 bg-white/10 flex-shrink-0" />
-
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-0.5">
+          <div className="min-w-0">
+            <div className="mb-1 flex flex-wrap items-center gap-2">
               {event.isB2B && (
-                <span className="badge-b2b flex items-center gap-1">
+                <span className="badge-b2b inline-flex items-center gap-1">
                   <Users size={9} />
                   B2B
                 </span>
               )}
               {event.isFeatured && (
-                <span className="text-[9px] font-bold uppercase tracking-wider text-accent">
-                  ★
+                <span className="rounded-full border border-cyan-200/20 bg-cyan-300/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-cyan-200">
+                  Featured
                 </span>
               )}
             </div>
-            <h3 className={cn(
-              "font-semibold truncate group-hover:text-primary transition-colors",
-              compact ? "text-sm" : "text-[0.95rem]"
-            )}>
+            <h3 className={cn("truncate font-bold tracking-[-0.03em] text-white transition-colors group-hover:text-cyan-200", compact ? "text-sm" : "text-lg")}>
               {title}
             </h3>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <MapPin size={10} className="text-white/30 flex-shrink-0" />
-              <span className="text-xs text-white/40 truncate">
-                {event.venue} — {event.city}
+            <div className="mt-1 flex items-center gap-1.5 text-xs text-white/48">
+              <MapPin size={11} className="shrink-0 text-cyan-300/65" />
+              <span className="truncate">
+                {event.venue} / {event.city}
                 {event.country !== "France" && `, ${event.country}`}
+                {artists && ` / ${artists}`}
               </span>
             </div>
           </div>
 
-          {/* Right: ticket or arrow */}
-          <div className="flex-shrink-0">
-            {event.ticketUrl && !isPast ? (
-              <div className="flex items-center gap-1 text-xs text-primary border border-primary/25 rounded-lg px-2.5 py-1.5 group-hover:bg-primary/10 transition-all">
-                <Ticket size={11} />
-                <span className="hidden sm:inline">Réserver</span>
-              </div>
-            ) : (
-              <span className="text-white/20 text-lg group-hover:text-white/40 transition-colors">→</span>
-            )}
-          </div>
+          {!compact && (
+            <div className="hidden shrink-0 sm:block">
+              {event.ticketUrl && !isPast ? (
+                <span className="inline-flex items-center gap-1 rounded-full border border-cyan-200/25 px-3 py-2 text-xs font-bold text-cyan-200 group-hover:bg-cyan-300/10">
+                  <Ticket size={12} />
+                  Details
+                </span>
+              ) : (
+                <span className="text-xs font-bold uppercase tracking-wider text-white/32">Details</span>
+              )}
+            </div>
+          )}
         </div>
       </Link>
     </motion.div>
