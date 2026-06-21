@@ -6,21 +6,13 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log("🌱 Seeding database...");
+  const existingUsers = await prisma.user.count();
+  if (existingUsers > 0) {
+    console.log("⏭️  Database already seeded, skipping...");
+    return;
+  }
 
-  await prisma.eventArtist.deleteMany();
-  await prisma.event.deleteMany();
-  await prisma.track.deleteMany();
-  await prisma.video.deleteMany();
-  await prisma.artistApplication.deleteMany();
-  await prisma.sponsorProposal.deleteMany();
-  await prisma.newsletterSubscriber.deleteMany();
-  await prisma.contact.deleteMany();
-  await prisma.pageView.deleteMany();
-  await prisma.session.deleteMany();
-  await prisma.account.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.artist.deleteMany();
+  console.log("🌱 Seeding database...");
 
   const adminPassword = await bcrypt.hash("Admin@Paga2026!", 12);
   const brandPassword = await bcrypt.hash("Brand@Test2026!", 12);
@@ -94,7 +86,10 @@ async function main() {
   console.log("✅ Videos created");
 
   await prisma.newsletterSubscriber.create({ data: { email: "fan@example.com", name: "Fan Example", isActive: true } });
-  console.log("✅ Newsletter subscriber created\n🎉 Database seeded!\n\n📋 Credentials:\n  Admin: admin@pagaproduction.fr / Admin@Paga2026!\n  Brand: marque@test.fr / Brand@Test2026!\n  User:  user@test.fr / User@Test2026!");
+  console.log("✅ Newsletter subscriber created");
+  console.log("\n🎉 Database seeded!\n\n📋 Credentials:\n  Admin: admin@pagaproduction.fr / Admin@Paga2026!\n  Brand: marque@test.fr / Brand@Test2026!\n  User:  user@test.fr / User@Test2026!");
 }
 
-main().catch(e => { console.error("❌ Seed failed:", e); process.exit(1); }).finally(async () => { await prisma.$disconnect(); });
+main()
+  .catch(e => { console.error("❌ Seed failed:", e); process.exit(1); })
+  .finally(async () => { await prisma.$disconnect(); });
