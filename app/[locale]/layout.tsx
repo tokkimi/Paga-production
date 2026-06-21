@@ -5,6 +5,7 @@ import Providers from "@/components/Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
+import BottomNav from "@/components/BottomNav";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -27,8 +28,9 @@ export default async function LocaleLayout({
     <Providers locale={locale} messages={messages}>
       <div className="flex min-h-screen flex-col">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pb-24 md:pb-0">{children}</main>
         <Footer />
+        <BottomNav />
         <CookieBanner />
       </div>
     </Providers>

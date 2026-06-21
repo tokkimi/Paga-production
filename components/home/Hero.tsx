@@ -22,16 +22,23 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-[#080808]" />
+      <div className="absolute inset-0 bg-[#06080f]" />
 
       {/* Top accent line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-      {/* Ambient glow — creates atmospheric banner depth */}
+      {/* Stage atmosphere — blue spotlights */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-primary/6 blur-[120px]" />
-        <div className="absolute top-0 left-0 right-0 h-[60vh] bg-gradient-to-b from-primary/4 via-transparent to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-[30vh] bg-gradient-to-t from-black/60 to-transparent" />
+        {/* Main center glow */}
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[500px] rounded-full bg-primary/8 blur-[130px]" />
+        {/* Left spotlight */}
+        <div className="absolute top-0 left-[15%] w-[300px] h-[60vh] bg-gradient-to-b from-blue-600/6 to-transparent blur-[60px]" style={{ clipPath: "polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)" }} />
+        {/* Right spotlight */}
+        <div className="absolute top-0 right-[15%] w-[300px] h-[60vh] bg-gradient-to-b from-indigo-500/5 to-transparent blur-[60px]" style={{ clipPath: "polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%)" }} />
+        {/* Floor glow */}
+        <div className="absolute bottom-0 left-0 right-0 h-[35vh] bg-gradient-to-t from-primary/4 to-transparent" />
+        {/* Top fade */}
+        <div className="absolute top-0 left-0 right-0 h-[30vh] bg-gradient-to-b from-black/20 to-transparent" />
       </div>
 
       {/* Content */}
@@ -51,7 +58,7 @@ export default function Hero() {
           <motion.div variants={itemVariants}>
             <h1
               className="font-display font-black uppercase leading-none tracking-tight text-white"
-              style={{ fontSize: "clamp(3.5rem, 10vw, 7.5rem)" }}
+              style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}
             >
               PAGA
             </h1>
@@ -124,12 +131,12 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — higher on mobile to clear bottom nav */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="absolute bottom-28 md:bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 2, repeat: Infinity }}>
           <ChevronDown size={16} className="text-white/20" />

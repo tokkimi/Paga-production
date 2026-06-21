@@ -42,7 +42,7 @@ export default function HowItWorks() {
                 <div className="glass-card p-8 text-center relative z-10 hover:border-primary/15 transition-colors">
                   {/* Step number */}
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="text-xs font-black uppercase tracking-widest text-primary/60 bg-[#0a0a0a] px-3">
+                    <span className="text-xs font-black uppercase tracking-widest text-primary/60 bg-[#06080f] px-3">
                       0{i + 1}
                     </span>
                   </div>

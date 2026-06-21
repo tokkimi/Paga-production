@@ -60,147 +60,127 @@ export default async function EventPage({ params }: EventPageProps) {
   }));
 
   return (
-    <div className="min-h-screen pt-24 pb-20 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen pt-24 pb-28 md:pb-20 px-6">
+      <div className="max-w-3xl mx-auto">
+        {/* Back */}
         <Link
           href={`/${locale}/dates`}
-          className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-xs text-white/40 hover:text-white mb-10 transition-colors uppercase tracking-wider"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={14} />
           Retour aux dates
         </Link>
 
-        <div className="glass-card p-8 mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-start gap-6">
-            <div className="flex-shrink-0 text-center glass-strong rounded-2xl p-5 min-w-[90px]">
-              <div className="text-4xl font-black text-primary leading-none">
-                {dateObj.toLocaleDateString("fr-FR", { day: "2-digit" })}
-              </div>
-              <div className="text-sm font-bold text-white/80 uppercase tracking-wider mt-1">
-                {dateObj.toLocaleDateString("fr-FR", { month: "short" })}
-              </div>
-              <div className="text-sm text-white/50">{dateObj.getFullYear()}</div>
+        {/* Date display */}
+        <div className="mb-8">
+          <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-2">
+            {dateObj.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-GB", {
+              weekday: "long",
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+
+          <div className="flex flex-wrap items-start gap-3 mb-4">
+            {event.isB2B && (
+              <span className="badge-b2b flex items-center gap-1">
+                <Users size={10} />
+                B2B
+              </span>
+            )}
+            {isPast && (
+              <span className="text-xs font-bold uppercase tracking-wider text-white/30 border border-white/15 rounded px-2 py-0.5">
+                Passé
+              </span>
+            )}
+          </div>
+
+          <h1 className="text-2xl font-bold mb-5 leading-snug">{title}</h1>
+
+          <div className="flex flex-col gap-2 text-sm text-white/60">
+            <div className="flex items-center gap-2">
+              <MapPin size={14} className="text-primary/70 flex-shrink-0" />
+              <span>{event.venue}, {event.city}{event.country !== "France" && `, ${event.country}`}</span>
             </div>
-
-            <div className="flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                {event.isB2B && (
-                  <span className="badge-b2b flex items-center gap-1">
-                    <Users size={10} />
-                    B2B
-                  </span>
-                )}
-                {isPast && (
-                  <span className="text-xs font-bold uppercase tracking-wider text-white/40 border border-white/20 rounded px-2 py-0.5">
-                    Passé
-                  </span>
-                )}
-              </div>
-
-              <h1 className="text-3xl font-black uppercase tracking-wide mb-4">
-                {title}
-              </h1>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-white/70">
-                  <MapPin size={16} className="text-primary flex-shrink-0" />
-                  <span>
-                    {event.venue}, {event.city}
-                    {event.country !== "France" && `, ${event.country}`}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-white/70">
-                  <Calendar size={16} className="text-primary flex-shrink-0" />
-                  <span>
-                    {dateObj.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-GB", {
-                      weekday: "long",
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              {event.artists.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {event.artists.map((ea, i) => (
-                    <Link
-                      key={ea.artist.slug}
-                      href={`/${locale}/artistes/${ea.artist.slug}`}
-                      className="flex items-center gap-1.5 glass-card px-3 py-1.5 rounded-full text-sm hover:border-primary/30 transition-colors"
-                    >
-                      {ea.artist.name}
-                      {i < event.artists.length - 1 && (
-                        <span className="text-primary ml-1">×</span>
-                      )}
-                    </Link>
-                  ))}
-                </div>
-              )}
+            <div className="flex items-center gap-2">
+              <Calendar size={14} className="text-primary/70 flex-shrink-0" />
+              <span>
+                {dateObj.toLocaleTimeString(locale === "fr" ? "fr-FR" : "en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
+          </div>
 
-            {event.ticketUrl && !isPast && (
-              <div className="flex-shrink-0">
-                <a
-                  href={event.ticketUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary"
+          {/* Artists */}
+          {event.artists.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-6">
+              {event.artists.map((ea, i) => (
+                <Link
+                  key={ea.artist.slug}
+                  href={`/${locale}/artistes/${ea.artist.slug}`}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border border-white/10 hover:border-primary/30 hover:text-primary transition-colors"
                 >
-                  <Ticket size={16} />
-                  Réserver
-                </a>
-              </div>
+                  {ea.artist.name}
+                  {i < event.artists.length - 1 && (
+                    <span className="text-primary ml-1">×</span>
+                  )}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* CTAs */}
+          <div className="flex gap-3 mt-8">
+            {event.ticketUrl && !isPast && (
+              <a
+                href={event.ticketUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                <Ticket size={15} />
+                Réserver
+              </a>
             )}
             {event.eventUrl && (
-              <div className="flex-shrink-0">
-                <a
-                  href={event.eventUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary"
-                >
-                  <ExternalLink size={16} />
-                  Événement
-                </a>
-              </div>
+              <a
+                href={event.eventUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                <ExternalLink size={15} />
+                Événement
+              </a>
             )}
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="h-px bg-white/6 mb-8" />
+
+        {/* Description */}
         {description && (
-          <div className="glass-card p-8 mb-8">
-            <h2 className="text-lg font-bold mb-4 text-primary uppercase tracking-wider">
+          <div className="mb-10">
+            <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-white/40 mb-4">
               À propos
             </h2>
-            <p className="text-white/80 leading-relaxed whitespace-pre-line">
+            <p className="text-white/70 leading-relaxed text-sm whitespace-pre-line">
               {description}
             </p>
           </div>
         )}
 
-        <div className="glass-card p-8 mb-8">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-            <MapPin size={18} className="text-primary" />
-            Lieu
-          </h2>
-          <div className="bg-white/5 rounded-xl h-48 flex items-center justify-center">
-            <div className="text-center text-white/40">
-              <MapPin size={32} className="mx-auto mb-2 opacity-40" />
-              <p className="text-sm">
-                {event.venue}
-                <br />
-                {event.city}, {event.country}
-              </p>
-            </div>
-          </div>
-        </div>
-
+        {/* Related events */}
         {serializedRelated.length > 0 && (
           <div>
-            <h2 className="text-xl font-bold mb-6">Autres dates</h2>
-            <div className="space-y-3">
+            <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-white/40 mb-6">
+              Autres dates à venir
+            </h2>
+            <div>
               {serializedRelated.map((e, i) => (
                 <EventCard key={e.id} event={e} index={i} compact />
               ))}
