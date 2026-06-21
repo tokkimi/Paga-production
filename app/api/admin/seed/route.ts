@@ -68,9 +68,16 @@ async function runSeed() {
 
   await prisma.track.createMany({
     data: [
-      { title: "Summer Vibes 2026", artistName: "Paga", soundcloudEmbedUrl: "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/paga_lmsa&color=%23E63946&auto_play=false", isActive: true, order: 0, artistId: paga.id },
-      { title: "Ibiza Nights", artistName: "Paga × Alexis Dante", soundcloudEmbedUrl: "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/paga_lmsa&color=%23E63946&auto_play=false", isActive: true, order: 1, artistId: paga.id },
-      { title: "Afro House Journey", artistName: "Alexis Dante", soundcloudEmbedUrl: "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/alexis.dante&color=%23E63946&auto_play=false", isActive: true, order: 3, artistId: alexis.id },
+      { title: "Echoes (Extended Version)", artistName: "Paga", youtubeEmbedUrl: "https://www.youtube.com/embed/On_SsuUXCHU", externalUrl: "https://www.youtube.com/watch?v=On_SsuUXCHU", cover: "https://img.youtube.com/vi/On_SsuUXCHU/hqdefault.jpg", isActive: true, order: 0, artistId: paga.id },
+      { title: "Movin To The Sun Remix", artistName: "Alexis Dante x Paga", youtubeEmbedUrl: "https://www.youtube.com/embed/yLuwf5FlG0U", externalUrl: "https://www.youtube.com/watch?v=yLuwf5FlG0U", cover: "https://img.youtube.com/vi/yLuwf5FlG0U/hqdefault.jpg", isActive: true, order: 1, artistId: paga.id },
+      { title: "Jusqu'au dernier mot", artistName: "Paga x Anton Wick", youtubeEmbedUrl: "https://www.youtube.com/embed/bxNa-GmKEdY", externalUrl: "https://www.youtube.com/watch?v=bxNa-GmKEdY", cover: "https://img.youtube.com/vi/bxNa-GmKEdY/hqdefault.jpg", isActive: true, order: 2, artistId: paga.id },
+      { title: "Superstition", artistName: "Paga x Anton Wick", youtubeEmbedUrl: "https://www.youtube.com/embed/T-J0QYzL4ls", externalUrl: "https://www.youtube.com/watch?v=T-J0QYzL4ls", cover: "https://img.youtube.com/vi/T-J0QYzL4ls/hqdefault.jpg", isActive: true, order: 3, artistId: paga.id },
+      { title: "Mi Amore", artistName: "Paga x Anton Wick x Maelyss", youtubeEmbedUrl: "https://www.youtube.com/embed/ASXfYAVwLbk", externalUrl: "https://www.youtube.com/watch?v=ASXfYAVwLbk", cover: "https://img.youtube.com/vi/ASXfYAVwLbk/hqdefault.jpg", isActive: true, order: 4, artistId: paga.id },
+      { title: "Adrenaline", artistName: "Paga x Wick", youtubeEmbedUrl: "https://www.youtube.com/embed/My1ZTBOE6pA", externalUrl: "https://www.youtube.com/watch?v=My1ZTBOE6pA", cover: "https://img.youtube.com/vi/My1ZTBOE6pA/hqdefault.jpg", isActive: true, order: 5, artistId: paga.id },
+      { title: "Evazion", artistName: "Paga x Wick", youtubeEmbedUrl: "https://www.youtube.com/embed/ChjDnJHrFCY", externalUrl: "https://www.youtube.com/watch?v=ChjDnJHrFCY", cover: "https://img.youtube.com/vi/ChjDnJHrFCY/hqdefault.jpg", isActive: true, order: 6, artistId: paga.id },
+      { title: "Wesh Alors - Stadium Remix", artistName: "Paga x Wick", youtubeEmbedUrl: "https://www.youtube.com/embed/zc8-SVpTFaU", externalUrl: "https://www.youtube.com/watch?v=zc8-SVpTFaU", cover: "https://img.youtube.com/vi/zc8-SVpTFaU/hqdefault.jpg", isActive: true, order: 7, artistId: paga.id },
+      { title: "Better Days", artistName: "Jimmy Sax x Paga", youtubeEmbedUrl: "https://www.youtube.com/embed/NHc6FDWpNCk", externalUrl: "https://www.youtube.com/watch?v=NHc6FDWpNCk", cover: "https://img.youtube.com/vi/NHc6FDWpNCk/hqdefault.jpg", isActive: true, order: 8, artistId: paga.id },
+      { title: "Sexy", artistName: "Paga x Wick", youtubeEmbedUrl: "https://www.youtube.com/embed/V6ZrKN6uuEM", externalUrl: "https://www.youtube.com/watch?v=V6ZrKN6uuEM", cover: "https://img.youtube.com/vi/V6ZrKN6uuEM/hqdefault.jpg", isActive: true, order: 9, artistId: paga.id },
     ],
   });
 
@@ -81,7 +88,7 @@ async function runSeed() {
     ],
   });
 
-  return { message: "Database seeded successfully", created: { users: 3, artists: 2, events: events.length, tracks: 3, videos: 2 } };
+  return { message: "Database seeded successfully", created: { users: 3, artists: 2, events: events.length, tracks: 10, videos: 2 } };
 }
 
 function checkSecret(req: NextRequest): boolean {

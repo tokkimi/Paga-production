@@ -21,7 +21,6 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { key: "artists", href: "/artistes" },
   { key: "dates", href: "/dates" },
-  { key: "music", href: "#musique" },
   { key: "sponsors", href: "/sponsors" },
   { key: "join", href: "/rejoindre" },
 ];
@@ -131,6 +130,28 @@ export default function Navbar() {
               </button>
             </div>
 
+            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2.5 py-1.5 backdrop-blur-xl md:hidden">
+              <button
+                onClick={() => switchLocale("fr")}
+                className={cn(
+                  "text-[10px] font-black uppercase tracking-wider transition-colors",
+                  locale === "fr" ? "text-cyan-300" : "text-white/40"
+                )}
+              >
+                FR
+              </button>
+              <span className="text-white/20">/</span>
+              <button
+                onClick={() => switchLocale("en")}
+                className={cn(
+                  "text-[10px] font-black uppercase tracking-wider transition-colors",
+                  locale === "en" ? "text-cyan-300" : "text-white/40"
+                )}
+              >
+                EN
+              </button>
+            </div>
+
             {/* Auth */}
             {session ? (
               <div className="relative">
@@ -220,7 +241,8 @@ export default function Navbar() {
             {/* Mobile hamburger — hidden, bottom nav handles mobile */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/80 backdrop-blur-xl transition-colors hover:bg-white/10 md:hidden"
+              aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
             >
               {mobileOpen ? (
                 <X size={22} className="text-white" />
@@ -262,28 +284,6 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-
-              <div className="flex items-center gap-3 px-4 py-3">
-                <button
-                  onClick={() => { switchLocale("fr"); setMobileOpen(false); }}
-                  className={cn(
-                    "text-sm font-bold uppercase",
-                    locale === "fr" ? "text-primary" : "text-white/50"
-                  )}
-                >
-                  FR
-                </button>
-                <span className="text-white/20">|</span>
-                <button
-                  onClick={() => { switchLocale("en"); setMobileOpen(false); }}
-                  className={cn(
-                    "text-sm font-bold uppercase",
-                    locale === "en" ? "text-primary" : "text-white/50"
-                  )}
-                >
-                  EN
-                </button>
-              </div>
 
               {!session && (
                 <div className="flex gap-2 pt-2">
