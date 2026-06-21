@@ -18,6 +18,7 @@ interface Track {
   cover?: string;
   isActive: boolean;
   order: number;
+  releasedAt?: string | null;
 }
 
 export default function AdminMusicPage() {
@@ -31,7 +32,7 @@ export default function AdminMusicPage() {
   const [form, setForm] = useState({
     title: "", artistName: "",
     soundcloudEmbedUrl: "", spotifyEmbedUrl: "", youtubeEmbedUrl: "",
-    externalUrl: "", cover: "", order: 0, isActive: true
+    externalUrl: "", cover: "", releasedAt: "", order: 0, isActive: true
   });
   const [saving, setSaving] = useState(false);
 
@@ -50,7 +51,7 @@ export default function AdminMusicPage() {
 
   const openCreate = () => {
     setEditId(null);
-    setForm({ title: "", artistName: "", soundcloudEmbedUrl: "", spotifyEmbedUrl: "", youtubeEmbedUrl: "", externalUrl: "", cover: "", order: 0, isActive: true });
+    setForm({ title: "", artistName: "", soundcloudEmbedUrl: "", spotifyEmbedUrl: "", youtubeEmbedUrl: "", externalUrl: "", cover: "", releasedAt: "", order: 0, isActive: true });
     setShowForm(true);
   };
 
@@ -62,6 +63,7 @@ export default function AdminMusicPage() {
       spotifyEmbedUrl: t.spotifyEmbedUrl || "",
       youtubeEmbedUrl: t.youtubeEmbedUrl || "",
       externalUrl: t.externalUrl || "", cover: t.cover || "",
+      releasedAt: t.releasedAt ? t.releasedAt.slice(0, 10) : "",
       order: t.order, isActive: t.isActive
     });
     setShowForm(true);
@@ -126,7 +128,7 @@ export default function AdminMusicPage() {
                   {([
                     ["title", "Titre *"], ["artistName", "Artiste *"],
                     ["soundcloudEmbedUrl", "SoundCloud Embed URL"],
-                    ["spotifyEmbedUrl", "Spotify Embed URL"],
+                    ["spotifyEmbedUrl", "Lien Spotify ou Spotify Embed"],
                     ["youtubeEmbedUrl", "YouTube Embed URL"],
                     ["externalUrl", "Lien externe"], ["cover", "Cover URL"]
                   ] as [keyof typeof form, string][]).map(([field, label]) => (
@@ -135,6 +137,10 @@ export default function AdminMusicPage() {
                       <input type="text" value={form[field] as string} onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))} className="form-input" />
                     </div>
                   ))}
+                  <div>
+                    <label className="text-xs font-medium text-white/60 block mb-1.5">Date de sortie</label>
+                    <input type="date" value={form.releasedAt} onChange={(e) => setForm((p) => ({ ...p, releasedAt: e.target.value }))} className="form-input" />
+                  </div>
                   <div>
                     <label className="text-xs font-medium text-white/60 block mb-1.5">Ordre</label>
                     <input type="number" value={form.order} onChange={(e) => setForm((p) => ({ ...p, order: parseInt(e.target.value) || 0 }))} className="form-input" />

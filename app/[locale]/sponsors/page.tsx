@@ -71,6 +71,7 @@ export default function SponsorsPage() {
     contactEmail: "",
     phone: "",
     budget: "",
+    customBudget: "",
     campaignType: "",
     description: "",
   });
@@ -85,7 +86,11 @@ export default function SponsorsPage() {
       const res = await fetch("/api/sponsors", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, contactEmail: form.contactEmail || session?.user?.email }),
+        body: JSON.stringify({
+          ...form,
+          budget: form.budget === "custom" && form.customBudget ? `Budget personnalise: ${form.customBudget}` : form.budget,
+          contactEmail: form.contactEmail || session?.user?.email,
+        }),
       });
       if (res.ok || res.status === 201) {
         setStatus("success");
@@ -277,6 +282,12 @@ export default function SponsorsPage() {
                     </select>
                   </div>
                 </div>
+                {form.budget === "custom" && (
+                  <div>
+                    <label className="text-xs font-medium text-white/60 block mb-1.5">Montant ou fourchette personnalisee</label>
+                    <input type="text" value={form.customBudget} onChange={(e) => setForm((p) => ({ ...p, customBudget: e.target.value }))} className="form-input" placeholder="Ex: 2 500 EUR, 3 000-5 000 EUR, dotation produit..." />
+                  </div>
+                )}
                 <div>
                   <label className="text-xs font-medium text-white/60 block mb-1.5">Type de campagne</label>
                   <input type="text" value={form.campaignType} onChange={(e) => setForm((p) => ({ ...p, campaignType: e.target.value }))} className="form-input" placeholder="Réseaux sociaux, événementiel, co-branding..." />

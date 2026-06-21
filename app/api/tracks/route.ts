@@ -5,7 +5,11 @@ export async function GET() {
   try {
     const tracks = await prisma.track.findMany({
       where: { isActive: true },
-      orderBy: { order: "asc" },
+      orderBy: [
+        { releasedAt: { sort: "desc", nulls: "last" } },
+        { createdAt: "desc" },
+        { order: "asc" },
+      ],
       include: { artist: { select: { name: true, slug: true } } },
     });
     return NextResponse.json(tracks);

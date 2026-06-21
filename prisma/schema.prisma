@@ -131,6 +131,7 @@ model Track {
   order              Int      @default(0)
   artistId           String?
   artist             Artist?  @relation(fields: [artistId], references: [id])
+  releasedAt         DateTime?
   createdAt          DateTime @default(now())
 }
 

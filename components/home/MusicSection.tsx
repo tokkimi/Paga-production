@@ -14,10 +14,73 @@ interface Track {
   youtubeEmbedUrl?: string | null;
   externalUrl?: string | null;
   cover?: string | null;
+  createdAt?: string | null;
 }
 
 interface MusicSectionProps {
   tracks: Track[];
+}
+
+function SpotifyStrip({ tracks }: { tracks: Track[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const spotifyTracks = tracks.filter((track) => track.spotifyEmbedUrl);
+
+  const scroll = (dir: "left" | "right") => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: dir === "right" ? 360 : -360, behavior: "smooth" });
+  };
+
+  if (spotifyTracks.length === 0) return null;
+
+  return (
+    <div className="mt-14">
+      <div className="mx-auto mb-5 flex max-w-7xl items-end justify-between px-6">
+        <div>
+          <p className="mb-2 text-[0.68rem] font-black uppercase tracking-[0.36em] text-cyan-300/90">Spotify</p>
+          <h3 className="text-xl font-black uppercase tracking-[0.12em] text-white">Ecoute directe</h3>
+        </div>
+        <div className="hidden flex-shrink-0 gap-4 md:flex">
+          <button onClick={() => scroll("left")} className="scroll-dot" aria-label="Previous Spotify tracks" />
+          <button onClick={() => scroll("right")} className="scroll-dot" aria-label="Next Spotify tracks" />
+        </div>
+      </div>
+
+      <div ref={scrollRef} className="carousel-scroll flex gap-4 px-6 pb-2">
+        {spotifyTracks.map((track) => (
+          <article key={`spotify-${track.id}`} className="carousel-item w-[86vw] flex-shrink-0 sm:w-[380px]">
+            <div className="rounded-2xl border border-cyan-200/15 bg-white/[0.045] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+              <div className="mb-3 flex items-center justify-between gap-3 px-1">
+                <div className="min-w-0">
+                  <h4 className="truncate text-sm font-bold text-white">{track.title}</h4>
+                  <p className="truncate text-xs text-white/45">{track.artistName}</p>
+                </div>
+                {track.externalUrl && (
+                  <a
+                    href={track.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[0.64rem] font-black uppercase tracking-[0.18em] text-cyan-200/80 transition-colors hover:text-white"
+                  >
+                    Spotify
+                  </a>
+                )}
+              </div>
+              <iframe
+                src={track.spotifyEmbedUrl || ""}
+                width="100%"
+                height="152"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                className="rounded-xl"
+              />
+            </div>
+          </article>
+        ))}
+        <div className="w-2 flex-shrink-0" />
+      </div>
+    </div>
+  );
 }
 
 function TrackCard({ track }: { track: Track }) {
@@ -121,6 +184,8 @@ export default function MusicSection({ tracks }: MusicSectionProps) {
         ))}
         <div className="w-2 flex-shrink-0" />
       </div>
+
+      <SpotifyStrip tracks={tracks} />
     </section>
   );
 }

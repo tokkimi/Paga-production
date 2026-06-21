@@ -24,7 +24,11 @@ async function getHomeData() {
     }),
     prisma.track.findMany({
       where: { isActive: true },
-      orderBy: { order: "asc" },
+      orderBy: [
+        { releasedAt: { sort: "desc", nulls: "last" } },
+        { createdAt: "desc" },
+        { order: "asc" },
+      ],
       take: 10,
     }),
     prisma.video.findMany({
@@ -54,6 +58,7 @@ export default async function HomePage() {
 
   const serializedTracks = tracks.map((t) => ({
     ...t,
+    releasedAt: t.releasedAt?.toISOString() || null,
     createdAt: t.createdAt.toISOString(),
   }));
 
