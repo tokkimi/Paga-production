@@ -1,1 +1,5 @@
-{\n  \"buildCommand\": \"prisma generate && prisma db push --accept-data-loss && next build\",\n  \"framework\": \"nextjs\",\n  \"regions\": [\"cdg1\"]\n}\n
+{
+  "buildCommand": "prisma generate && prisma db push --accept-data-loss && next build",
+  "framework": "nextjs",
+  "regions": ["cdg1"]
+}
