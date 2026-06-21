@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const videos = await prisma.video.findMany({
-      orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+      where: { isActive: true },
+      orderBy: { order: "asc" },
     });
     return NextResponse.json(videos);
   } catch (error) {
