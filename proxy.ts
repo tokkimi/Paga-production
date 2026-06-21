@@ -35,4 +35,7 @@ export default async function proxy(request: NextRequest) {
   return intlMiddleware(request);
 }
 
-export const config = { matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"]};}
+export const config = {
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"
+  ],
+};
