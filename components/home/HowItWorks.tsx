@@ -39,7 +39,7 @@ export default function HowItWorks() {
                   <div className="hidden md:block absolute top-12 left-full w-full h-px bg-gradient-to-r from-primary/40 to-transparent z-0" />
                 )}
 
-                <div className="glass-card p-8 text-center relative z-10 hover:border-primary/30 transition-colors">
+                <div className="glass-card p-8 text-center relative z-10 hover:border-primary/15 transition-colors">
                   {/* Step number */}
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="text-xs font-black uppercase tracking-widest text-primary/60 bg-[#0a0a0a] px-3">

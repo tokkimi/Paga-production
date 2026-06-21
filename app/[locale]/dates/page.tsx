@@ -7,7 +7,7 @@ import EventCard from "@/components/EventCard";
 import { Filter as FilterIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface EventItem {
+interface Event {
   id: string;
   slug: string;
   title_fr: string;
@@ -26,7 +26,7 @@ type FilterType = "all" | "paga" | "alexis-dante" | "b2b";
 
 export default function DatesPage() {
   const locale = useLocale();
-  const [events, setEvents] = useState<EventItem[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [filter, setFilter] = useState<FilterType>("all");
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
@@ -37,7 +37,7 @@ export default function DatesPage() {
       try {
         const res = await fetch(`/api/events?upcoming=${tab === "upcoming"}`);
         const data = await res.json();
-        setEvents(Array.isArray(data) ? data : []);
+        setEvents(data);
       } catch {
         console.error("Failed to fetch events");
       } finally {
@@ -65,7 +65,7 @@ export default function DatesPage() {
             Live
           </p>
           <h1 className="section-title mb-4">Dates</h1>
-          <p className="text-white/60">Tous les événements et concerts</p>
+          <p className="text-white/40 text-sm">Tous les événements et concerts</p>
         </div>
 
         {/* Tabs */}
