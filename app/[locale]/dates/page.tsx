@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import EventCard from "@/components/EventCard";
-import { Filter } from "lucide-react";
+import { Filter as FilterIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface Event {
+interface EventItem {
   id: string;
   slug: string;
   title_fr: string;
@@ -26,7 +26,7 @@ type FilterType = "all" | "paga" | "alexis-dante" | "b2b";
 
 export default function DatesPage() {
   const locale = useLocale();
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
   const [filter, setFilter] = useState<FilterType>("all");
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
@@ -37,7 +37,7 @@ export default function DatesPage() {
       try {
         const res = await fetch(`/api/events?upcoming=${tab === "upcoming"}`);
         const data = await res.json();
-        setEvents(data);
+        setEvents(Array.isArray(data) ? data : []);
       } catch {
         console.error("Failed to fetch events");
       } finally {
@@ -59,6 +59,7 @@ export default function DatesPage() {
   return (
     <div className="min-h-screen pt-24 pb-20 px-4">
       <div className="max-w-4xl mx-auto">
+        {/* Header */}
         <div className="text-center mb-12">
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-3">
             Live
@@ -87,7 +88,7 @@ export default function DatesPage() {
 
         {/* Filters */}
         <div className="flex items-center gap-2 flex-wrap mb-8">
-          <Filter size={14} className="text-white/40" />
+          <FilterIcon size={14} className="text-white/40" />
           {[
             { value: "all", label: "Tous" },
             { value: "paga", label: "Paga" },

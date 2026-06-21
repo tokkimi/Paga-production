@@ -11,8 +11,11 @@ async function requireAdmin() {
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!await requireAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const { id } = await params;
-  const data = await req.json();
-  const video = await prisma.video.update({ where: { id }, data });
+  const { title, youtubeEmbedUrl, thumbnail, order, isActive } = await req.json();
+  const video = await prisma.video.update({
+    where: { id },
+    data: { title, youtubeEmbedUrl, thumbnail: thumbnail || null, order: order ?? 0, isActive: isActive ?? true },
+  });
   return NextResponse.json(video);
 }
 

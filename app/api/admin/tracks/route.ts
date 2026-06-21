@@ -6,7 +6,19 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  const data = await req.json();
-  const track = await prisma.track.create({ data: { ...data, order: data.order ?? 0 } });
+  const { title, artistName, soundcloudEmbedUrl, spotifyEmbedUrl, youtubeEmbedUrl, externalUrl, cover, order, isActive } = await req.json();
+  const track = await prisma.track.create({
+    data: {
+      title,
+      artistName,
+      soundcloudEmbedUrl: soundcloudEmbedUrl || null,
+      spotifyEmbedUrl: spotifyEmbedUrl || null,
+      youtubeEmbedUrl: youtubeEmbedUrl || null,
+      externalUrl: externalUrl || null,
+      cover: cover || null,
+      order: order ?? 0,
+      isActive: isActive ?? true,
+    },
+  });
   return NextResponse.json(track, { status: 201 });
 }
