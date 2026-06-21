@@ -1,5 +1,1 @@
-{
-  "buildCommand": "prisma generate && prisma db push && next build",
-  "framework": "nextjs",
-  "regions": ["cdg1"]
-}
+{\n  \"buildCommand\": \"prisma generate && next build\",\n  \"framework\": \"nextjs\",\n  \"regions\": [\"cdg1\"]\n}\n
