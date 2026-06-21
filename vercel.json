@@ -1,5 +1,5 @@
 {
-  "buildCommand": "prisma generate && DATABASE_URL=${DATABASE_URL_UNPOOLED:-$DATABASE_URL} prisma db push && (DATABASE_URL=${DATABASE_URL_UNPOOLED:-$DATABASE_URL} npx tsx prisma/seed.ts || true) && next build",
+  "buildCommand": "prisma generate && next build",
   "framework": "nextjs",
   "regions": ["cdg1"]
 }
