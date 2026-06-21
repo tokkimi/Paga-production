@@ -54,7 +54,7 @@ export default function Newsletter() {
                 <Send size={24} className="text-primary" />
               </div>
 
-              <h2 className="text-3xl font-black uppercase tracking-tight mb-3">
+              <h2 className="text-xl font-bold uppercase tracking-widest mb-3">
                 {t("title")}
               </h2>
               <p className="text-white/60 mb-8 text-sm">{t("subtitle")}</p>

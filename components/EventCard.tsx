@@ -48,19 +48,19 @@ export default function EventCard({ event, index = 0, compact = false }: EventCa
         <div
           className={cn(
             "glass-card hover-lift group cursor-pointer transition-all duration-300",
-            "hover:border-primary/30 hover:bg-white/8",
+            "hover:border-primary/20 hover:bg-white/5",
             compact ? "p-4" : "p-5",
-            isPast && "opacity-60"
+            isPast && "opacity-50"
           )}
         >
           <div className="flex items-center gap-4">
             {/* Date badge */}
             <div
               className={cn(
-                "flex-shrink-0 text-center rounded-xl p-3 min-w-[64px]",
+                "flex-shrink-0 text-center rounded-lg p-3 min-w-[58px]",
                 event.isFeatured
-                  ? "bg-primary/20 border border-primary/40"
-                  : "bg-white/5 border border-white/10"
+                  ? "bg-primary/15"
+                  : "bg-white/4"
               )}
             >
               <div className={cn(
