@@ -10,9 +10,10 @@ import { Video, Plus, Edit2, Trash2, X, Check } from "lucide-react";
 interface VideoItem {
   id: string;
   title: string;
-  youtubeId: string;
-  description?: string;
-  featured: boolean;
+  youtubeEmbedUrl: string;
+  thumbnail?: string;
+  isActive: boolean;
+  order: number;
 }
 
 export default function AdminVideosPage() {
@@ -23,7 +24,7 @@ export default function AdminVideosPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", youtubeId: "", description: "", featured: false });
+  const [form, setForm] = useState({ title: "", youtubeEmbedUrl: "", thumbnail: "", order: 0, isActive: true });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -41,13 +42,13 @@ export default function AdminVideosPage() {
 
   const openCreate = () => {
     setEditId(null);
-    setForm({ title: "", youtubeId: "", description: "", featured: false });
+    setForm({ title: "", youtubeEmbedUrl: "", thumbnail: "", order: 0, isActive: true });
     setShowForm(true);
   };
 
   const openEdit = (v: VideoItem) => {
     setEditId(v.id);
-    setForm({ title: v.title, youtubeId: v.youtubeId, description: v.description || "", featured: v.featured });
+    setForm({ title: v.title, youtubeEmbedUrl: v.youtubeEmbedUrl, thumbnail: v.thumbnail || "", order: v.order, isActive: v.isActive });
     setShowForm(true);
   };
 
@@ -87,11 +88,8 @@ export default function AdminVideosPage() {
                 <Video size={20} className="text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-bold flex items-center gap-2">
-                  {v.title}
-                  {v.featured && <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">Featured</span>}
-                </div>
-                <div className="text-xs text-white/50">youtube.com/watch?v={v.youtubeId}</div>
+                <div className="font-bold">{v.title}</div>
+                <div className="text-xs text-white/50 truncate">{v.youtubeEmbedUrl}</div>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => openEdit(v)} className="btn-secondary p-2"><Edit2 size={14} /></button>
@@ -111,20 +109,24 @@ export default function AdminVideosPage() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs font-medium text-white/60 block mb-1.5">Titre</label>
+                    <label className="text-xs font-medium text-white/60 block mb-1.5">Titre *</label>
                     <input type="text" value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} className="form-input" />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-white/60 block mb-1.5">YouTube ID (ex: dQw4w9WgXcQ)</label>
-                    <input type="text" value={form.youtubeId} onChange={(e) => setForm((p) => ({ ...p, youtubeId: e.target.value }))} className="form-input" placeholder="dQw4w9WgXcQ" />
+                    <label className="text-xs font-medium text-white/60 block mb-1.5">YouTube Embed URL *</label>
+                    <input type="text" value={form.youtubeEmbedUrl} onChange={(e) => setForm((p) => ({ ...p, youtubeEmbedUrl: e.target.value }))} className="form-input" placeholder="https://www.youtube.com/embed/VIDEO_ID" />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-white/60 block mb-1.5">Description</label>
-                    <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={3} className="form-input resize-none" />
+                    <label className="text-xs font-medium text-white/60 block mb-1.5">Thumbnail URL</label>
+                    <input type="text" value={form.thumbnail} onChange={(e) => setForm((p) => ({ ...p, thumbnail: e.target.value }))} className="form-input" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-white/60 block mb-1.5">Ordre</label>
+                    <input type="number" value={form.order} onChange={(e) => setForm((p) => ({ ...p, order: parseInt(e.target.value) || 0 }))} className="form-input" />
                   </div>
                   <div className="flex items-center gap-3">
-                    <input type="checkbox" id="featured" checked={form.featured} onChange={(e) => setForm((p) => ({ ...p, featured: e.target.checked }))} className="w-4 h-4 accent-primary" />
-                    <label htmlFor="featured" className="text-sm text-white/70">Featured</label>
+                    <input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))} className="w-4 h-4 accent-primary" />
+                    <label htmlFor="isActive" className="text-sm text-white/70">Actif</label>
                   </div>
                 </div>
                 <div className="flex gap-3 mt-6">

@@ -11,12 +11,12 @@ export async function GET(req: NextRequest) {
     if (upcoming === "true") where.date = { gte: new Date() };
     if (upcoming === "false") where.date = { lt: new Date() };
     if (filter && filter !== "all") {
-      where.artists = { some: { slug: filter } };
+      where.artists = { some: { artist: { slug: filter } } };
     }
 
     const events = await prisma.event.findMany({
       where,
-      include: { artists: true },
+      include: { artists: { include: { artist: true } } },
       orderBy: { date: "asc" },
     });
     return NextResponse.json(events);

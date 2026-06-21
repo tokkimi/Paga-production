@@ -6,7 +6,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     const { id } = await params;
     const event = await prisma.event.findFirst({
       where: { OR: [{ id }, { slug: id }] },
-      include: { artists: true },
+      include: { artists: { include: { artist: true } } },
     });
     if (!event) return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(event);

@@ -10,10 +10,14 @@ import { Music, Plus, Edit2, Trash2, X, Check } from "lucide-react";
 interface Track {
   id: string;
   title: string;
-  artist: string;
-  platform: string;
-  embedUrl: string;
-  featured: boolean;
+  artistName: string;
+  soundcloudEmbedUrl?: string;
+  spotifyEmbedUrl?: string;
+  youtubeEmbedUrl?: string;
+  externalUrl?: string;
+  cover?: string;
+  isActive: boolean;
+  order: number;
 }
 
 export default function AdminMusicPage() {
@@ -24,7 +28,11 @@ export default function AdminMusicPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", artist: "", platform: "soundcloud", embedUrl: "", coverUrl: "", featured: false });
+  const [form, setForm] = useState({
+    title: "", artistName: "",
+    soundcloudEmbedUrl: "", spotifyEmbedUrl: "", youtubeEmbedUrl: "",
+    externalUrl: "", cover: "", order: 0, isActive: true
+  });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -42,13 +50,20 @@ export default function AdminMusicPage() {
 
   const openCreate = () => {
     setEditId(null);
-    setForm({ title: "", artist: "", platform: "soundcloud", embedUrl: "", coverUrl: "", featured: false });
+    setForm({ title: "", artistName: "", soundcloudEmbedUrl: "", spotifyEmbedUrl: "", youtubeEmbedUrl: "", externalUrl: "", cover: "", order: 0, isActive: true });
     setShowForm(true);
   };
 
   const openEdit = (t: Track) => {
     setEditId(t.id);
-    setForm({ title: t.title, artist: t.artist, platform: t.platform, embedUrl: t.embedUrl, coverUrl: "", featured: t.featured });
+    setForm({
+      title: t.title, artistName: t.artistName,
+      soundcloudEmbedUrl: t.soundcloudEmbedUrl || "",
+      spotifyEmbedUrl: t.spotifyEmbedUrl || "",
+      youtubeEmbedUrl: t.youtubeEmbedUrl || "",
+      externalUrl: t.externalUrl || "", cover: t.cover || "",
+      order: t.order, isActive: t.isActive
+    });
     setShowForm(true);
   };
 
@@ -88,11 +103,8 @@ export default function AdminMusicPage() {
                 <Music size={20} className="text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-bold flex items-center gap-2">
-                  {t.title}
-                  {t.featured && <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">Featured</span>}
-                </div>
-                <div className="text-xs text-white/50">{t.artist} · {t.platform}</div>
+                <div className="font-bold">{t.title}</div>
+                <div className="text-xs text-white/50">{t.artistName}</div>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => openEdit(t)} className="btn-secondary p-2"><Edit2 size={14} /></button>
@@ -105,29 +117,31 @@ export default function AdminMusicPage() {
         <AnimatePresence>
           {showForm && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-              <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="glass-card p-8 w-full max-w-lg">
+              <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="glass-card p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold">{editId ? "Modifier" : "Nouveau morceau"}</h2>
                   <button onClick={() => setShowForm(false)} className="text-white/40 hover:text-white"><X size={20} /></button>
                 </div>
                 <div className="space-y-4">
-                  {(["title", "artist", "embedUrl", "coverUrl"] as const).map((field) => (
+                  {([
+                    ["title", "Titre *"], ["artistName", "Artiste *"],
+                    ["soundcloudEmbedUrl", "SoundCloud Embed URL"],
+                    ["spotifyEmbedUrl", "Spotify Embed URL"],
+                    ["youtubeEmbedUrl", "YouTube Embed URL"],
+                    ["externalUrl", "Lien externe"], ["cover", "Cover URL"]
+                  ] as [keyof typeof form, string][]).map(([field, label]) => (
                     <div key={field}>
-                      <label className="text-xs font-medium text-white/60 block mb-1.5 capitalize">{field}</label>
+                      <label className="text-xs font-medium text-white/60 block mb-1.5">{label}</label>
                       <input type="text" value={form[field] as string} onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))} className="form-input" />
                     </div>
                   ))}
                   <div>
-                    <label className="text-xs font-medium text-white/60 block mb-1.5">Plateforme</label>
-                    <select value={form.platform} onChange={(e) => setForm((p) => ({ ...p, platform: e.target.value }))} className="form-input">
-                      <option value="soundcloud">SoundCloud</option>
-                      <option value="spotify">Spotify</option>
-                      <option value="youtube">YouTube</option>
-                    </select>
+                    <label className="text-xs font-medium text-white/60 block mb-1.5">Ordre</label>
+                    <input type="number" value={form.order} onChange={(e) => setForm((p) => ({ ...p, order: parseInt(e.target.value) || 0 }))} className="form-input" />
                   </div>
                   <div className="flex items-center gap-3">
-                    <input type="checkbox" id="featured" checked={form.featured} onChange={(e) => setForm((p) => ({ ...p, featured: e.target.checked }))} className="w-4 h-4 accent-primary" />
-                    <label htmlFor="featured" className="text-sm text-white/70">Featured</label>
+                    <input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))} className="w-4 h-4 accent-primary" />
+                    <label htmlFor="isActive" className="text-sm text-white/70">Actif</label>
                   </div>
                 </div>
                 <div className="flex gap-3 mt-6">

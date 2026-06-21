@@ -5,18 +5,19 @@ import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, Plus, Edit2, Trash2, X, Check, User } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Check, User } from "lucide-react";
 
 interface Artist {
   id: string;
   name: string;
   slug: string;
-  bio: string;
-  genre: string;
+  bio_fr?: string;
+  shortBio_fr?: string;
   avatar?: string;
   instagram?: string;
   soundcloud?: string;
   spotify?: string;
+  youtube?: string;
 }
 
 export default function AdminArtistesPage() {
@@ -27,7 +28,10 @@ export default function AdminArtistesPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", slug: "", bio: "", genre: "", avatar: "", instagram: "", soundcloud: "", spotify: "" });
+  const [form, setForm] = useState({
+    name: "", slug: "", bio_fr: "", bio_en: "", shortBio_fr: "", shortBio_en: "",
+    avatar: "", banner: "", instagram: "", soundcloud: "", spotify: "", youtube: "", tiktok: ""
+  });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -37,7 +41,7 @@ export default function AdminArtistesPage() {
   const load = () => {
     fetch("/api/artists")
       .then((r) => r.json())
-      .then(setArtists)
+      .then((data) => setArtists(Array.isArray(data) ? data : []))
       .finally(() => setLoading(false));
   };
 
@@ -45,13 +49,18 @@ export default function AdminArtistesPage() {
 
   const openCreate = () => {
     setEditId(null);
-    setForm({ name: "", slug: "", bio: "", genre: "", avatar: "", instagram: "", soundcloud: "", spotify: "" });
+    setForm({ name: "", slug: "", bio_fr: "", bio_en: "", shortBio_fr: "", shortBio_en: "", avatar: "", banner: "", instagram: "", soundcloud: "", spotify: "", youtube: "", tiktok: "" });
     setShowForm(true);
   };
 
   const openEdit = (a: Artist) => {
     setEditId(a.id);
-    setForm({ name: a.name, slug: a.slug, bio: a.bio, genre: a.genre, avatar: a.avatar || "", instagram: a.instagram || "", soundcloud: a.soundcloud || "", spotify: a.spotify || "" });
+    setForm({
+      name: a.name, slug: a.slug,
+      bio_fr: a.bio_fr || "", bio_en: "", shortBio_fr: a.shortBio_fr || "", shortBio_en: "",
+      avatar: a.avatar || "", banner: "", instagram: a.instagram || "",
+      soundcloud: a.soundcloud || "", spotify: a.spotify || "", youtube: a.youtube || "", tiktok: ""
+    });
     setShowForm(true);
   };
 
@@ -59,7 +68,8 @@ export default function AdminArtistesPage() {
     setSaving(true);
     const url = editId ? `/api/admin/artists/${editId}` : "/api/admin/artists";
     const method = editId ? "PUT" : "POST";
-    await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+    const payload = { ...form };
+    await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     setSaving(false);
     setShowForm(false);
     load();
@@ -81,9 +91,7 @@ export default function AdminArtistesPage() {
             <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Admin</p>
             <h1 className="text-3xl font-black uppercase">Artistes</h1>
           </div>
-          <button onClick={openCreate} className="btn-primary">
-            <Plus size={16} /> Ajouter
-          </button>
+          <button onClick={openCreate} className="btn-primary"><Plus size={16} /> Ajouter</button>
         </div>
 
         <div className="space-y-3">
@@ -94,7 +102,7 @@ export default function AdminArtistesPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-bold">{a.name}</div>
-                <div className="text-xs text-white/50">{a.genre} · /{a.slug}</div>
+                <div className="text-xs text-white/50">/{a.slug}</div>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => openEdit(a)} className="btn-secondary p-2"><Edit2 size={14} /></button>
@@ -113,10 +121,16 @@ export default function AdminArtistesPage() {
                   <button onClick={() => setShowForm(false)} className="text-white/40 hover:text-white"><X size={20} /></button>
                 </div>
                 <div className="space-y-4">
-                  {(["name", "slug", "genre", "avatar", "bio", "instagram", "soundcloud", "spotify"] as const).map((field) => (
+                  {([
+                    ["name", "Nom"], ["slug", "Slug (URL)"], ["avatar", "Avatar URL"], ["banner", "Banner URL"],
+                    ["shortBio_fr", "Bio courte FR"], ["shortBio_en", "Bio courte EN"],
+                    ["bio_fr", "Bio complète FR"], ["bio_en", "Bio complète EN"],
+                    ["instagram", "Instagram"], ["soundcloud", "SoundCloud"],
+                    ["spotify", "Spotify"], ["youtube", "YouTube"], ["tiktok", "TikTok"]
+                  ] as [keyof typeof form, string][]).map(([field, label]) => (
                     <div key={field}>
-                      <label className="text-xs font-medium text-white/60 block mb-1.5 capitalize">{field}</label>
-                      {field === "bio" ? (
+                      <label className="text-xs font-medium text-white/60 block mb-1.5">{label}</label>
+                      {field.startsWith("bio") ? (
                         <textarea value={form[field]} onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))} rows={3} className="form-input resize-none" />
                       ) : (
                         <input type="text" value={form[field]} onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))} className="form-input" />
