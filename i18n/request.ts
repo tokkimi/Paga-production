@@ -3,7 +3,8 @@ import { routing } from "./routing";
 
 export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
-  if (!locale || !routing.locales.includes(locale as "fr" | "en")) locale = routing.defaultLocale;
+  const locales = routing.locales as readonly string[];
+  if (!locale || !locales.includes(locale)) locale = routing.defaultLocale;
   return {
     locale,
     timeZone: "Europe/Paris",

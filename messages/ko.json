@@ -1,39 +1,39 @@
 {
   "nav": {
-    "artists": "Artists",
-    "dates": "Dates",
-    "music": "Music",
-    "sponsors": "Sponsors",
-    "join": "Join",
-    "login": "Login",
-    "signup": "Sign Up",
-    "logout": "Logout",
-    "profile": "Profile",
-    "dashboard": "Dashboard",
-    "admin": "Administration",
-    "brand": "Brand Portal"
+    "artists": "아티스트",
+    "dates": "일정",
+    "music": "음악",
+    "sponsors": "파트너십",
+    "join": "합류하기",
+    "login": "로그인",
+    "signup": "가입하기",
+    "logout": "로그아웃",
+    "profile": "프로필",
+    "dashboard": "대시보드",
+    "admin": "관리자",
+    "brand": "브랜드 공간"
   },
   "home": {
     "hero": {
       "subtitle": "Summer Tour 2026",
       "b2b": "B2B with Alexis Dante",
-      "cta_dates": "View Dates",
-      "cta_artists": "Discover Artists",
+      "cta_dates": "일정 보기",
+      "cta_artists": "아티스트 보기",
       "scroll": "Scroll"
     },
     "upcoming": {
-      "title": "Upcoming Dates",
+      "title": "다가오는 일정",
       "subtitle": "Find Paga on the best stages in France and Europe",
       "see_all": "View all dates",
       "no_events": "No upcoming events"
     },
     "music": {
-      "title": "Latest Tracks",
+      "title": "최신 사운드",
       "subtitle": "Discover Paga's productions and sets",
       "listen": "Listen"
     },
     "videos": {
-      "title": "Videos",
+      "title": "비디오",
       "subtitle": "The best moments on video",
       "watch": "Watch"
     },
@@ -47,7 +47,7 @@
       "step3_desc": "Experience an exceptional night with Paga and his guests. The energy of the South in all its splendor."
     },
     "newsletter": {
-      "title": "Stay Informed",
+      "title": "업데이트 받기",
       "subtitle": "Get early access to new dates, exclusive productions and VIP offers.",
       "placeholder": "Your email address",
       "cta": "Subscribe",
@@ -56,15 +56,15 @@
       "already": "You are already subscribed."
     },
     "contact": {
-      "title": "Contact",
-      "subtitle": "For any professional inquiry, booking or partnership",
-      "name": "Name",
-      "email": "Email",
-      "subject": "Subject",
-      "message": "Message",
-      "send": "Send",
-      "success": "Message sent! We will get back to you shortly.",
-      "error": "Error sending. Please try again."
+      "title": "문의",
+      "subtitle": "부킹, 브랜드 파트너십 또는 프로젝트 문의를 사이트에서 바로 보내세요.",
+      "name": "이름",
+      "email": "이메일",
+      "subject": "문의 유형",
+      "message": "메시지",
+      "send": "보내기",
+      "success": "문의가 전송되었습니다. 곧 연락드리겠습니다.",
+      "error": "전송 중 오류가 발생했습니다. 다시 시도해주세요."
     }
   },
   "artists": {
@@ -94,32 +94,32 @@
     "tba": "TBA"
   },
   "sponsors": {
-    "title": "Partnerships",
-    "subtitle": "Connect your brand with Paga Production through a custom proposal.",
+    "title": "브랜드 파트너십",
+    "subtitle": "고정 패키지 없이 브랜드 목표와 예산에 맞춘 맞춤 제안을 보내주세요.",
     "why_title": "Why join us?",
     "reach_title": "Our Reach",
     "reach_desc": "Thousands of fans across France and Europe",
-    "tiers_title": "Custom partnership",
-    "cta": "Send a custom request",
-    "login_required": "Log in with a pro account to submit a custom request.",
-    "proposal_title": "Your Proposal",
-    "brand_name": "Brand name",
-    "contact_email": "Contact email",
-    "phone": "Phone",
-    "budget": "Open budget",
-    "campaign_type": "Campaign type",
-    "description": "Description",
-    "submit": "Send proposal",
-    "success": "Proposal sent! We will contact you within 48 hours.",
+    "tiers_title": "맞춤형 파트너십",
+    "cta": "맞춤 제안 보내기",
+    "login_required": "프로 계정으로 로그인하면 맞춤 제안을 보낼 수 있습니다.",
+    "proposal_title": "맞춤 제안",
+    "brand_name": "브랜드명",
+    "contact_email": "담당자 이메일",
+    "phone": "전화번호",
+    "budget": "자유 예산",
+    "campaign_type": "캠페인 유형",
+    "description": "설명",
+    "submit": "제안 보내기",
+    "success": "제안이 전송되었습니다. 검토 후 연락드리겠습니다.",
     "stats": {
-      "followers": "Instagram Followers",
-      "events": "Events per year",
-      "cities": "Cities",
-      "countries": "Countries"
+      "followers": "인스타그램 팔로워",
+      "events": "연간 이벤트",
+      "cities": "도시",
+      "countries": "국가"
     },
-    "custom_title": "A proposal built for your brand",
-    "custom_desc": "No fixed package: share your goal, open budget, timing and expected deliverables.",
-    "budget_placeholder": "Ex: custom budget, product gifting, event envelope"
+    "custom_title": "브랜드 맞춤 제안",
+    "custom_desc": "스폰서십, 콘텐츠, 이벤트, VIP 경험까지 브랜드 목표에 맞게 설계합니다.",
+    "budget_placeholder": "맞춤 예산, 제품 협찬, 이벤트 예산"
   },
   "join": {
     "title": "Join the Family",

@@ -25,6 +25,13 @@ const navLinks = [
   { key: "join", href: "/rejoindre" },
 ];
 
+const locales = [
+  { code: "fr", label: "FR" },
+  { code: "en", label: "EN" },
+  { code: "ko", label: "KO" },
+];
+
+
 export default function Navbar() {
   const t = useTranslations("nav");
   const locale = useLocale();
@@ -109,47 +116,37 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             {/* Language switcher */}
             <div className="hidden md:flex items-center gap-1 glass-card px-3 py-1.5 rounded-full">
-              <button
-                onClick={() => switchLocale("fr")}
-                className={cn(
-                  "text-xs font-bold uppercase tracking-wider transition-colors",
-                  locale === "fr" ? "text-primary" : "text-white/50 hover:text-white"
-                )}
-              >
-                FR
-              </button>
-              <span className="text-white/20 text-xs">|</span>
-              <button
-                onClick={() => switchLocale("en")}
-                className={cn(
-                  "text-xs font-bold uppercase tracking-wider transition-colors",
-                  locale === "en" ? "text-primary" : "text-white/50 hover:text-white"
-                )}
-              >
-                EN
-              </button>
+              {locales.map((item, index) => (
+                <div key={item.code} className="flex items-center gap-1">
+                  {index > 0 && <span className="text-white/20 text-xs">|</span>}
+                  <button
+                    onClick={() => switchLocale(item.code)}
+                    className={cn(
+                      "text-xs font-bold uppercase tracking-wider transition-colors",
+                      locale === item.code ? "text-primary" : "text-white/50 hover:text-white"
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                </div>
+              ))}
             </div>
 
             <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2.5 py-1.5 backdrop-blur-xl md:hidden">
-              <button
-                onClick={() => switchLocale("fr")}
-                className={cn(
-                  "text-[10px] font-black uppercase tracking-wider transition-colors",
-                  locale === "fr" ? "text-cyan-300" : "text-white/40"
-                )}
-              >
-                FR
-              </button>
-              <span className="text-white/20">/</span>
-              <button
-                onClick={() => switchLocale("en")}
-                className={cn(
-                  "text-[10px] font-black uppercase tracking-wider transition-colors",
-                  locale === "en" ? "text-cyan-300" : "text-white/40"
-                )}
-              >
-                EN
-              </button>
+              {locales.map((item, index) => (
+                <div key={item.code} className="flex items-center gap-1">
+                  {index > 0 && <span className="text-white/20">/</span>}
+                  <button
+                    onClick={() => switchLocale(item.code)}
+                    className={cn(
+                      "text-[10px] font-black uppercase tracking-wider transition-colors",
+                      locale === item.code ? "text-cyan-300" : "text-white/40"
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                </div>
+              ))}
             </div>
 
             {/* Auth */}
@@ -238,7 +235,7 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Mobile hamburger — hidden, bottom nav handles mobile */}
+            {/* Mobile hamburger ??hidden, bottom nav handles mobile */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/80 backdrop-blur-xl transition-colors hover:bg-white/10 md:hidden"

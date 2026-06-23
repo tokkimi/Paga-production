@@ -12,7 +12,7 @@ export default function MentionsLegalesPage() {
               <p><span className="text-white/50">Société :</span> Paga Production</p>
               <p><span className="text-white/50">Statut :</span> SAS</p>
               <p><span className="text-white/50">Adresse :</span> France</p>
-              <p><span className="text-white/50">Email :</span> <a href="mailto:contact@paga-production.fr" className="text-primary hover:underline">contact@paga-production.fr</a></p>
+              <p><span className="text-white/50">Contact :</span> formulaire disponible sur le site</p>
             </div>
           </section>
 

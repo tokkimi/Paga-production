@@ -24,8 +24,8 @@ interface Proposal {
 const statusConfig = {
   PENDING: { label: "En attente", icon: Clock, color: "text-yellow-400" },
   REVIEWING: { label: "En cours d'examen", icon: AlertCircle, color: "text-blue-400" },
-  VALIDATED: { label: "Validé", icon: CheckCircle, color: "text-green-400" },
-  REJECTED: { label: "Refusé", icon: XCircle, color: "text-red-400" },
+  VALIDATED: { label: "Valid챕", icon: CheckCircle, color: "text-green-400" },
+  REJECTED: { label: "Refus챕", icon: XCircle, color: "text-red-400" },
 };
 
 export default function MarquePage() {
@@ -71,7 +71,7 @@ export default function MarquePage() {
     e.preventDefault();
     setSaving(true);
     setSubmitStatus("idle");
-    const budget = form.budget === "custom" && form.customBudget ? `Budget personnalise: ${form.customBudget}` : form.budget;
+    const budget = form.budget;
 
     const res = await fetch("/api/sponsors", {
       method: "POST",
@@ -107,7 +107,7 @@ export default function MarquePage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-black uppercase">Espace Marque</h1>
-            <p className="text-white/60 mt-1">Gérez vos propositions de partenariat</p>
+            <p className="text-white/60 mt-1">G챕rez vos propositions de partenariat</p>
           </div>
           <button onClick={() => setShowForm((v) => !v)} className="btn-primary">
             <Plus size={16} /> Nouvelle proposition
@@ -146,20 +146,8 @@ export default function MarquePage() {
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-white/60">Budget</label>
-                <select value={form.budget} onChange={(e) => setForm((p) => ({ ...p, budget: e.target.value }))} className="form-input">
-                  <option value="">A definir</option>
-                  <option value="Bronze - 500 EUR">Bronze - 500 EUR</option>
-                  <option value="Silver - 1500 EUR">Silver - 1500 EUR</option>
-                  <option value="Gold - 5000 EUR">Gold - 5000 EUR</option>
-                  <option value="custom">Budget personnalise</option>
-                </select>
+                <input value={form.budget} onChange={(e) => setForm((p) => ({ ...p, budget: e.target.value }))} className="form-input" placeholder="Ex: budget sur mesure, dotation produit, enveloppe evenement..." />
               </div>
-              {form.budget === "custom" && (
-                <div className="sm:col-span-2">
-                  <label className="mb-1.5 block text-xs font-medium text-white/60">Montant ou fourchette personnalisee</label>
-                  <input value={form.customBudget} onChange={(e) => setForm((p) => ({ ...p, customBudget: e.target.value }))} className="form-input" placeholder="Ex: 2 500 EUR, 3 000-5 000 EUR, dotation produit..." />
-                </div>
-              )}
               <div className="sm:col-span-2">
                 <label className="mb-1.5 block text-xs font-medium text-white/60">Type de campagne</label>
                 <input value={form.campaignType} onChange={(e) => setForm((p) => ({ ...p, campaignType: e.target.value }))} className="form-input" placeholder="Reseaux sociaux, event, co-branding, placement..." />
@@ -226,7 +214,7 @@ export default function MarquePage() {
                     </div>
                     {proposal.amount && (
                       <div className="text-right flex-shrink-0">
-                        <div className="text-2xl font-black text-primary">€{proposal.amount}</div>
+                        <div className="text-2xl font-black text-primary">{proposal.amount}</div>
                         <div className="text-xs text-white/40">montant</div>
                       </div>
                     )}

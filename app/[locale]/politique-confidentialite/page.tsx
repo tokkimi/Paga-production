@@ -49,7 +49,7 @@ export default function PolitiqueConfidentialitePage() {
               <li>Droit à la portabilité</li>
               <li>Droit d&apos;opposition</li>
             </ul>
-            <p className="mt-3">Pour exercer ces droits : <a href="mailto:contact@paga-production.fr" className="text-primary hover:underline">contact@paga-production.fr</a></p>
+            <p className="mt-3">Pour exercer ces droits, utilisez le formulaire de contact disponible sur le site.</p>
           </section>
 
           <section>

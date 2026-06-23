@@ -36,7 +36,7 @@ export default function CookiesPage() {
 
           <section>
             <h2 className="text-xl font-bold text-white mb-3">Contact</h2>
-            <p>Pour toute question : <a href="mailto:contact@paga-production.fr" className="text-primary hover:underline">contact@paga-production.fr</a></p>
+            <p>Pour toute question, utilisez le formulaire de contact disponible sur le site.</p>
           </section>
         </div>
       </div>

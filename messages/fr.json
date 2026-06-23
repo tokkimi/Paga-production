@@ -7,7 +7,7 @@
     "join": "Rejoindre",
     "login": "Connexion",
     "signup": "Inscription",
-    "logout": "Déconnexion",
+    "logout": "D챕connexion",
     "profile": "Profil",
     "dashboard": "Dashboard",
     "admin": "Administration",
@@ -18,42 +18,42 @@
       "subtitle": "Summer Tour 2026",
       "b2b": "En B2B avec Alexis Dante",
       "cta_dates": "Voir les dates",
-      "cta_artists": "Découvrir les artistes",
-      "scroll": "Défiler"
+      "cta_artists": "D챕couvrir les artistes",
+      "scroll": "D챕filer"
     },
     "upcoming": {
       "title": "Prochaines Dates",
-      "subtitle": "Retrouvez Paga sur les plus belles scènes de France et d'Europe",
+      "subtitle": "Retrouvez Paga sur les plus belles sc챔nes de France et d'Europe",
       "see_all": "Voir toutes les dates",
-      "no_events": "Aucun événement à venir"
+      "no_events": "Aucun 챕v챕nement 횪 venir"
     },
     "music": {
       "title": "Derniers Sons",
-      "subtitle": "Découvrez les productions et sets de Paga",
-      "listen": "Écouter"
+      "subtitle": "D챕couvrez les productions et sets de Paga",
+      "listen": "횋couter"
     },
     "videos": {
-      "title": "Vidéos",
-      "subtitle": "Les meilleurs moments en vidéo",
+      "title": "Vid챕os",
+      "subtitle": "Les meilleurs moments en vid챕o",
       "watch": "Regarder"
     },
     "how_it_works": {
-      "title": "Comment ça marche",
-      "step1_title": "Découvrir",
-      "step1_desc": "Explorez l'univers musical de Paga et Alexis Dante. Écoutez leurs productions et sets exclusifs.",
-      "step2_title": "Réserver",
-      "step2_desc": "Trouvez les prochaines dates de concert et réservez vos places pour une expérience inoubliable.",
+      "title": "Comment 챌a marche",
+      "step1_title": "D챕couvrir",
+      "step1_desc": "Explorez l'univers musical de Paga et Alexis Dante. 횋coutez leurs productions et sets exclusifs.",
+      "step2_title": "R챕server",
+      "step2_desc": "Trouvez les prochaines dates de concert et r챕servez vos places pour une exp챕rience inoubliable.",
       "step3_title": "Profiter",
-      "step3_desc": "Vivez une soirée exceptionnelle avec Paga et ses invités. L'énergie du Sud dans toute sa splendeur."
+      "step3_desc": "Vivez une soir챕e exceptionnelle avec Paga et ses invit챕s. L'챕nergie du Sud dans toute sa splendeur."
     },
     "newsletter": {
-      "title": "Restez Informé",
-      "subtitle": "Recevez en avant-première les nouvelles dates, productions exclusives et offres VIP.",
+      "title": "Restez Inform챕",
+      "subtitle": "Recevez en avant-premi챔re les nouvelles dates, productions exclusives et offres VIP.",
       "placeholder": "Votre adresse email",
       "cta": "S'abonner",
-      "success": "Merci ! Vous êtes maintenant abonné(e).",
-      "error": "Une erreur est survenue. Réessayez.",
-      "already": "Vous êtes déjà abonné(e)."
+      "success": "Merci ! Vous 챗tes maintenant abonn챕(e).",
+      "error": "Une erreur est survenue. R챕essayez.",
+      "already": "Vous 챗tes d챕j횪 abonn챕(e)."
     },
     "contact": {
       "title": "Contact",
@@ -63,92 +63,91 @@
       "subject": "Sujet",
       "message": "Message",
       "send": "Envoyer",
-      "success": "Message envoyé ! Nous vous répondrons rapidement.",
-      "error": "Erreur lors de l'envoi. Réessayez."
+      "success": "Message envoy챕 ! Nous vous r챕pondrons rapidement.",
+      "error": "Erreur lors de l'envoi. R챕essayez."
     }
   },
   "artists": {
     "title": "Artistes",
-    "subtitle": "Découvrez les artistes de Paga Production",
+    "subtitle": "D챕couvrez les artistes de Paga Production",
     "filter_all": "Tous",
-    "listen": "Écouter",
+    "listen": "횋couter",
     "events": "Dates",
     "bio": "Biographie",
     "upcoming_events": "Prochaines dates",
-    "no_events": "Aucune date à venir",
-    "social": "Réseaux sociaux"
+    "no_events": "Aucune date 횪 venir",
+    "social": "R챕seaux sociaux"
   },
   "dates": {
     "title": "Dates",
-    "subtitle": "Tous les événements et concerts",
+    "subtitle": "Tous les 챕v챕nements et concerts",
     "filter_all": "Tous",
     "filter_b2b": "B2B",
-    "upcoming": "À venir",
-    "past": "Passées",
-    "no_upcoming": "Aucune date à venir",
-    "no_past": "Aucune date passée",
-    "tickets": "Réserver",
+    "upcoming": "? venir",
+    "past": "Pass챕es",
+    "no_upcoming": "Aucune date 횪 venir",
+    "no_past": "Aucune date pass챕e",
+    "tickets": "R챕server",
     "b2b_label": "B2B",
     "sold_out": "Complet",
     "free": "Gratuit",
-    "tba": "À confirmer"
+    "tba": "? confirmer"
   },
   "sponsors": {
     "title": "Partenariats",
-    "subtitle": "Associez votre marque à l'énergie de Paga Production",
+    "subtitle": "Associez votre marque a l'energie de Paga Production avec une proposition sur mesure.",
     "why_title": "Pourquoi nous rejoindre ?",
-    "reach_title": "Notre Portée",
-    "reach_desc": "Des milliers de fans à travers la France et l'Europe",
-    "tiers_title": "Offres de Partenariat",
-    "bronze": "Bronze",
-    "silver": "Silver",
-    "gold": "Gold",
-    "month": "/ an",
-    "cta": "Soumettre une proposition",
-    "login_required": "Connectez-vous pour soumettre une proposition",
+    "reach_title": "Notre Port챕e",
+    "reach_desc": "Des milliers de fans 횪 travers la France et l'Europe",
+    "tiers_title": "Partenariat sur mesure",
+    "cta": "Envoyer une demande sur mesure",
+    "login_required": "Connectez-vous avec un compte pro pour envoyer une demande sur mesure.",
     "proposal_title": "Votre Proposition",
     "brand_name": "Nom de la marque",
     "contact_email": "Email de contact",
-    "phone": "Téléphone",
-    "budget": "Budget indicatif",
+    "phone": "T챕l챕phone",
+    "budget": "Budget libre",
     "campaign_type": "Type de campagne",
     "description": "Description",
     "submit": "Envoyer la proposition",
-    "success": "Proposition envoyée ! Nous vous contacterons sous 48h.",
+    "success": "Proposition envoy챕e ! Nous vous contacterons sous 48h.",
     "stats": {
       "followers": "Followers Instagram",
-      "events": "Événements par an",
+      "events": "횋v챕nements par an",
       "cities": "Villes",
       "countries": "Pays"
-    }
+    },
+    "custom_title": "Une offre creee pour votre marque",
+    "custom_desc": "Pas de pack impose: vous indiquez l'objectif, le budget libre, le timing et les livrables souhaites.",
+    "budget_placeholder": "Ex: budget sur mesure, dotation produit, enveloppe evenement"
   },
   "join": {
     "title": "Rejoindre la Famille",
-    "subtitle": "Tu es artiste et tu veux intégrer l'univers Paga Production ?",
+    "subtitle": "Tu es artiste et tu veux int챕grer l'univers Paga Production ?",
     "step1": "Infos personnelles",
     "step2": "Liens musicaux",
-    "step3": "Réseaux sociaux",
+    "step3": "R챕seaux sociaux",
     "step4": "Genres musicaux",
     "name": "Nom d'artiste",
     "email": "Email",
     "bio": "Bio",
-    "genres": "Genres (séparés par des virgules)",
+    "genres": "Genres (s챕par챕s par des virgules)",
     "soundcloud": "SoundCloud",
     "spotify": "Spotify",
     "youtube": "YouTube",
     "instagram": "Instagram",
     "tiktok": "TikTok",
     "next": "Suivant",
-    "prev": "Précédent",
+    "prev": "Pr챕c챕dent",
     "submit": "Envoyer ma candidature",
-    "success": "Candidature envoyée ! Nous vous répondrons sous 7 jours.",
+    "success": "Candidature envoy챕e ! Nous vous r챕pondrons sous 7 jours.",
     "error": "Erreur lors de l'envoi."
   },
   "auth": {
     "login_title": "Connexion",
     "login_subtitle": "Bienvenue de retour",
     "register_title": "Inscription",
-    "register_subtitle": "Rejoignez la communauté Paga Production",
+    "register_subtitle": "Rejoignez la communaut챕 Paga Production",
     "email": "Email",
     "password": "Mot de passe",
     "confirm_password": "Confirmer le mot de passe",
@@ -158,19 +157,19 @@
     "login_btn": "Se connecter",
     "register_btn": "S'inscrire",
     "no_account": "Pas de compte ?",
-    "have_account": "Déjà un compte ?",
-    "forgot": "Mot de passe oublié ?",
+    "have_account": "D챕j횪 un compte ?",
+    "forgot": "Mot de passe oubli챕 ?",
     "error": "Identifiants incorrects",
-    "success": "Connexion réussie !",
-    "register_success": "Compte créé avec succès !"
+    "success": "Connexion r챕ussie !",
+    "register_success": "Compte cr챕챕 avec succ챔s !"
   },
   "admin": {
     "title": "Administration",
     "overview": "Vue d'ensemble",
     "artists": "Artistes",
-    "events": "Événements",
+    "events": "횋v챕nements",
     "music": "Musique",
-    "videos": "Vidéos",
+    "videos": "Vid챕os",
     "users": "Utilisateurs",
     "partnerships": "Partenariats",
     "newsletter": "Newsletter",
@@ -178,7 +177,7 @@
     "contacts": "Contacts",
     "total_visits": "Visites totales",
     "total_users": "Utilisateurs",
-    "upcoming_events": "Événements à venir",
+    "upcoming_events": "횋v챕nements 횪 venir",
     "revenue": "Revenus",
     "add": "Ajouter",
     "edit": "Modifier",
@@ -191,28 +190,28 @@
     "reject": "Rejeter"
   },
   "legal": {
-    "cgv_title": "Conditions Générales de Vente",
-    "mentions_title": "Mentions Légales",
-    "privacy_title": "Politique de Confidentialité",
+    "cgv_title": "Conditions G챕n챕rales de Vente",
+    "mentions_title": "Mentions L챕gales",
+    "privacy_title": "Politique de Confidentialit챕",
     "cookies_title": "Politique de Cookies",
-    "last_updated": "Dernière mise à jour"
+    "last_updated": "Derni챔re mise 횪 jour"
   },
   "footer": {
-    "description": "Label et management artistique basé dans le Sud de la France.",
+    "description": "Label et management artistique bas챕 dans le Sud de la France.",
     "links": "Liens",
-    "legal": "Légal",
-    "social": "Réseaux sociaux",
+    "legal": "L챕gal",
+    "social": "R챕seaux sociaux",
     "newsletter": "Newsletter",
     "newsletter_placeholder": "Votre email",
     "newsletter_btn": "S'abonner",
-    "copyright": "© 2026 Paga Production. Tous droits réservés.",
+    "copyright": "짤 2026 Paga Production. Tous droits r챕serv챕s.",
     "cgv": "CGV",
-    "mentions": "Mentions Légales",
-    "privacy": "Confidentialité",
+    "mentions": "Mentions L챕gales",
+    "privacy": "Confidentialit챕",
     "cookies": "Cookies"
   },
   "cookies": {
-    "message": "Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre",
+    "message": "Nous utilisons des cookies pour am챕liorer votre exp챕rience. En continuant, vous acceptez notre",
     "policy": "politique de cookies",
     "accept": "Accepter",
     "decline": "Refuser"
@@ -220,7 +219,7 @@
   "common": {
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
-    "not_found": "Page non trouvée",
+    "not_found": "Page non trouv챕e",
     "go_back": "Retour",
     "see_more": "Voir plus",
     "close": "Fermer",
@@ -228,6 +227,6 @@
     "search": "Rechercher",
     "share": "Partager",
     "copy": "Copier",
-    "copied": "Copié !"
+    "copied": "Copi챕 !"
   }
 }
