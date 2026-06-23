@@ -18,23 +18,52 @@ function cleanNumber(value: unknown) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+const allowedFields = {
+  proposal: [
+    "brandName", "contactName", "contactEmail", "phone", "website", "source",
+    "campaignType", "description", "budget", "expectedAmount", "paidAmount",
+    "currency", "status", "priority", "assignedTo", "nextAction", "nextActionAt",
+    "lastContactAt", "startDate", "endDate", "deliverables", "requiredAssets",
+    "pressKitUrl", "boardUrl", "contractUrl", "invoiceUrl", "promoCode", "adminNote",
+  ],
+  campaign: [
+    "proposalId", "name", "brandName", "contactName", "contactEmail", "phone",
+    "status", "priority", "budget", "paidAmount", "currency", "startDate", "endDate",
+    "nextAction", "nextActionAt", "deliverables", "requiredAssets", "pressKitUrl",
+    "boardUrl", "contractUrl", "invoiceUrl", "promoCode", "notes",
+  ],
+  booking: [
+    "title", "artistName", "eventType", "venue", "city", "country", "eventDate",
+    "contactName", "company", "contactEmail", "phone", "status", "priority", "budget",
+    "fee", "deposit", "currency", "source", "nextAction", "nextActionAt",
+    "lastContactAt", "requirements", "requiredAssets", "pressKitUrl", "contractUrl",
+    "invoiceUrl", "notes",
+  ],
+} as const;
+
+type CrmType = keyof typeof allowedFields;
+
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const { id } = await params;
   const body = await req.json();
-  const type = body.type;
-  delete body.type;
+  const type: CrmType = body.type === "campaign" || body.type === "booking" ? body.type : "proposal";
+  const data = Object.fromEntries(
+    allowedFields[type]
+      .filter((field) => field in body)
+      .map((field) => [field, body[field]])
+  ) as Record<string, any>;
 
   const dateFields = ["startDate", "endDate", "nextActionAt", "lastContactAt", "eventDate"];
   const numberFields = ["budget", "expectedAmount", "paidAmount", "fee", "deposit"];
-  for (const key of dateFields) if (key in body) body[key] = cleanDate(body[key]);
-  for (const key of numberFields) if (key in body) body[key] = cleanNumber(body[key]);
+  for (const key of dateFields) if (key in data) data[key] = cleanDate(data[key]);
+  for (const key of numberFields) if (key in data) data[key] = cleanNumber(data[key]);
 
   const item = type === "campaign"
-    ? await prisma.campaign.update({ where: { id }, data: body })
+    ? await prisma.campaign.update({ where: { id }, data })
     : type === "booking"
-      ? await prisma.privateBooking.update({ where: { id }, data: body })
-      : await prisma.sponsorProposal.update({ where: { id }, data: body });
+      ? await prisma.privateBooking.update({ where: { id }, data })
+      : await prisma.sponsorProposal.update({ where: { id }, data });
 
   return NextResponse.json(item);
 }

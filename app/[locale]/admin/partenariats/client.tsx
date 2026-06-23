@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Building2, CalendarDays, Check, ChevronRight, CircleDollarSign, Plus, Save, Search, Trash2, X } from "lucide-react";
+import { AlertCircle, CheckCircle, ChevronRight, Loader2, Plus, Save, Search, Trash2, X } from "lucide-react";
 
 type Kind = "proposal" | "campaign" | "booking";
 type Item = Record<string, any>;
@@ -66,12 +66,21 @@ export default function PartenariatsClient() {
   const [editing, setEditing] = useState<Item | null>(null);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("ALL");
+  const [saving, setSaving] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   const load = async () => {
     setLoading(true);
-    const data = await fetch("/api/admin/crm?type=" + configs[kind].api).then((r) => r.json());
-    setItems(Array.isArray(data) ? data : []);
-    setLoading(false);
+    try {
+      const response = await fetch("/api/admin/crm?type=" + configs[kind].api, { cache: "no-store" });
+      if (!response.ok) throw new Error("Impossible de charger le Business Board.");
+      const data = await response.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setFeedback({ type: "error", message: error instanceof Error ? error.message : "Erreur de chargement." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, [kind]);
@@ -82,15 +91,32 @@ export default function PartenariatsClient() {
   }), [items, query, status]);
 
   const save = async () => {
-    if (!editing) return;
+    if (!editing || saving) return;
     const isNew = !editing.id;
-    await fetch(isNew ? "/api/admin/crm" : "/api/admin/crm/" + editing.id, {
-      method: isNew ? "POST" : "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...editing, type: kind }),
-    });
-    setEditing(null);
-    load();
+    setSaving(true);
+    setFeedback(null);
+    try {
+      const response = await fetch(isNew ? "/api/admin/crm" : "/api/admin/crm/" + editing.id, {
+        method: isNew ? "POST" : "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...editing, type: kind }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(result?.error || "La modification n'a pas pu être enregistrée.");
+      }
+      setItems((current) => isNew
+        ? [result, ...current]
+        : current.map((item) => item.id === result.id ? { ...item, ...result } : item)
+      );
+      setEditing(null);
+      setFeedback({ type: "success", message: "Modification enregistrée et Business Board actualisé." });
+      await load();
+    } catch (error) {
+      setFeedback({ type: "error", message: error instanceof Error ? error.message : "Erreur d'enregistrement." });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const remove = async (item: Item) => {
@@ -130,6 +156,18 @@ export default function PartenariatsClient() {
             {config.statuses.map((value) => <option key={value} value={value}>{statusLabels[value] || value}</option>)}
           </select>
         </div>
+
+        {feedback && (
+          <div className={"mb-5 flex items-center gap-3 rounded-xl border px-4 py-3 text-sm " + (
+            feedback.type === "success"
+              ? "border-green-400/20 bg-green-400/10 text-green-200"
+              : "border-red-400/20 bg-red-400/10 text-red-200"
+          )}>
+            {feedback.type === "success" ? <CheckCircle size={17} /> : <AlertCircle size={17} />}
+            <span>{feedback.message}</span>
+            <button onClick={() => setFeedback(null)} className="ml-auto text-current/60 hover:text-current"><X size={15} /></button>
+          </div>
+        )}
 
         <div className="grid gap-3">
           {loading ? <div className="py-20 text-center text-white/40">Chargement...</div> : filtered.map((item) => (
@@ -177,7 +215,13 @@ export default function PartenariatsClient() {
                 return <label key={key} className={multiline ? "sm:col-span-2" : ""}><span className="mb-1 block text-xs text-white/50">{fieldLabels[key] || key}</span>{multiline ? <textarea rows={4} value={editing[key] || ""} onChange={(e) => setEditing({ ...editing, [key]: e.target.value })} className="form-input resize-y" /> : <input type={inputType(key)} value={editing[key] ? String(editing[key]).slice(0, inputType(key) === "datetime-local" ? 16 : 10_000) : ""} onChange={(e) => setEditing({ ...editing, [key]: e.target.value })} className="form-input" />}</label>;
               })}
             </div>
-            <div className="mt-7 flex justify-end gap-3"><button onClick={() => setEditing(null)} className="btn-secondary">Annuler</button><button onClick={save} className="btn-primary"><Save size={16} /> Enregistrer</button></div>
+            <div className="mt-7 flex justify-end gap-3">
+              <button onClick={() => setEditing(null)} disabled={saving} className="btn-secondary disabled:opacity-40">Annuler</button>
+              <button onClick={save} disabled={saving} className="btn-primary disabled:opacity-60">
+                {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                {saving ? "Enregistrement..." : "Enregistrer"}
+              </button>
+            </div>
           </div>
         </div>
       )}

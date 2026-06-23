@@ -26,14 +26,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(await prisma.campaign.findMany({
       orderBy: [{ nextActionAt: "asc" }, { updatedAt: "desc" }],
       include: { proposal: { select: { id: true, brandName: true } }, activities: { orderBy: { createdAt: "desc" }, take: 8 } },
-    }));
+    }), { headers: { "Cache-Control": "no-store" } });
   }
 
   if (type === "bookings") {
     return NextResponse.json(await prisma.privateBooking.findMany({
       orderBy: [{ eventDate: "asc" }, { updatedAt: "desc" }],
       include: { activities: { orderBy: { createdAt: "desc" }, take: 8 } },
-    }));
+    }), { headers: { "Cache-Control": "no-store" } });
   }
 
   return NextResponse.json(await prisma.sponsorProposal.findMany({
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       campaigns: { select: { id: true, name: true, status: true } },
       activities: { orderBy: { createdAt: "desc" }, take: 8 },
     },
-  }));
+  }), { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(req: NextRequest) {

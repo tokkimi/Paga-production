@@ -292,6 +292,17 @@ section {
   color: rgba(255, 255, 255, 0.28);
 }
 
+select.form-input {
+  color-scheme: dark;
+  background-color: #0b111d;
+  color: #f8fbff;
+}
+
+select.form-input option {
+  background-color: #0b111d;
+  color: #f8fbff;
+}
+
 /* Section utilities */
 .section-title {
   font-size: clamp(1.3rem, 3vw, 1.9rem);
