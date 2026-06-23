@@ -1,139 +1,186 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Building2, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Building2, CalendarDays, Check, ChevronRight, CircleDollarSign, Plus, Save, Search, Trash2, X } from "lucide-react";
 
-interface Proposal {
-  id: string;
-  brandName: string;
-  contactEmail: string;
-  status: string;
-  description: string;
-  budget?: string;
-  campaignType?: string;
-  phone?: string;
-  adminNote?: string;
-  createdAt: string;
-  user?: { name: string; email: string };
-}
+type Kind = "proposal" | "campaign" | "booking";
+type Item = Record<string, any>;
 
-const statusConfig = {
-  PENDING: { label: "En attente", icon: Clock, color: "text-yellow-400", bg: "bg-yellow-400/10" },
-  REVIEWING: { label: "En examen", icon: AlertCircle, color: "text-blue-400", bg: "bg-blue-400/10" },
-  VALIDATED: { label: "Validé", icon: CheckCircle, color: "text-green-400", bg: "bg-green-400/10" },
-  REJECTED: { label: "Refusé", icon: XCircle, color: "text-red-400", bg: "bg-red-400/10" },
+const configs = {
+  proposal: {
+    title: "Opportunités sponsors",
+    api: "proposals",
+    statuses: ["PENDING", "REVIEWING", "CONTACTED", "NEGOTIATING", "VALIDATED", "ACTIVE", "COMPLETED", "REJECTED", "ARCHIVED"],
+  },
+  campaign: {
+    title: "Campagnes",
+    api: "campaigns",
+    statuses: ["DRAFT", "PLANNED", "ACTIVE", "PAUSED", "COMPLETED", "CANCELLED"],
+  },
+  booking: {
+    title: "Bookings privés",
+    api: "bookings",
+    statuses: ["NEW", "QUALIFYING", "CONTACTED", "OPTION", "NEGOTIATING", "CONFIRMED", "DEPOSIT_PAID", "COMPLETED", "CANCELLED", "LOST"],
+  },
+} as const;
+
+const statusLabels: Record<string, string> = {
+  PENDING: "Nouveau", REVIEWING: "À examiner", CONTACTED: "Contacté", NEGOTIATING: "Négociation",
+  VALIDATED: "Validé", ACTIVE: "Actif", COMPLETED: "Terminé", REJECTED: "Refusé", ARCHIVED: "Archivé",
+  DRAFT: "Brouillon", PLANNED: "Planifiée", PAUSED: "En pause", CANCELLED: "Annulée",
+  NEW: "Nouveau", QUALIFYING: "Qualification", OPTION: "Option", CONFIRMED: "Confirmé",
+  DEPOSIT_PAID: "Acompte payé", LOST: "Perdu",
 };
 
-export default function PartenariatsClient() {
-  const [proposals, setProposals] = useState<Proposal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [notes, setNotes] = useState<Record<string, string>>({});
+const empty: Record<Kind, Item> = {
+  proposal: { brandName: "", contactName: "", contactEmail: "", phone: "", website: "", source: "", campaignType: "", description: "", budget: "", expectedAmount: "", paidAmount: "", currency: "EUR", status: "PENDING", priority: "NORMAL", assignedTo: "", nextAction: "", nextActionAt: "", lastContactAt: "", startDate: "", endDate: "", deliverables: "", requiredAssets: "", pressKitUrl: "", boardUrl: "", contractUrl: "", invoiceUrl: "", promoCode: "", adminNote: "" },
+  campaign: { name: "", brandName: "", contactName: "", contactEmail: "", phone: "", status: "DRAFT", priority: "NORMAL", budget: "", paidAmount: "", currency: "EUR", startDate: "", endDate: "", nextAction: "", nextActionAt: "", deliverables: "", requiredAssets: "", pressKitUrl: "", boardUrl: "", contractUrl: "", invoiceUrl: "", promoCode: "", notes: "" },
+  booking: { title: "", artistName: "Paga", eventType: "", venue: "", city: "", country: "", eventDate: "", contactName: "", company: "", contactEmail: "", phone: "", status: "NEW", priority: "NORMAL", budget: "", fee: "", deposit: "", currency: "EUR", source: "", nextAction: "", nextActionAt: "", lastContactAt: "", requirements: "", requiredAssets: "", pressKitUrl: "", contractUrl: "", invoiceUrl: "", notes: "" },
+};
 
-  const load = () => {
-    fetch("/api/admin/sponsors")
-      .then((r) => r.json())
-      .then((data) => {
-        setProposals(Array.isArray(data) ? data : []);
-        const n: Record<string, string> = {};
-        (Array.isArray(data) ? data : []).forEach((p: Proposal) => { n[p.id] = p.adminNote || ""; });
-        setNotes(n);
-      })
-      .finally(() => setLoading(false));
+const fieldLabels: Record<string, string> = {
+  brandName: "Marque", name: "Nom de campagne", title: "Nom / événement", contactName: "Contact", contactEmail: "Email",
+  phone: "Téléphone", website: "Site web", source: "Source", campaignType: "Type de campagne", description: "Description",
+  budget: "Budget", expectedAmount: "Montant estimé", paidAmount: "Montant payé", fee: "Cachet", deposit: "Acompte",
+  assignedTo: "Responsable", nextAction: "Prochaine action", nextActionAt: "Échéance", lastContactAt: "Dernier contact",
+  startDate: "Début", endDate: "Fin", deliverables: "Livrables", requiredAssets: "Éléments nécessaires",
+  pressKitUrl: "Press kit", boardUrl: "Board / dossier", contractUrl: "Contrat", invoiceUrl: "Facture", promoCode: "Code promo",
+  adminNote: "Notes internes", notes: "Notes internes", artistName: "Artiste", eventType: "Type d'événement",
+  venue: "Lieu", city: "Ville", country: "Pays", eventDate: "Date de l'événement", company: "Société",
+  requirements: "Besoins techniques / organisation",
+};
+
+function inputType(key: string) {
+  if (key.endsWith("At") || key === "eventDate") return "datetime-local";
+  if (key === "startDate" || key === "endDate") return "date";
+  if (["expectedAmount", "paidAmount", "fee", "deposit"].includes(key)) return "number";
+  if (key.includes("Email")) return "email";
+  if (key.endsWith("Url") || key === "website") return "url";
+  return "text";
+}
+
+export default function PartenariatsClient() {
+  const [kind, setKind] = useState<Kind>("proposal");
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<Item | null>(null);
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("ALL");
+
+  const load = async () => {
+    setLoading(true);
+    const data = await fetch("/api/admin/crm?type=" + configs[kind].api).then((r) => r.json());
+    setItems(Array.isArray(data) ? data : []);
+    setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [kind]);
 
-  const updateStatus = async (id: string, status: string) => {
-    await fetch(`/api/admin/sponsors/${id}`, {
-      method: "PATCH",
+  const filtered = useMemo(() => items.filter((item) => {
+    const text = JSON.stringify(item).toLowerCase();
+    return (status === "ALL" || item.status === status) && text.includes(query.toLowerCase());
+  }), [items, query, status]);
+
+  const save = async () => {
+    if (!editing) return;
+    const isNew = !editing.id;
+    await fetch(isNew ? "/api/admin/crm" : "/api/admin/crm/" + editing.id, {
+      method: isNew ? "POST" : "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, adminNote: notes[id] }),
+      body: JSON.stringify({ ...editing, type: kind }),
     });
+    setEditing(null);
     load();
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-pulse text-white/40">Chargement...</div></div>;
+  const remove = async (item: Item) => {
+    if (!confirm("Supprimer définitivement cet élément ?")) return;
+    await fetch("/api/admin/crm/" + item.id + "?type=" + kind, { method: "DELETE" });
+    load();
+  };
+
+  const config = configs[kind];
+  const fields = Object.keys(empty[kind]).filter((key) => !["status", "priority", "currency"].includes(key));
 
   return (
-    <div className="min-h-screen pt-24 pb-20 px-4">
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-8">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Admin</p>
-          <h1 className="text-3xl font-black uppercase">Partenariats</h1>
-          <p className="text-white/50 mt-1">{proposals.length} proposition{proposals.length !== 1 ? "s" : ""}</p>
+    <div className="min-h-screen px-4 pb-28 pt-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.35em] text-cyan-300">CRM Paga Production</p>
+            <h1 className="text-3xl font-black uppercase sm:text-4xl">Business board</h1>
+            <p className="mt-2 text-sm text-white/45">Sponsors, campagnes, bookings, budgets, contacts et documents.</p>
+          </div>
+          <button onClick={() => setEditing({ ...empty[kind] })} className="btn-primary justify-center"><Plus size={16} /> Ajouter</button>
         </div>
 
-        <div className="space-y-4">
-          {proposals.map((p, i) => {
-            const cfg = statusConfig[p.status as keyof typeof statusConfig] || statusConfig.PENDING;
-            const Icon = cfg.icon;
-            return (
-              <motion.div key={p.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="glass-card p-6">
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Building2 size={18} className="text-primary" />
-                    </div>
-                    <div>
-                      <div className="font-bold">{p.brandName}</div>
-                      <div className="text-xs text-white/50">{p.contactEmail}</div>
-                    </div>
-                  </div>
-                  <div className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${cfg.color} ${cfg.bg}`}>
-                    <Icon size={12} />
-                    {cfg.label}
-                  </div>
+        <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+          {(Object.keys(configs) as Kind[]).map((key) => (
+            <button key={key} onClick={() => { setKind(key); setStatus("ALL"); }} className={"whitespace-nowrap rounded-xl px-4 py-2 text-sm font-bold " + (kind === key ? "bg-cyan-300 text-black" : "bg-white/[0.05] text-white/55")}>
+              {configs[key].title}
+            </button>
+          ))}
+          <a href="../admin/candidatures" className="whitespace-nowrap rounded-xl bg-white/[0.05] px-4 py-2 text-sm font-bold text-white/55">Candidatures artistes</a>
+        </div>
+
+        <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_auto]">
+          <label className="relative"><Search className="absolute left-3 top-3.5 text-white/30" size={16} /><input value={query} onChange={(e) => setQuery(e.target.value)} className="form-input pl-10" placeholder="Rechercher marque, contact, ville, note..." /></label>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} className="form-input min-w-48">
+            <option value="ALL">Tous les statuts</option>
+            {config.statuses.map((value) => <option key={value} value={value}>{statusLabels[value] || value}</option>)}
+          </select>
+        </div>
+
+        <div className="grid gap-3">
+          {loading ? <div className="py-20 text-center text-white/40">Chargement...</div> : filtered.map((item) => (
+            <article key={item.id} className="glass-card grid gap-4 p-5 lg:grid-cols-[1.4fr_.7fr_.7fr_auto] lg:items-center">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="truncate text-lg font-bold">{item.brandName || item.name || item.title}</h2>
+                  <span className="rounded-full bg-cyan-300/10 px-2.5 py-1 text-[10px] font-black uppercase text-cyan-200">{statusLabels[item.status] || item.status}</span>
+                  {item.priority && item.priority !== "NORMAL" && <span className="rounded-full bg-orange-400/10 px-2.5 py-1 text-[10px] font-bold text-orange-300">{item.priority}</span>}
                 </div>
-
-                <p className="text-sm text-white/70 mb-3">{p.description}</p>
-
-                {p.budget && <p className="text-xs text-white/50 mb-1">Budget: {p.budget}</p>}
-                {p.campaignType && <p className="text-xs text-white/50 mb-3">Campagne: {p.campaignType}</p>}
-
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-xs font-medium text-white/60 block mb-1.5">Note admin</label>
-                    <textarea
-                      value={notes[p.id] || ""}
-                      onChange={(e) => setNotes((prev) => ({ ...prev, [p.id]: e.target.value }))}
-                      rows={2}
-                      className="form-input resize-none text-sm"
-                      placeholder="Note interne..."
-                    />
-                  </div>
-                  <div className="flex gap-2 flex-wrap">
-                    {Object.entries(statusConfig).map(([key, val]) => (
-                      <button
-                        key={key}
-                        onClick={() => updateStatus(p.id, key)}
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all ${
-                          p.status === key
-                            ? `${val.color} ${val.bg} border-current`
-                            : "border-white/10 text-white/50 hover:border-white/30"
-                        }`}
-                      >
-                        {val.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="text-xs text-white/30 mt-3">
-                  Soumis le {new Date(p.createdAt).toLocaleDateString("fr-FR")}
-                </div>
-              </motion.div>
-            );
-          })}
-
-          {proposals.length === 0 && (
-            <div className="glass-card p-12 text-center">
-              <Building2 size={40} className="text-white/20 mx-auto mb-3" />
-              <p className="text-white/50">Aucune proposition pour le moment</p>
-            </div>
-          )}
+                <p className="mt-1 truncate text-sm text-white/45">{item.contactName || item.company || "Contact à compléter"} · {item.contactEmail || item.city || "Coordonnées à compléter"}</p>
+                <p className="mt-2 line-clamp-2 text-sm text-white/65">{item.description || item.notes || item.requirements || "Aucun détail"}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">Budget</p>
+                <p className="mt-1 font-bold">{item.expectedAmount || item.budget || item.fee || "À définir"} {typeof (item.expectedAmount || item.budget || item.fee) === "number" ? item.currency : ""}</p>
+                {item.paidAmount || item.deposit ? <p className="text-xs text-green-400">Payé : {item.paidAmount || item.deposit} {item.currency}</p> : null}
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">Prochaine action</p>
+                <p className="mt-1 text-sm font-medium">{item.nextAction || "À planifier"}</p>
+                <p className="text-xs text-white/35">{item.nextActionAt ? new Date(item.nextActionAt).toLocaleString("fr-FR") : "Sans échéance"}</p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setEditing({ ...item })} className="btn-secondary p-3" title="Modifier"><ChevronRight size={16} /></button>
+                <button onClick={() => remove(item)} className="rounded-xl border border-red-400/15 p-3 text-red-300 hover:bg-red-400/10" title="Supprimer"><Trash2 size={16} /></button>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
+
+      {editing && (
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/75 p-3 backdrop-blur-lg sm:p-6">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-cyan-200/15 bg-[#070b13] p-5 shadow-2xl sm:p-7">
+            <div className="mb-6 flex items-center justify-between">
+              <div><p className="text-xs font-bold uppercase tracking-wider text-cyan-300">{config.title}</p><h2 className="text-2xl font-black">{editing.id ? "Modifier" : "Créer"}</h2></div>
+              <button onClick={() => setEditing(null)} className="btn-secondary p-2"><X size={18} /></button>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label><span className="mb-1 block text-xs text-white/50">Statut</span><select value={editing.status} onChange={(e) => setEditing({ ...editing, status: e.target.value })} className="form-input">{config.statuses.map((v) => <option key={v} value={v}>{statusLabels[v] || v}</option>)}</select></label>
+              <label><span className="mb-1 block text-xs text-white/50">Priorité</span><select value={editing.priority || "NORMAL"} onChange={(e) => setEditing({ ...editing, priority: e.target.value })} className="form-input">{["LOW", "NORMAL", "HIGH", "URGENT"].map((v) => <option key={v} value={v}>{v}</option>)}</select></label>
+              {fields.map((key) => {
+                const multiline = ["description", "deliverables", "requiredAssets", "adminNote", "notes", "requirements"].includes(key);
+                return <label key={key} className={multiline ? "sm:col-span-2" : ""}><span className="mb-1 block text-xs text-white/50">{fieldLabels[key] || key}</span>{multiline ? <textarea rows={4} value={editing[key] || ""} onChange={(e) => setEditing({ ...editing, [key]: e.target.value })} className="form-input resize-y" /> : <input type={inputType(key)} value={editing[key] ? String(editing[key]).slice(0, inputType(key) === "datetime-local" ? 16 : 10_000) : ""} onChange={(e) => setEditing({ ...editing, [key]: e.target.value })} className="form-input" />}</label>;
+              })}
+            </div>
+            <div className="mt-7 flex justify-end gap-3"><button onClick={() => setEditing(null)} className="btn-secondary">Annuler</button><button onClick={save} className="btn-primary"><Save size={16} /> Enregistrer</button></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

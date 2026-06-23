@@ -6,23 +6,18 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import BottomNav from "@/components/BottomNav";
-
-interface LocaleLayoutProps {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export default async function LocaleLayout({
   children,
   params,
-}: LocaleLayoutProps) {
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
-
   const locales = routing.locales as readonly string[];
-  if (!locales.includes(locale)) {
-    notFound();
-  }
-
+  if (!locales.includes(locale)) notFound();
   const messages = await getMessages();
 
   return (
@@ -33,6 +28,7 @@ export default async function LocaleLayout({
         <Footer />
         <BottomNav />
         <CookieBanner />
+        <AnalyticsTracker />
       </div>
     </Providers>
   );
