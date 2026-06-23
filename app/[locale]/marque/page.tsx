@@ -24,8 +24,8 @@ interface Proposal {
 const statusConfig = {
   PENDING: { label: "En attente", icon: Clock, color: "text-yellow-400" },
   REVIEWING: { label: "En cours d'examen", icon: AlertCircle, color: "text-blue-400" },
-  VALIDATED: { label: "Valid챕", icon: CheckCircle, color: "text-green-400" },
-  REJECTED: { label: "Refus챕", icon: XCircle, color: "text-red-400" },
+  VALIDATED: { label: "Validé", icon: CheckCircle, color: "text-green-400" },
+  REJECTED: { label: "Refusé", icon: XCircle, color: "text-red-400" },
 };
 
 export default function MarquePage() {
@@ -107,7 +107,7 @@ export default function MarquePage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-black uppercase">Espace Marque</h1>
-            <p className="text-white/60 mt-1">G챕rez vos propositions de partenariat</p>
+            <p className="text-white/60 mt-1">Gérez vos propositions de partenariat</p>
           </div>
           <button onClick={() => setShowForm((v) => !v)} className="btn-primary">
             <Plus size={16} /> Nouvelle proposition

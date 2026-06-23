@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Users, Calendar, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
   const pathname = usePathname();
   const locale = useLocale();
+  const tNav = useTranslations("nav");
+  const tContact = useTranslations("home.contact");
 
   const isDates = pathname.includes("/dates");
   const isArtistes = pathname.includes("/artistes");
@@ -26,18 +28,18 @@ export default function BottomNav() {
     >
       <div className="grid grid-cols-3 items-center gap-1 p-2">
         <Link
-          href={`/${locale}/artistes`}
+          href={"/" + locale + "/artistes"}
           className={cn(
             "flex min-w-0 items-center justify-center gap-2 rounded-2xl px-3 py-3 transition-all",
             isArtistes ? "bg-cyan-300/10 text-cyan-200" : "text-white/52 hover:bg-white/[0.05] hover:text-white"
           )}
         >
           <Users size={18} />
-          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">Artistes</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">{tNav("artists")}</span>
         </Link>
 
         <Link
-          href={`/${locale}/dates`}
+          href={"/" + locale + "/dates"}
           className={cn(
             "flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 transition-all",
             isDates
@@ -46,15 +48,15 @@ export default function BottomNav() {
           )}
         >
           <Calendar size={19} />
-          <span className="text-[10px] font-black uppercase tracking-[0.12em] sm:text-xs">Dates</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.12em] sm:text-xs">{tNav("dates")}</span>
         </Link>
 
         <Link
-          href={`/${locale}#contact`}
+          href={"/" + locale + "#contact"}
           className="flex min-w-0 items-center justify-center gap-2 rounded-2xl px-3 py-3 text-white/52 transition-all hover:bg-white/[0.05] hover:text-white"
         >
           <Mail size={18} />
-          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">Contact</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">{tContact("title")}</span>
         </Link>
       </div>
     </nav>

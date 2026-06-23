@@ -10,8 +10,8 @@
     "logout": "Logout",
     "profile": "Profile",
     "dashboard": "Dashboard",
-    "admin": "Administration",
-    "brand": "Brand Portal"
+    "admin": "Admin",
+    "brand": "Brand Space"
   },
   "home": {
     "hero": {
@@ -23,13 +23,13 @@
     },
     "upcoming": {
       "title": "Upcoming Dates",
-      "subtitle": "Find Paga on the best stages in France and Europe",
+      "subtitle": "Find Paga on the best stages in France, Europe and Asia",
       "see_all": "View all dates",
       "no_events": "No upcoming events"
     },
     "music": {
-      "title": "Latest Tracks",
-      "subtitle": "Discover Paga's productions and sets",
+      "title": "Latest Sounds",
+      "subtitle": "Discover Paga's productions, remixes and sets",
       "listen": "Listen"
     },
     "videos": {
@@ -44,10 +44,10 @@
       "step2_title": "Book",
       "step2_desc": "Find upcoming concert dates and book your tickets for an unforgettable experience.",
       "step3_title": "Enjoy",
-      "step3_desc": "Experience an exceptional night with Paga and his guests. The energy of the South in all its splendor."
+      "step3_desc": "Experience a premium night with Paga, his guests and the energy of the South."
     },
     "newsletter": {
-      "title": "Stay Informed",
+      "title": "Stay informed",
       "subtitle": "Get early access to new dates, exclusive productions and VIP offers.",
       "placeholder": "Your email address",
       "cta": "Subscribe",
@@ -56,15 +56,26 @@
       "already": "You are already subscribed."
     },
     "contact": {
+      "eyebrow": "Booking & Pro",
       "title": "Contact",
-      "subtitle": "For any professional inquiry, booking or partnership",
+      "subtitle": "For booking, brand partnerships or professional requests, send your brief directly from the site.",
+      "brandBrief": "Brand brief",
+      "artistProfile": "Artist profile",
       "name": "Name",
       "email": "Email",
       "subject": "Subject",
       "message": "Message",
       "send": "Send",
+      "sending": "Sending...",
+      "options": {
+        "booking": "Booking / programming",
+        "brand": "Brand / partnership",
+        "artist": "Artist / management",
+        "press": "Press / media"
+      },
+      "placeholder": "Date, city, budget, target artist, goals...",
       "success": "Message sent! We will get back to you shortly.",
-      "error": "Error sending. Please try again."
+      "error": "Error sending the message. Please try again."
     }
   },
   "artists": {
@@ -76,7 +87,7 @@
     "bio": "Biography",
     "upcoming_events": "Upcoming dates",
     "no_events": "No upcoming dates",
-    "social": "Social Media"
+    "social": "Social media"
   },
   "dates": {
     "title": "Dates",
@@ -89,20 +100,24 @@
     "no_past": "No past dates",
     "tickets": "Book",
     "b2b_label": "B2B",
-    "sold_out": "Sold Out",
+    "sold_out": "Sold out",
     "free": "Free",
     "tba": "TBA"
   },
   "sponsors": {
+    "eyebrow": "Partnerships",
     "title": "Partnerships",
     "subtitle": "Connect your brand with Paga Production through a custom proposal.",
     "why_title": "Why join us?",
     "reach_title": "Our Reach",
-    "reach_desc": "Thousands of fans across France and Europe",
+    "reach_desc": "Thousands of fans across France, Europe and a strong opening toward Asia",
     "tiers_title": "Custom partnership",
     "cta": "Send a custom request",
     "login_required": "Log in with a pro account to submit a custom request.",
-    "proposal_title": "Your Proposal",
+    "create_pro": "Create pro access",
+    "create_pro_account": "Create a pro account",
+    "login": "Log in",
+    "proposal_title": "Your proposal",
     "brand_name": "Brand name",
     "contact_email": "Contact email",
     "phone": "Phone",
@@ -110,16 +125,35 @@
     "campaign_type": "Campaign type",
     "description": "Description",
     "submit": "Send proposal",
+    "sending": "Sending...",
+    "cancel": "Cancel",
+    "error": "An error occurred. Please try again.",
     "success": "Proposal sent! We will contact you within 48 hours.",
     "stats": {
-      "followers": "Instagram Followers",
+      "followers": "Instagram followers",
       "events": "Events per year",
       "cities": "Cities",
       "countries": "Countries"
     },
+    "benefits": {
+      "activation_title": "Custom activation",
+      "activation_desc": "A proposal built around your goals, your audience and the artist calendar.",
+      "premium_title": "Premium image",
+      "premium_desc": "Stage visibility, social content, VIP activations, backstage, festivals and field experiences.",
+      "tracking_title": "Clear tracking",
+      "tracking_desc": "Brief, validation, open budget, recap and useful indicators after the activation."
+    },
     "custom_title": "A proposal built for your brand",
     "custom_desc": "No fixed package: share your goal, open budget, timing and expected deliverables.",
-    "budget_placeholder": "Ex: custom budget, product gifting, event envelope"
+    "bullets": {
+      "budget": "Open budget",
+      "goals": "Campaign goals",
+      "roster": "Artist or full roster",
+      "validation": "Admin validation before payment"
+    },
+    "budget_placeholder": "Ex: custom budget, product gifting, event envelope",
+    "campaign_placeholder": "Social, event, co-branding, ambassador...",
+    "description_placeholder": "Goal, audience, deliverables, constraints, KPIs..."
   },
   "join": {
     "title": "Join the Family",
@@ -140,6 +174,7 @@
     "next": "Next",
     "prev": "Previous",
     "submit": "Submit my application",
+    "sending": "Sending...",
     "success": "Application sent! We will respond within 7 days.",
     "error": "Error submitting."
   },
@@ -198,12 +233,15 @@
   },
   "footer": {
     "description": "Music label and artist management based in the South of France.",
-    "links": "Links",
+    "links": "Navigation",
     "legal": "Legal",
-    "social": "Social Media",
+    "social": "Social media",
     "newsletter": "Newsletter",
+    "newsletter_desc": "New dates and releases directly in your inbox.",
     "newsletter_placeholder": "Your email",
     "newsletter_btn": "Subscribe",
+    "newsletter_error": "An error occurred.",
+    "made": "Made in the South of France",
     "copyright": "© 2026 Paga Production. All rights reserved.",
     "cgv": "Terms",
     "mentions": "Legal Notice",

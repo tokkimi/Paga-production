@@ -15,9 +15,9 @@ const stats = [
 ];
 
 const benefits = [
-  { icon: Target, title: "Activation sur mesure", desc: "Une proposition construite autour de vos objectifs, de votre audience et du calendrier artiste." },
-  { icon: Sparkles, title: "Image premium", desc: "Présence scène, contenus sociaux, opérations VIP, backstage, festivals et expériences terrain." },
-  { icon: LineChart, title: "Suivi clair", desc: "Brief, validation, enveloppe libre, compte rendu et indicateurs utiles après l'activation." },
+  { icon: Target, title: "activation_title", desc: "activation_desc" },
+  { icon: Sparkles, title: "premium_title", desc: "premium_desc" },
+  { icon: LineChart, title: "tracking_title", desc: "tracking_desc" },
 ];
 
 export default function SponsorsPage() {
@@ -63,7 +63,7 @@ export default function SponsorsPage() {
     <div className="min-h-screen px-4 pb-20 pt-24">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto mb-14 max-w-3xl text-center">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-primary">Partenariats</p>
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-primary">{t("eyebrow")}</p>
           <h1 className="section-title mb-4">{t("title")}</h1>
           <p className="mx-auto max-w-2xl text-white/62">{t("subtitle")}</p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -73,11 +73,11 @@ export default function SponsorsPage() {
               </button>
             ) : (
               <>
-                <Link href={`/${locale}/inscription`} className="btn-primary px-8 py-4">
-                  <Building2 size={16} /> Creer un acces pro
+                <Link href={"/" + locale + "/inscription"} className="btn-primary px-8 py-4">
+                  <Building2 size={16} /> {t("create_pro")}
                 </Link>
-                <Link href={`/${locale}/connexion`} className="btn-secondary px-8 py-4">
-                  Se connecter
+                <Link href={"/" + locale + "/connexion"} className="btn-secondary px-8 py-4">
+                  {t("login")}
                 </Link>
               </>
             )}
@@ -86,16 +86,9 @@ export default function SponsorsPage() {
 
         <div className="mb-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {stats.map((stat, i) => (
-            <motion.div
-              key={stat.key}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="glass-card p-6 text-center"
-            >
+            <motion.div key={stat.key} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="glass-card p-6 text-center">
               <div className="mb-1 text-3xl font-black text-primary">{stat.value}</div>
-              <div className="text-xs uppercase tracking-wider text-white/60">{t(`stats.${stat.key}`)}</div>
+              <div className="text-xs uppercase tracking-wider text-white/60">{t("stats." + stat.key)}</div>
             </motion.div>
           ))}
         </div>
@@ -104,19 +97,12 @@ export default function SponsorsPage() {
           {benefits.map((item, i) => {
             const Icon = item.icon;
             return (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-card p-7"
-              >
+              <motion.div key={item.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="glass-card p-7">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20">
                   <Icon size={22} className="text-primary" />
                 </div>
-                <h3 className="mb-2 text-lg font-bold">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-white/60">{item.desc}</p>
+                <h3 className="mb-2 text-lg font-bold">{t("benefits." + item.title)}</h3>
+                <p className="text-sm leading-relaxed text-white/60">{t("benefits." + item.desc)}</p>
               </motion.div>
             );
           })}
@@ -129,10 +115,10 @@ export default function SponsorsPage() {
           <h2 className="mb-3 text-2xl font-black uppercase">{t("custom_title")}</h2>
           <p className="mx-auto mb-7 max-w-xl text-sm leading-relaxed text-white/60">{t("custom_desc")}</p>
           <ul className="mx-auto mb-8 grid max-w-xl gap-3 text-left text-sm text-white/70 sm:grid-cols-2">
-            {["Budget libre", "Objectifs de campagne", "Artiste ou roster complet", "Validation admin avant paiement"].map((item) => (
+            {["budget", "goals", "roster", "validation"].map((item) => (
               <li key={item} className="flex items-center gap-2">
                 <Check size={15} className="text-primary" />
-                {item}
+                {t("bullets." + item)}
               </li>
             ))}
           </ul>
@@ -141,8 +127,8 @@ export default function SponsorsPage() {
               <Send size={16} /> {t("cta")}
             </button>
           ) : (
-            <Link href={`/${locale}/inscription`} className="btn-primary justify-center">
-              Creer un compte pro
+            <Link href={"/" + locale + "/inscription"} className="btn-primary justify-center">
+              {t("create_pro_account")}
             </Link>
           )}
         </div>
@@ -185,18 +171,18 @@ export default function SponsorsPage() {
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-white/60">{t("campaign_type")}</label>
-                  <input type="text" value={form.campaignType} onChange={(e) => setForm((p) => ({ ...p, campaignType: e.target.value }))} className="form-input" placeholder="Social, event, co-branding, ambassador..." />
+                  <input type="text" value={form.campaignType} onChange={(e) => setForm((p) => ({ ...p, campaignType: e.target.value }))} className="form-input" placeholder={t("campaign_placeholder")} />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-white/60">{t("description")} *</label>
-                  <textarea required value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={5} className="form-input resize-none" placeholder="Objectif, cible, livrables, contraintes, KPI..." />
+                  <textarea required value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={5} className="form-input resize-none" placeholder={t("description_placeholder")} />
                 </div>
-                {status === "error" && <p className="text-sm text-red-400">Une erreur est survenue. Reessayez.</p>}
+                {status === "error" && <p className="text-sm text-red-400">{t("error")}</p>}
                 <div className="flex gap-3">
-                  <button type="button" onClick={() => setShowForm(false)} className="btn-secondary flex-1 justify-center">Annuler</button>
+                  <button type="button" onClick={() => setShowForm(false)} className="btn-secondary flex-1 justify-center">{t("cancel")}</button>
                   <button type="submit" disabled={status === "loading"} className="btn-primary flex-1 justify-center">
                     <Send size={16} />
-                    {status === "loading" ? "Envoi..." : t("submit")}
+                    {status === "loading" ? t("sending") : t("submit")}
                   </button>
                 </div>
               </form>
@@ -204,9 +190,7 @@ export default function SponsorsPage() {
           </motion.div>
         )}
 
-        {!session && (
-          <p className="mt-7 text-center text-sm text-white/42">{t("login_required")}</p>
-        )}
+        {!session && <p className="mt-7 text-center text-sm text-white/42">{t("login_required")}</p>}
       </div>
     </div>
   );

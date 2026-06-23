@@ -6,38 +6,57 @@ import VideoSection from "@/components/home/VideoSection";
 import HowItWorks from "@/components/home/HowItWorks";
 import Newsletter from "@/components/home/Newsletter";
 import Contact from "@/components/home/Contact";
+import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Paga Production | DJ Label - Summer Tour 2026",
-  description:
-    "Paga Production - Label DJ basé dans le Sud de la France. Dates de concert, musique et partenariats.",
-};
+interface HomePageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home.hero" });
+  const descriptions = {
+    fr: "Paga Production - Label DJ, dates de concert, musique et partenariats sur mesure.",
+    en: "Paga Production - DJ label, tour dates, music and custom brand partnerships.",
+    ko: "Paga Production - DJ 레이블, 공연 일정, 음악, 맞춤 브랜드 파트너십.",
+  };
+
+  return {
+    title: "Paga Production | " + t("subtitle"),
+    description: descriptions[locale as keyof typeof descriptions] || descriptions.en,
+  };
+}
 
 async function getHomeData() {
-  const [events, tracks, videos] = await Promise.all([
-    prisma.event.findMany({
-      where: { isActive: true, date: { gte: new Date() } },
-      orderBy: { date: "asc" },
-      take: 6,
-      include: { artists: { include: { artist: true } } },
-    }),
-    prisma.track.findMany({
-      where: { isActive: true },
-      orderBy: [
-        { releasedAt: { sort: "desc", nulls: "last" } },
-        { createdAt: "desc" },
-        { order: "asc" },
-      ],
-      take: 10,
-    }),
-    prisma.video.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-      take: 6,
-    }),
-  ]);
-  return { events, tracks, videos };
+  try {
+    const [events, tracks, videos] = await Promise.all([
+      prisma.event.findMany({
+        where: { isActive: true, date: { gte: new Date() } },
+        orderBy: { date: "asc" },
+        take: 6,
+        include: { artists: { include: { artist: true } } },
+      }),
+      prisma.track.findMany({
+        where: { isActive: true },
+        orderBy: [
+          { releasedAt: { sort: "desc", nulls: "last" } },
+          { createdAt: "desc" },
+          { order: "asc" },
+        ],
+        take: 10,
+      }),
+      prisma.video.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+        take: 6,
+      }),
+    ]);
+    return { events, tracks, videos };
+  } catch (error) {
+    console.error("Home data error:", error);
+    return { events: [], tracks: [], videos: [] };
+  }
 }
 
 export default async function HomePage() {

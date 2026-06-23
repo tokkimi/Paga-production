@@ -8,41 +8,33 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || "https://paga-production.vercel.app";
+const metadataBase = new URL(siteUrl.startsWith("http") ? siteUrl : "https://" + siteUrl);
+
 export const metadata: Metadata = {
   title: {
-    default: "Paga Production | DJ Label - South of France",
+    default: "Paga Production | DJ Label",
     template: "%s | Paga Production",
   },
   description:
-    "Paga Production - Label DJ et management artistique basé dans le Sud de la France. Retrouvez les dates de concert de Paga et Alexis Dante.",
-  keywords: [
-    "Paga",
-    "DJ",
-    "label",
-    "France",
-    "Alexis Dante",
-    "electro",
-    "techno",
-    "summer tour 2026",
-  ],
+    "Paga Production is a DJ label and artist management platform for bookings, music, events and brand partnerships.",
+  keywords: ["Paga", "DJ", "label", "France", "Korea", "Asia", "Alexis Dante", "electro", "techno", "summer tour 2026"],
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://pagaproduction.fr",
+    url: "https://paga-production.vercel.app",
     siteName: "Paga Production",
-    title: "Paga Production | DJ Label - South of France",
+    title: "Paga Production | DJ Label",
     description:
-      "Label DJ et management artistique basé dans le Sud de la France.",
+      "DJ label and artist management platform for bookings, music, events and brand partnerships.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Paga Production",
     description:
-      "Label DJ et management artistique basé dans le Sud de la France.",
+      "DJ label and artist management platform for bookings, music, events and brand partnerships.",
   },
-  metadataBase: new URL(
-    process.env.NEXTAUTH_URL || "http://localhost:3000"
-  ),
+  metadataBase,
 };
 
 export default function RootLayout({
@@ -51,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" className={`${inter.variable}`}>
+    <html lang="fr" className={inter.variable}>
       <body className="bg-background text-foreground antialiased">
         {children}
       </body>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import EventCard from "@/components/EventCard";
 import { Filter as FilterIcon } from "lucide-react";
@@ -25,7 +25,7 @@ interface Event {
 type FilterType = "all" | "paga" | "alexis-dante" | "b2b";
 
 export default function DatesPage() {
-  const locale = useLocale();
+  const t = useTranslations("dates");
   const [events, setEvents] = useState<Event[]>([]);
   const [filter, setFilter] = useState<FilterType>("all");
   const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ export default function DatesPage() {
     const fetchEvents = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/events?upcoming=${tab === "upcoming"}`);
+        const res = await fetch("/api/events?upcoming=" + (tab === "upcoming"));
         const data = await res.json();
         setEvents(data);
       } catch {
@@ -49,85 +49,67 @@ export default function DatesPage() {
 
   const filteredEvents = events.filter((e) => {
     if (filter === "b2b") return e.isB2B;
-    if (filter === "paga")
-      return e.artists.some((a) => a.artist.slug === "paga");
-    if (filter === "alexis-dante")
-      return e.artists.some((a) => a.artist.slug === "alexis-dante");
+    if (filter === "paga") return e.artists.some((a) => a.artist.slug === "paga");
+    if (filter === "alexis-dante") return e.artists.some((a) => a.artist.slug === "alexis-dante");
     return true;
   });
 
   return (
-    <div className="min-h-screen pt-24 pb-20 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-3">
-            Live
-          </p>
-          <h1 className="section-title mb-4">Dates</h1>
-          <p className="text-white/40 text-sm">Tous les événements et concerts</p>
+    <div className="min-h-screen px-4 pb-20 pt-24">
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-12 text-center">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-primary">Live</p>
+          <h1 className="section-title mb-4">{t("title")}</h1>
+          <p className="text-sm text-white/40">{t("subtitle")}</p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 glass-card p-1 rounded-xl max-w-sm mx-auto">
-          {(["upcoming", "past"] as const).map((t) => (
+        <div className="glass-card mx-auto mb-6 flex max-w-sm gap-2 rounded-xl p-1">
+          {(["upcoming", "past"] as const).map((item) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={cn(
-                "flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all",
-                tab === t
-                  ? "bg-primary text-white"
-                  : "text-white/60 hover:text-white"
-              )}
+              key={item}
+              onClick={() => setTab(item)}
+              className={cn("flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all", tab === item ? "bg-primary text-white" : "text-white/60 hover:text-white")}
             >
-              {t === "upcoming" ? "À venir" : "Passées"}
+              {item === "upcoming" ? t("upcoming") : t("past")}
             </button>
           ))}
         </div>
 
-        {/* Filters */}
-        <div className="flex items-center gap-2 flex-wrap mb-8">
+        <div className="mb-8 flex flex-wrap items-center gap-2">
           <FilterIcon size={14} className="text-white/40" />
           {[
-            { value: "all", label: "Tous" },
+            { value: "all", label: t("filter_all") },
             { value: "paga", label: "Paga" },
             { value: "alexis-dante", label: "Alexis Dante" },
-            { value: "b2b", label: "B2B" },
-          ].map((f) => (
+            { value: "b2b", label: t("filter_b2b") },
+          ].map((item) => (
             <button
-              key={f.value}
-              onClick={() => setFilter(f.value as FilterType)}
-              className={cn(
-                "px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all",
-                filter === f.value
-                  ? "bg-primary text-white"
-                  : "glass-card text-white/60 hover:text-white"
-              )}
+              key={item.value}
+              onClick={() => setFilter(item.value as FilterType)}
+              className={cn("rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all", filter === item.value ? "bg-primary text-white" : "glass-card text-white/60 hover:text-white")}
             >
-              {f.label}
+              {item.label}
             </button>
           ))}
         </div>
 
-        {/* Events */}
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="glass-card p-5 animate-pulse">
+              <div key={i} className="glass-card animate-pulse p-5">
                 <div className="flex gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-white/5" />
+                  <div className="h-16 w-16 rounded-xl bg-white/5" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-white/5 rounded w-1/3" />
-                    <div className="h-3 bg-white/5 rounded w-2/3" />
+                    <div className="h-4 w-1/3 rounded bg-white/5" />
+                    <div className="h-3 w-2/3 rounded bg-white/5" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         ) : filteredEvents.length === 0 ? (
-          <div className="text-center text-white/40 py-20">
-            Aucune date {tab === "upcoming" ? "à venir" : "passée"}
+          <div className="py-20 text-center text-white/40">
+            {tab === "upcoming" ? t("no_upcoming") : t("no_past")}
           </div>
         ) : (
           <motion.div className="space-y-3">

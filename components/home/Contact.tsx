@@ -44,29 +44,19 @@ export default function Contact() {
           className="grid gap-7 border-t border-white/[0.07] pt-12 text-left lg:grid-cols-[0.95fr_1.05fr]"
         >
           <div>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-cyan-300">Booking &amp; Pro</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-cyan-300">{t("eyebrow")}</p>
             <h2 className="section-title">{t("title")}</h2>
             <p className="mt-3 text-sm leading-relaxed text-white/50">{t("subtitle")}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href={`/${locale}/sponsors`} className="btn-secondary text-sm">Brief marque</Link>
-              <Link href={`/${locale}/rejoindre`} className="btn-secondary text-sm">Dossier artiste</Link>
+              <Link href={"/" + locale + "/sponsors"} className="btn-secondary text-sm">{t("brandBrief")}</Link>
+              <Link href={"/" + locale + "/rejoindre"} className="btn-secondary text-sm">{t("artistProfile")}</Link>
             </div>
             <div className="mt-7 flex items-center gap-6">
-              <a
-                href="https://www.instagram.com/pagaproduction"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white"
-              >
+              <a href="https://www.instagram.com/pagaproduction" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white">
                 <span className="text-xs font-black">IG</span>
                 <span>Instagram</span>
               </a>
-              <a
-                href="https://www.youtube.com/@pagaproduction"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white"
-              >
+              <a href="https://www.youtube.com/@pagaproduction" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-white/40 transition-colors hover:text-white">
                 <span className="text-xs font-black">YT</span>
                 <span>YouTube</span>
               </a>
@@ -87,25 +77,19 @@ export default function Contact() {
             <label className="mt-4 block">
               <span className="mb-1.5 block text-xs font-medium text-white/60">{t("subject")}</span>
               <select className="form-input" value={form.subject} onChange={(e) => update("subject", e.target.value)}>
-                <option value="booking">Booking / programmation</option>
-                <option value="brand">Marque / partenariat</option>
-                <option value="artist">Artiste / management</option>
-                <option value="press">Presse / media</option>
+                <option value="booking">{t("options.booking")}</option>
+                <option value="brand">{t("options.brand")}</option>
+                <option value="artist">{t("options.artist")}</option>
+                <option value="press">{t("options.press")}</option>
               </select>
             </label>
             <label className="mt-4 block">
               <span className="mb-1.5 block text-xs font-medium text-white/60">{t("message")}</span>
-              <textarea
-                className="form-input min-h-32 resize-none"
-                value={form.message}
-                onChange={(e) => update("message", e.target.value)}
-                required
-                placeholder="Date, ville, budget, artiste vise, objectifs..."
-              />
+              <textarea className="form-input min-h-32 resize-none" value={form.message} onChange={(e) => update("message", e.target.value)} required placeholder={t("placeholder")} />
             </label>
             <button type="submit" disabled={status === "loading"} className="btn-primary mt-5 w-full justify-center">
               <Send size={15} />
-              {status === "loading" ? "Envoi..." : t("send")}
+              {status === "loading" ? t("sending") : t("send")}
             </button>
             {status === "success" && (
               <p className="mt-4 flex items-center gap-2 text-sm text-green-400">
