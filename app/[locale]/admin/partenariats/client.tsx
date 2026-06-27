@@ -130,7 +130,8 @@ export default function PartenariatsClient() {
   };
 
   const config = configs[kind];
-  const fields = Object.keys(empty[kind]).filter((key) => !["status", "priority", "currency"].includes(key));
+  const docFields = ["pressKitUrl", "boardUrl", "contractUrl"];
+  const fields = Object.keys(empty[kind]).filter((key) => !["status", "priority", "currency", "invoiceUrl", ...docFields].includes(key));
 
   return (
     <div className="min-h-screen px-4 pb-28 pt-24">
@@ -239,6 +240,7 @@ export default function PartenariatsClient() {
               <div><p className="text-xs font-bold uppercase tracking-wider text-cyan-300">{config.title}</p><h2 className="text-2xl font-black">{editing.id ? "Modifier" : "Créer"}</h2></div>
               <button onClick={() => setEditing(null)} className="btn-secondary p-2"><X size={18} /></button>
             </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
               <label><span className="mb-1 block text-xs text-white/50">Statut</span><select value={editing.status} onChange={(e) => setEditing({ ...editing, status: e.target.value })} className="form-input">{config.statuses.map((v) => <option key={v} value={v}>{statusLabels[v] || v}</option>)}</select></label>
               <label><span className="mb-1 block text-xs text-white/50">Priorité</span><select value={editing.priority || "NORMAL"} onChange={(e) => setEditing({ ...editing, priority: e.target.value })} className="form-input">{["LOW", "NORMAL", "HIGH", "URGENT"].map((v) => <option key={v} value={v}>{v}</option>)}</select></label>
@@ -247,7 +249,47 @@ export default function PartenariatsClient() {
                 return <label key={key} className={multiline ? "sm:col-span-2" : ""}><span className="mb-1 block text-xs text-white/50">{fieldLabels[key] || key}</span>{multiline ? <textarea rows={4} value={editing[key] || ""} onChange={(e) => setEditing({ ...editing, [key]: e.target.value })} className="form-input resize-y" /> : <input type={inputType(key)} value={editing[key] ? String(editing[key]).slice(0, inputType(key) === "datetime-local" ? 16 : 10_000) : ""} onChange={(e) => setEditing({ ...editing, [key]: e.target.value })} className="form-input" />}</label>;
               })}
             </div>
-            <div className="mt-7 flex justify-end gap-3">
+
+            {/* Documents */}
+            <div className="mt-6 rounded-xl border border-white/5 bg-white/[0.02] p-4">
+              <p className="mb-3 text-xs font-bold uppercase tracking-wider text-white/40">Documents (liens directs)</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {docFields.filter(k => k in empty[kind]).map((key) => (
+                  <label key={key}>
+                    <span className="mb-1 block text-xs text-white/50">{fieldLabels[key] || key}</span>
+                    <div className="flex gap-1">
+                      <input type="url" value={editing[key] || ""} onChange={(e) => setEditing({ ...editing, [key]: e.target.value })} className="form-input flex-1 text-xs" placeholder="https://..." />
+                      {editing[key] && <a href={editing[key]} target="_blank" rel="noopener noreferrer" className="flex items-center rounded-lg border border-white/10 px-2 text-white/40 hover:text-white"><ChevronRight size={14} /></a>}
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Facturation */}
+            {editing.id && (
+              <div className="mt-4 rounded-xl border border-primary/15 bg-primary/[0.03] p-4">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-primary/70">Facturation</p>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { setInvoiceModal({ open: true, item: editing }); }}
+                    className="flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/20"
+                  >
+                    <FileText size={15} /> Créer une facture
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setListModal({ open: true, item: editing }); }}
+                    className="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/5"
+                  >
+                    <Receipt size={15} /> Voir les factures
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 flex justify-end gap-3">
               <button onClick={() => setEditing(null)} disabled={saving} className="btn-secondary disabled:opacity-40">Annuler</button>
               <button onClick={save} disabled={saving} className="btn-primary disabled:opacity-60">
                 {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
