@@ -216,3 +216,35 @@ model PageView {
   userAgent String?
   createdAt DateTime @default(now())
 }
+enum InvoiceType {
+  ARTIST
+  SPONSOR
+}
+
+enum InvoiceStatus {
+  PENDING_PAYMENT
+  PAID
+  CANCELLED
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber String        @unique
+  type          InvoiceType
+  clientName    String
+  clientEmail   String
+  clientAddress String?
+  clientPhone   String?
+  prestation    String
+  priceHT       Float
+  tvaRate       Float         @default(20)
+  priceTTC      Float
+  invoiceDate   DateTime      @default(now())
+  status        InvoiceStatus @default(PENDING_PAYMENT)
+  sentAt        DateTime?
+  paidAt        DateTime?
+  artistId      String?
+  sponsorId     String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}

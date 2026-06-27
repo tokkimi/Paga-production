@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Building2, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Building2, Clock, CheckCircle, XCircle, AlertCircle, FileText, Receipt } from "lucide-react";
+import InvoiceModal from "@/components/admin/InvoiceModal";
+import InvoicesListModal from "@/components/admin/InvoicesListModal";
 
 interface Proposal {
   id: string;
@@ -29,6 +31,8 @@ export default function PartenariatsClient() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [invoiceModal, setInvoiceModal] = useState<{ open: boolean; proposal: Proposal | null }>({ open: false, proposal: null });
+  const [listModal, setListModal] = useState<{ open: boolean; proposal: Proposal | null }>({ open: false, proposal: null });
 
   const load = () => {
     fetch("/api/admin/sponsors")
@@ -84,6 +88,10 @@ export default function PartenariatsClient() {
                     <Icon size={12} />
                     {cfg.label}
                   </div>
+                  <div className="flex items-center gap-2 ml-2">
+                    <button onClick={() => setInvoiceModal({ open: true, proposal: p })} className="flex items-center gap-1.5 text-xs text-primary border border-primary/30 rounded-lg px-3 py-1.5 hover:bg-primary/10 transition-colors" title="Émettre une facture"><FileText size={12} /> Facture</button>
+                    <button onClick={() => setListModal({ open: true, proposal: p })} className="w-8 h-8 glass-card rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors" title="Voir les factures"><Receipt size={14} className="text-white/50" /></button>
+                  </div>
                 </div>
 
                 <p className="text-sm text-white/70 mb-3">{p.description}</p>
@@ -134,6 +142,23 @@ export default function PartenariatsClient() {
           )}
         </div>
       </div>
+
+      <InvoiceModal
+        isOpen={invoiceModal.open}
+        onClose={() => setInvoiceModal({ open: false, proposal: null })}
+        type="SPONSOR"
+        clientName={invoiceModal.proposal?.brandName ?? ""}
+        clientEmail={invoiceModal.proposal?.contactEmail ?? ""}
+        clientPhone={invoiceModal.proposal?.phone ?? ""}
+        sponsorId={invoiceModal.proposal?.id}
+      />
+
+      <InvoicesListModal
+        isOpen={listModal.open}
+        onClose={() => setListModal({ open: false, proposal: null })}
+        clientEmail={listModal.proposal?.contactEmail ?? ""}
+        clientName={listModal.proposal?.brandName ?? ""}
+      />
     </div>
   );
 }

@@ -5,7 +5,9 @@ import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Edit2, Trash2, X, Check, User } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Check, User, FileText, Receipt } from "lucide-react";
+import InvoiceModal from "@/components/admin/InvoiceModal";
+import InvoicesListModal from "@/components/admin/InvoicesListModal";
 
 interface Artist {
   id: string;
@@ -33,6 +35,9 @@ export default function AdminArtistesPage() {
     avatar: "", banner: "", instagram: "", soundcloud: "", spotify: "", youtube: "", tiktok: ""
   });
   const [saving, setSaving] = useState(false);
+
+  const [invoiceModal, setInvoiceModal] = useState<{ open: boolean; artist: Artist | null }>({ open: false, artist: null });
+  const [listModal, setListModal] = useState<{ open: boolean; artist: Artist | null }>({ open: false, artist: null });
 
   useEffect(() => {
     if (status === "authenticated" && session?.user.role !== "ADMIN") router.push(`/${locale}`);
@@ -105,6 +110,8 @@ export default function AdminArtistesPage() {
                 <div className="text-xs text-white/50">/{a.slug}</div>
               </div>
               <div className="flex gap-2">
+                <button onClick={() => setInvoiceModal({ open: true, artist: a })} className="flex items-center gap-1.5 text-xs text-primary border border-primary/30 rounded-lg px-3 py-1.5 hover:bg-primary/10 transition-colors" title="Émettre une facture"><FileText size={12} /> Facture</button>
+                <button onClick={() => setListModal({ open: true, artist: a })} className="w-8 h-8 glass-card rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors" title="Voir les factures"><Receipt size={14} className="text-white/50" /></button>
                 <button onClick={() => openEdit(a)} className="btn-secondary p-2"><Edit2 size={14} /></button>
                 <button onClick={() => handleDelete(a.id)} className="p-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-all"><Trash2 size={14} /></button>
               </div>
@@ -149,6 +156,22 @@ export default function AdminArtistesPage() {
           )}
         </AnimatePresence>
       </div>
+
+      <InvoiceModal
+        isOpen={invoiceModal.open}
+        onClose={() => setInvoiceModal({ open: false, artist: null })}
+        type="ARTIST"
+        clientName={invoiceModal.artist?.name ?? ""}
+        clientEmail={(invoiceModal.artist as Artist & { email?: string | null })?.email ?? ""}
+        artistId={invoiceModal.artist?.id}
+      />
+
+      <InvoicesListModal
+        isOpen={listModal.open}
+        onClose={() => setListModal({ open: false, artist: null })}
+        clientEmail={(listModal.artist as Artist & { email?: string | null })?.email ?? ""}
+        clientName={listModal.artist?.name ?? ""}
+      />
     </div>
   );
 }
