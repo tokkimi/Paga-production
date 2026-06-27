@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Resend } from "resend";
 import { generateInvoiceHtml } from "@/lib/invoice-template";
 
 export async function POST(
@@ -22,6 +21,7 @@ export async function POST(
 
   const html = generateInvoiceHtml(invoice);
 
+  const { Resend } = await import("resend");
   const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
     from: "Paga Production <noreply@pagaproduction.fr>",
