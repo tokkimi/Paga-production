@@ -129,11 +129,17 @@ export default function InvoiceModal({
 
   const handleSend = async () => {
     setSending(true);
+    setSaveError(null);
     try {
       const invoice = await createInvoice();
       if (!invoice) return;
       setCreatedInvoice(invoice);
-      await fetch(`/api/admin/invoices/${invoice.id}/send`, { method: "POST" });
+      const sendRes = await fetch(`/api/admin/invoices/${invoice.id}/send`, { method: "POST" });
+      if (!sendRes.ok) {
+        const err = await sendRes.json().catch(() => ({}));
+        setSaveError(err?.error || `Erreur ${sendRes.status} — l'email n'a pas pu être envoyé. La facture a quand même été enregistrée.`);
+        return;
+      }
       setStep(3);
     } finally {
       setSending(false);
