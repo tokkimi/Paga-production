@@ -5,8 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 import { generateInvoiceHtml } from "@/lib/invoice-template";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -24,6 +22,7 @@ export async function POST(
 
   const html = generateInvoiceHtml(invoice);
 
+  const resend = new Resend(process.env.RESEND_API_KEY);
   await resend.emails.send({
     from: "Paga Production <noreply@pagaproduction.fr>",
     to: invoice.clientEmail,
