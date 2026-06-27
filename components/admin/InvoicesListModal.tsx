@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, CheckCircle, Clock, XCircle, Download, RotateCcw } from "lucide-react";
+import { X, CheckCircle, Clock, XCircle, Download, RotateCcw, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Invoice {
@@ -57,6 +57,7 @@ export default function InvoicesListModal({
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen || !clientEmail) return;
@@ -66,6 +67,17 @@ export default function InvoicesListModal({
       .then(setInvoices)
       .finally(() => setLoading(false));
   }, [isOpen, clientEmail]);
+
+  const deleteInvoice = async (id: string) => {
+    if (!confirm("Supprimer définitivement cette facture ?")) return;
+    setDeleting(id);
+    try {
+      const res = await fetch(`/api/admin/invoices/${id}`, { method: "DELETE" });
+      if (res.ok) setInvoices((prev) => prev.filter((inv) => inv.id !== id));
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   const updateStatus = async (id: string, status: string) => {
     setUpdating(id);
@@ -277,6 +289,13 @@ export default function InvoicesListModal({
                           Réactiver
                         </button>
                       )}
+                      <button
+                        onClick={() => deleteInvoice(inv.id)}
+                        disabled={deleting === inv.id}
+                        className="ml-auto flex items-center gap-1.5 text-xs text-red-400/60 border border-red-400/15 rounded-lg px-2 py-1.5 hover:bg-red-400/10 transition-colors disabled:opacity-50"
+                      >
+                        <Trash2 size={11} />
+                      </button>
                     </div>
                   </div>
                 );

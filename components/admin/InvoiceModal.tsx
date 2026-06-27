@@ -28,6 +28,7 @@ export default function InvoiceModal({
 }: InvoiceModalProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [sending, setSending] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [createdInvoice, setCreatedInvoice] = useState<{ id: string; invoiceNumber: string } | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const prevUrlRef = useRef<string>("");
@@ -89,6 +90,7 @@ export default function InvoiceModal({
   };
 
   const createInvoice = async () => {
+    setSaveError(null);
     const createRes = await fetch("/api/admin/invoices", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -105,7 +107,11 @@ export default function InvoiceModal({
         sponsorId,
       }),
     });
-    if (!createRes.ok && createRes.status !== 201) return null;
+    if (!createRes.ok) {
+      const err = await createRes.json().catch(() => ({}));
+      setSaveError(err?.error || `Erreur ${createRes.status} — la facture n'a pas pu être enregistrée.`);
+      return null;
+    }
     return createRes.json();
   };
 
@@ -341,6 +347,11 @@ export default function InvoiceModal({
             {/* STEP 2: Preview */}
             {step === 2 && (
               <div>
+                {saveError && (
+                  <div className="mb-3 rounded-xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-xs text-red-300">
+                    {saveError}
+                  </div>
+                )}
                 <p className="text-xs text-white/40 mb-3">
                   Vérifiez la facture avant envoi. Le numéro définitif sera attribué à l&apos;envoi.
                 </p>
