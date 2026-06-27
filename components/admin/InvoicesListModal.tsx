@@ -22,6 +22,8 @@ interface InvoicesListModalProps {
   onClose: () => void;
   clientEmail: string;
   clientName: string;
+  sponsorId?: string;
+  artistId?: string;
 }
 
 const statusConfig = {
@@ -53,6 +55,8 @@ export default function InvoicesListModal({
   onClose,
   clientEmail,
   clientName,
+  sponsorId,
+  artistId,
 }: InvoicesListModalProps) {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(false);
@@ -60,13 +64,19 @@ export default function InvoicesListModal({
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isOpen || !clientEmail) return;
+    if (!isOpen) return;
+    const canFetch = sponsorId || artistId || clientEmail;
+    if (!canFetch) return;
     setLoading(true);
-    fetch(`/api/admin/invoices?clientEmail=${encodeURIComponent(clientEmail)}`)
+    const params = new URLSearchParams();
+    if (sponsorId) params.set("sponsorId", sponsorId);
+    else if (artistId) params.set("artistId", artistId);
+    else if (clientEmail) params.set("clientEmail", clientEmail);
+    fetch(`/api/admin/invoices?${params.toString()}`)
       .then((r) => r.json())
       .then(setInvoices)
       .finally(() => setLoading(false));
-  }, [isOpen, clientEmail]);
+  }, [isOpen, clientEmail, sponsorId, artistId]);
 
   const deleteInvoice = async (id: string) => {
     if (!confirm("Supprimer définitivement cette facture ?")) return;
