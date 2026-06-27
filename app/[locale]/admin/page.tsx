@@ -3,17 +3,18 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Users, CalendarDays, Music, Video, Building2, Mail, BarChart3, Mic, UserRoundSearch, Megaphone } from "lucide-react";
+import { Users, CalendarDays, Music, Video, Building2, Mail, BarChart3, Mic, UserRoundSearch, Megaphone, Receipt } from "lucide-react";
 
 export default async function AdminPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") redirect("/" + locale);
 
-  const [users, events, artists, tracks, videos, sponsors, subscribers, applications, campaigns, bookings] = await Promise.all([
+  const [users, events, artists, tracks, videos, sponsors, subscribers, applications, campaigns, bookings, invoices] = await Promise.all([
     prisma.user.count(), prisma.event.count(), prisma.artist.count(), prisma.track.count(), prisma.video.count(),
     prisma.sponsorProposal.count(), prisma.newsletterSubscriber.count({ where: { isActive: true } }),
     prisma.artistApplication.count(), prisma.campaign.count(), prisma.privateBooking.count(),
+    prisma.invoice.count(),
   ]);
 
   const cards = [
@@ -26,6 +27,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     { label: "Vidéos", value: videos, icon: Video, href: "/" + locale + "/admin/videos", color: "text-yellow-300" },
     { label: "Utilisateurs", value: users, icon: Users, href: "/" + locale + "/admin/utilisateurs", color: "text-blue-300" },
     { label: "Newsletter", value: subscribers, icon: Mail, href: "/" + locale + "/admin/newsletter", color: "text-pink-300" },
+    { label: "Facturation", value: invoices, icon: Receipt, href: "/" + locale + "/admin/facturation", color: "text-cyan-300" },
   ];
 
   return <div className="min-h-screen px-4 pb-28 pt-24"><div className="mx-auto max-w-7xl">
@@ -35,6 +37,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       <Link href={"/" + locale + "/admin/partenariats"} className="glass-card p-6"><Megaphone className="mb-4 text-orange-300" /><h2 className="font-bold">Piloter le business</h2><p className="mt-2 text-sm text-white/45">Opportunités, campagnes, bookings, budgets, livrables et documents.</p></Link>
       <Link href={"/" + locale + "/admin/candidatures"} className="glass-card p-6"><UserRoundSearch className="mb-4 text-cyan-300" /><h2 className="font-bold">Examiner les talents</h2><p className="mt-2 text-sm text-white/45">Écoute, liens, notes, notation, statut et prochaine action.</p></Link>
       <Link href={"/" + locale + "/admin/statistiques"} className="glass-card p-6"><BarChart3 className="mb-4 text-blue-300" /><h2 className="font-bold">Comprendre l'audience</h2><p className="mt-2 text-sm text-white/45">Visites, pays, villes, appareils, sources et clics.</p></Link>
+      <Link href={"/" + locale + "/admin/facturation"} className="glass-card p-6"><Receipt className="mb-4 text-cyan-300" /><h2 className="font-bold">Toutes les factures</h2><p className="mt-2 text-sm text-white/45">Historique complet, statuts, encaissements et téléchargements PDF.</p></Link>
     </div>
   </div></div>;
 }
