@@ -227,6 +227,7 @@ export default function PartenariatsClient() {
         onClose={() => setListModal({ open: false, item: null })}
         clientEmail={listModal.item?.contactEmail || invoiceModal.item?.contactEmail || ""}
         clientName={listModal.item?.brandName || listModal.item?.name || listModal.item?.title || invoiceModal.item?.brandName || ""}
+        sponsorId={listModal.item?.id || invoiceModal.item?.id}
       />
 
       {editing && (

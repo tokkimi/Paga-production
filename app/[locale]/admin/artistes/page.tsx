@@ -135,6 +135,7 @@ export default function AdminArtistesPage() {
           onClose={() => setListModal({ open: false, artist: null })}
           clientEmail=""
           clientName={listModal.artist?.name ?? ""}
+          artistId={listModal.artist?.id}
         />
 
         <AnimatePresence>

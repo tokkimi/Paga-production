@@ -22,11 +22,13 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const clientEmail = searchParams.get("clientEmail");
+  const sponsorId = searchParams.get("sponsorId");
+  const artistId = searchParams.get("artistId");
   const type = searchParams.get("type") as "ARTIST" | "SPONSOR" | null;
 
   const invoices = await prisma.invoice.findMany({
     where: {
-      ...(clientEmail ? { clientEmail } : {}),
+      ...(sponsorId ? { sponsorId } : artistId ? { artistId } : clientEmail ? { clientEmail } : {}),
       ...(type ? { type } : {}),
     },
     orderBy: { createdAt: "desc" },
