@@ -21,14 +21,22 @@ export async function POST(
 
   const html = generateInvoiceHtml(invoice);
 
+  if (!process.env.RESEND_API_KEY) {
+    return NextResponse.json({ error: "RESEND_API_KEY non configurée sur le serveur." }, { status: 500 });
+  }
+
   const { Resend } = await import("resend");
   const resend = new Resend(process.env.RESEND_API_KEY);
-  await resend.emails.send({
+  const { error: sendError } = await resend.emails.send({
     from: "Paga Production <noreply@pagaproduction.fr>",
     to: invoice.clientEmail,
     subject: `Facture ${invoice.invoiceNumber} — AP Management`,
     html,
   });
+
+  if (sendError) {
+    return NextResponse.json({ error: `Erreur Resend : ${sendError.message}` }, { status: 502 });
+  }
 
   const updated = await prisma.invoice.update({
     where: { id },
