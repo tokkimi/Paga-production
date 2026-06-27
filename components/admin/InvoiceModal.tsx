@@ -88,41 +88,47 @@ export default function InvoiceModal({
     setStep(2);
   };
 
+  const createInvoice = async () => {
+    const createRes = await fetch("/api/admin/invoices", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type,
+        clientName: form.clientName,
+        clientEmail: form.clientEmail,
+        clientPhone: form.clientPhone,
+        clientAddress: form.clientAddress,
+        prestation: form.prestation,
+        priceHT: priceHTNum,
+        tvaRate: tvaRateNum,
+        artistId,
+        sponsorId,
+      }),
+    });
+    if (!createRes.ok && createRes.status !== 201) return null;
+    return createRes.json();
+  };
+
+  const handleSave = async () => {
+    setSending(true);
+    try {
+      const invoice = await createInvoice();
+      if (!invoice) return;
+      setCreatedInvoice(invoice);
+      setStep(3);
+    } finally {
+      setSending(false);
+    }
+  };
+
   const handleSend = async () => {
     setSending(true);
     try {
-      const createRes = await fetch("/api/admin/invoices", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type,
-          clientName: form.clientName,
-          clientEmail: form.clientEmail,
-          clientPhone: form.clientPhone,
-          clientAddress: form.clientAddress,
-          prestation: form.prestation,
-          priceHT: priceHTNum,
-          tvaRate: tvaRateNum,
-          artistId,
-          sponsorId,
-        }),
-      });
-
-      if (!createRes.ok && createRes.status !== 201) {
-        setSending(false);
-        return;
-      }
-
-      const invoice = await createRes.json();
+      const invoice = await createInvoice();
+      if (!invoice) return;
       setCreatedInvoice(invoice);
-
-      const sendRes = await fetch(`/api/admin/invoices/${invoice.id}/send`, {
-        method: "POST",
-      });
-
-      if (sendRes.ok) {
-        setStep(3);
-      }
+      await fetch(`/api/admin/invoices/${invoice.id}/send`, { method: "POST" });
+      setStep(3);
     } finally {
       setSending(false);
     }
@@ -139,7 +145,7 @@ export default function InvoiceModal({
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 z-[200] flex items-center justify-center p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -344,7 +350,7 @@ export default function InvoiceModal({
                   style={{ height: "520px", border: "none", background: "#fff" }}
                   title="Aperçu facture"
                 />
-                <div className="flex gap-3 mt-4">
+                <div className="flex gap-3 mt-4 flex-wrap">
                   <button
                     onClick={() => setStep(1)}
                     className="btn-secondary flex items-center gap-2"
@@ -353,13 +359,23 @@ export default function InvoiceModal({
                     Modifier
                   </button>
                   <button
-                    onClick={handleSend}
+                    onClick={handleSave}
                     disabled={sending}
-                    className="btn-primary flex-1 justify-center"
+                    className="btn-secondary flex items-center gap-2"
                   >
-                    <Send size={14} />
-                    {sending ? "Envoi en cours…" : `Envoyer à ${form.clientEmail}`}
+                    <Download size={14} />
+                    {sending ? "…" : "Enregistrer"}
                   </button>
+                  {form.clientEmail && (
+                    <button
+                      onClick={handleSend}
+                      disabled={sending}
+                      className="btn-primary flex-1 justify-center"
+                    >
+                      <Send size={14} />
+                      {sending ? "Envoi…" : `Envoyer à ${form.clientEmail}`}
+                    </button>
+                  )}
                 </div>
               </div>
             )}
