@@ -213,25 +213,21 @@ export default function PartenariatsClient() {
         </div>
       </div>
 
-      {invoiceModal.item && (
-        <>
-          <InvoiceModal
-            isOpen={invoiceModal.open}
-            onClose={() => setInvoiceModal({ open: false, item: null })}
-            type="SPONSOR"
-            clientName={invoiceModal.item.brandName || invoiceModal.item.name || invoiceModal.item.title || invoiceModal.item.company || ""}
-            clientEmail={invoiceModal.item.contactEmail || ""}
-            clientPhone={invoiceModal.item.phone || ""}
-            sponsorId={invoiceModal.item.id}
-          />
-          <InvoicesListModal
-            isOpen={listModal.open}
-            onClose={() => setListModal({ open: false, item: null })}
-            clientEmail={(listModal.item ?? invoiceModal.item).contactEmail || ""}
-            clientName={(listModal.item ?? invoiceModal.item).brandName || (listModal.item ?? invoiceModal.item).name || ""}
-          />
-        </>
-      )}
+      <InvoiceModal
+        isOpen={invoiceModal.open}
+        onClose={() => setInvoiceModal({ open: false, item: null })}
+        type="SPONSOR"
+        clientName={invoiceModal.item ? (invoiceModal.item.brandName || invoiceModal.item.name || invoiceModal.item.title || invoiceModal.item.company || "") : ""}
+        clientEmail={invoiceModal.item?.contactEmail || ""}
+        clientPhone={invoiceModal.item?.phone || ""}
+        sponsorId={invoiceModal.item?.id}
+      />
+      <InvoicesListModal
+        isOpen={listModal.open}
+        onClose={() => setListModal({ open: false, item: null })}
+        clientEmail={listModal.item?.contactEmail || invoiceModal.item?.contactEmail || ""}
+        clientName={listModal.item?.brandName || listModal.item?.name || listModal.item?.title || invoiceModal.item?.brandName || ""}
+      />
 
       {editing && (
         <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/75 p-3 backdrop-blur-lg sm:p-6">
