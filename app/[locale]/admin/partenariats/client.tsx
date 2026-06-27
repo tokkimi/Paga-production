@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, CheckCircle, ChevronRight, Loader2, Plus, Save, Search, Trash2, X } from "lucide-react";
+import { AlertCircle, CheckCircle, ChevronRight, FileText, Loader2, Plus, Receipt, Save, Search, Trash2, X } from "lucide-react";
+import InvoiceModal from "@/components/admin/InvoiceModal";
+import InvoicesListModal from "@/components/admin/InvoicesListModal";
 
 type Kind = "proposal" | "campaign" | "booking";
 type Item = Record<string, any>;
@@ -68,6 +70,8 @@ export default function PartenariatsClient() {
   const [status, setStatus] = useState("ALL");
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [invoiceModal, setInvoiceModal] = useState<{ open: boolean; item: Item | null }>({ open: false, item: null });
+  const [listModal, setListModal] = useState<{ open: boolean; item: Item | null }>({ open: false, item: null });
 
   const load = async () => {
     setLoading(true);
@@ -191,14 +195,42 @@ export default function PartenariatsClient() {
                 <p className="mt-1 text-sm font-medium">{item.nextAction || "À planifier"}</p>
                 <p className="text-xs text-white/35">{item.nextActionAt ? new Date(item.nextActionAt).toLocaleString("fr-FR") : "Sans échéance"}</p>
               </div>
-              <div className="flex gap-2">
-                <button onClick={() => setEditing({ ...item })} className="btn-secondary p-3" title="Modifier"><ChevronRight size={16} /></button>
-                <button onClick={() => remove(item)} className="rounded-xl border border-red-400/15 p-3 text-red-300 hover:bg-red-400/10" title="Supprimer"><Trash2 size={16} /></button>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <button onClick={() => setEditing({ ...item })} className="btn-secondary p-3" title="Modifier"><ChevronRight size={16} /></button>
+                  <button onClick={() => remove(item)} className="rounded-xl border border-red-400/15 p-3 text-red-300 hover:bg-red-400/10" title="Supprimer"><Trash2 size={16} /></button>
+                </div>
+                {item.contactEmail && (
+                  <div className="flex gap-2">
+                    <button onClick={() => setInvoiceModal({ open: true, item })} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-primary/30 px-3 py-2 text-xs text-primary transition-colors hover:bg-primary/10" title="Créer une facture"><FileText size={12} /> Facture</button>
+                    <button onClick={() => setListModal({ open: true, item })} className="rounded-xl border border-white/10 p-2 text-white/40 transition-colors hover:bg-white/10" title="Voir toutes les factures"><Receipt size={14} /></button>
+                  </div>
+                )}
               </div>
             </article>
           ))}
         </div>
       </div>
+
+      {invoiceModal.item && (
+        <>
+          <InvoiceModal
+            isOpen={invoiceModal.open}
+            onClose={() => setInvoiceModal({ open: false, item: null })}
+            type="SPONSOR"
+            clientName={invoiceModal.item.brandName || invoiceModal.item.name || invoiceModal.item.title || invoiceModal.item.company || ""}
+            clientEmail={invoiceModal.item.contactEmail || ""}
+            clientPhone={invoiceModal.item.phone || ""}
+            sponsorId={invoiceModal.item.id}
+          />
+          <InvoicesListModal
+            isOpen={listModal.open}
+            onClose={() => setListModal({ open: false, item: null })}
+            clientEmail={(listModal.item ?? invoiceModal.item).contactEmail || ""}
+            clientName={(listModal.item ?? invoiceModal.item).brandName || (listModal.item ?? invoiceModal.item).name || ""}
+          />
+        </>
+      )}
 
       {editing && (
         <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/75 p-3 backdrop-blur-lg sm:p-6">
