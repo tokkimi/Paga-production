@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/home/Hero";
-import ScrollFaces from "@/components/home/ScrollFaces";
+import MirageFaceScroll from "@/components/home/MirageFaceScroll";
 import DatesSection from "@/components/home/DatesSection";
 import MusicSection from "@/components/home/MusicSection";
 import VideoSection from "@/components/home/VideoSection";
@@ -65,7 +65,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <ScrollFaces />
+      <MirageFaceScroll />
       <Hero />
       <DatesSection events={serializedEvents} />
       <MusicSection tracks={serializedTracks} />
