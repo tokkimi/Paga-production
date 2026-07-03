@@ -207,6 +207,34 @@ section {
   box-shadow: 0 0 0 9px rgba(66, 216, 255, 0.1), 0 0 30px rgba(66, 216, 255, 1);
 }
 
+.mirage-shell {
+  perspective: 1600px;
+  transform-style: preserve-3d;
+}
+
+.mirage-pane {
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+
+.mirage-pane::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(115deg, transparent 0%, rgba(125, 229, 255, 0.08) 38%, transparent 58%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 9px);
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+.mirage-pane > * {
+  position: relative;
+  z-index: 2;
+}
+
 /* Animation utilities */
 .animate-glow {
   animation: glow 2s ease-in-out infinite;

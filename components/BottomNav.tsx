@@ -12,6 +12,8 @@ export default function BottomNav() {
   const tNav = useTranslations("nav");
   const tContact = useTranslations("home.contact");
 
+  if (pathname === `/${locale}` || pathname === `/${locale}/`) return null;
+
   const isDates = pathname.includes("/dates");
   const isArtistes = pathname.includes("/artistes");
 
