@@ -29,6 +29,11 @@ export default function Hero() {
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,5,10,.94),rgba(2,5,10,.58)_38%,rgba(2,5,10,.08)_72%),linear-gradient(180deg,rgba(2,5,10,.08),rgba(2,5,10,.88))]" />
+      <img
+        src="/images/paga-neon-logo-cutout.png"
+        alt=""
+        className="pointer-events-none absolute left-6 top-28 z-[1] w-[210px] max-w-[45vw] opacity-80 mix-blend-screen drop-shadow-[0_0_24px_rgba(80,180,255,0.55)] sm:left-10 sm:top-32 sm:w-[280px] lg:left-[7vw] lg:top-36 lg:w-[340px]"
+      />
 
       <div className="relative z-10 mx-auto grid min-h-[760px] w-full max-w-[1160px] grid-cols-1 items-end gap-8 px-4 pb-12 pt-32 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-16 lg:pb-16">
         <motion.div
