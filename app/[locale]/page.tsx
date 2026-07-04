@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/home/Hero";
-import MirageFaceScroll from "@/components/home/MirageFaceScroll";
+import MirageHero from "@/components/mirage/MirageHero";
 import DatesSection from "@/components/home/DatesSection";
 import MusicSection from "@/components/home/MusicSection";
 import VideoSection from "@/components/home/VideoSection";
@@ -16,25 +16,29 @@ export const metadata: Metadata = {
 };
 
 async function getHomeData() {
-  const [events, tracks, videos] = await Promise.all([
-    prisma.event.findMany({
-      where: { isActive: true, date: { gte: new Date() } },
-      orderBy: { date: "asc" },
-      take: 6,
-      include: { artists: { include: { artist: true } } },
-    }),
-    prisma.track.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-      take: 10,
-    }),
-    prisma.video.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-      take: 6,
-    }),
-  ]);
-  return { events, tracks, videos };
+  try {
+    const [events, tracks, videos] = await Promise.all([
+      prisma.event.findMany({
+        where: { isActive: true, date: { gte: new Date() } },
+        orderBy: { date: "asc" },
+        take: 6,
+        include: { artists: { include: { artist: true } } },
+      }),
+      prisma.track.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+        take: 10,
+      }),
+      prisma.video.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+        take: 6,
+      }),
+    ]);
+    return { events, tracks, videos };
+  } catch {
+    return { events: [], tracks: [], videos: [] };
+  }
 }
 
 export default async function HomePage() {
@@ -65,7 +69,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <MirageFaceScroll />
+      <MirageHero />
       <Hero />
       <DatesSection events={serializedEvents} />
       <MusicSection tracks={serializedTracks} />
