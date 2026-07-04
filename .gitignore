@@ -44,4 +44,4 @@ next-env.d.ts
 
 # SQLite local dev
 *.db
-*.db-journal
+*.db-journalscreenshot.mjs
