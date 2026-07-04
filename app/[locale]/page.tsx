@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/home/Hero";
-import MirageHero from "@/components/mirage/MirageHero";
 import DatesSection from "@/components/home/DatesSection";
 import MusicSection from "@/components/home/MusicSection";
 import VideoSection from "@/components/home/VideoSection";
@@ -69,7 +68,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <MirageHero />
       <Hero />
       <DatesSection events={serializedEvents} />
       <MusicSection tracks={serializedTracks} />
