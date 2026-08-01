@@ -52,6 +52,42 @@
   50% { opacity: 0.6; }
 }
 
+@keyframes neonCycle {
+  0%   { border-color: rgba(255, 74, 28, 0.6); box-shadow: 0 0 8px rgba(255, 74, 28, 0.35); }
+  33%  { border-color: rgba(255, 26, 122, 0.6); box-shadow: 0 0 8px rgba(255, 26, 122, 0.35); }
+  66%  { border-color: rgba(255, 184, 0, 0.6); box-shadow: 0 0 8px rgba(255, 184, 0, 0.35); }
+  100% { border-color: rgba(255, 74, 28, 0.6); box-shadow: 0 0 8px rgba(255, 74, 28, 0.35); }
+}
+
+/* CSS custom properties for ThemeToggle and theme-aware utilities */
+:root {
+  --bg: #06080f;
+  --fg: #ffffff;
+  --fg-muted: rgba(255, 255, 255, 0.5);
+  --card-bg: rgba(255, 255, 255, 0.045);
+  --card-border: rgba(132, 226, 255, 0.16);
+  --nav-bg: rgba(4, 6, 14, 0.88);
+  --nav-border: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-color: #ffffff;
+  --input-placeholder: rgba(255, 255, 255, 0.28);
+}
+
+[data-theme="light"] {
+  --bg: #f5f4f0;
+  --fg: #1a1618;
+  --fg-muted: rgba(26, 22, 24, 0.5);
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --nav-bg: rgba(245, 244, 240, 0.92);
+  --nav-border: rgba(0, 0, 0, 0.06);
+  --border: rgba(0, 0, 0, 0.12);
+  --input-bg: rgba(255, 255, 255, 0.8);
+  --input-color: #1a1618;
+  --input-placeholder: rgba(26, 22, 24, 0.35);
+}
+
 * {
   box-sizing: border-box;
 }
