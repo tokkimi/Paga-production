@@ -56,6 +56,19 @@
   --scrollbar-track: #F9F7F5;
 }
 
+/* ── Sections with hardcoded dark backgrounds keep white text in light mode ── */
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white          { color: #ffffff !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/80      { color: rgba(255,255,255,0.80) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/70      { color: rgba(255,255,255,0.70) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/60      { color: rgba(255,255,255,0.60) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/50      { color: rgba(255,255,255,0.50) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/45      { color: rgba(255,255,255,0.45) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/40      { color: rgba(255,255,255,0.40) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/30      { color: rgba(255,255,255,0.30) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/25      { color: rgba(255,255,255,0.25) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .text-white\/20      { color: rgba(255,255,255,0.20) !important; }
+[data-theme="light"] section:has(> [class*="06080f"]) .btn-secondary       { color: rgba(255,255,255,0.70) !important; border-color: rgba(255,255,255,0.22) !important; }
+
 /* ── Light-mode overrides for hardcoded Tailwind utilities ───────── */
 [data-theme="light"] .text-white          { color: #1A1618 !important; }
 [data-theme="light"] .text-white\/80      { color: rgba(26,22,24,0.80) !important; }
@@ -71,9 +84,6 @@
 [data-theme="light"] .bg-white\/10        { background: rgba(26,22,24,0.05) !important; }
 [data-theme="light"] .bg-white\/8         { background: rgba(26,22,24,0.04) !important; }
 [data-theme="light"] .hover\:bg-white\/10:hover { background: rgba(26,22,24,0.05) !important; }
-[data-theme="light"] .bg-black\/30        { background: rgba(255,255,255,0.6) !important; }
-[data-theme="light"] .bg-black\/40        { background: rgba(255,255,255,0.65) !important; }
-[data-theme="light"] .bg-black\/50        { background: rgba(255,255,255,0.7) !important; }
 
 [data-theme="light"] .border-white\/10    { border-color: rgba(26,22,24,0.10) !important; }
 [data-theme="light"] .border-white\/8     { border-color: rgba(26,22,24,0.08) !important; }
