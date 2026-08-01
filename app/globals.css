@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #06080f;
+  --color-background: #08060A;
   --color-foreground: #ffffff;
-  --color-primary: #3B82F6;
-  --color-primary-dark: #2563EB;
-  --color-secondary: #818CF8;
-  --color-accent: #38BDF8;
+  --color-primary: #F05A2A;
+  --color-primary-dark: #C8431A;
+  --color-secondary: #E8388A;
+  --color-accent: #F4A820;
   --color-muted: rgba(255, 255, 255, 0.5);
   --color-glass: rgba(255, 255, 255, 0.04);
   --color-glass-border: rgba(255, 255, 255, 0.07);
 
   --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-bebas), var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-montserrat), var(--font-inter), system-ui, sans-serif;
 
   --animate-glow: glow 2s ease-in-out infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -23,8 +23,8 @@
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.2); }
+  0%, 100% { box-shadow: 0 0 20px rgba(240, 90, 42, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(240, 90, 42, 0.6), 0 0 60px rgba(240, 90, 42, 0.2); }
 }
 
 @keyframes float {
@@ -63,7 +63,7 @@ html {
 }
 
 body {
-  background-color: #06080f;
+  background-color: #08060A;
   color: #ffffff;
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -77,16 +77,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #06080f;
+  background: #08060A;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.35);
+  background: rgba(240, 90, 42, 0.35);
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3B82F6;
+  background: #F05A2A;
 }
 
 /* Glass effect utilities */
@@ -99,7 +99,7 @@ body {
 }
 
 .glass-nav {
-  background: rgba(4, 6, 14, 0.88);
+  background: rgba(8, 6, 10, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -114,27 +114,27 @@ body {
 
 /* Glow effects */
 .glow-red {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 40px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 20px rgba(240, 90, 42, 0.4), 0 0 40px rgba(240, 90, 42, 0.2);
 }
 
 .glow-red-text {
-  text-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
+  text-shadow: 0 0 20px rgba(240, 90, 42, 0.7);
 }
 
 .glow-orange {
-  box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
+  box-shadow: 0 0 20px rgba(244, 168, 32, 0.4);
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #3B82F6 0%, #818CF8 50%, #38BDF8 100%);
+  background: linear-gradient(135deg, #F05A2A 0%, #E8388A 50%, #F4A820 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-red {
-  background: linear-gradient(135deg, #3B82F6, #818CF8);
+  background: linear-gradient(135deg, #F05A2A, #E8388A);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -203,14 +203,14 @@ body {
 
 /* Button styles — all glass/transparent */
 .btn-primary {
-  background: rgba(59, 130, 246, 0.1);
-  color: #93C5FD;
+  background: rgba(240, 90, 42, 0.12);
+  color: #FFAB85;
   padding: 11px 28px;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.875rem;
   transition: all 0.22s ease;
-  border: 1px solid rgba(59, 130, 246, 0.28);
+  border: 1px solid rgba(240, 90, 42, 0.32);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -220,8 +220,8 @@ body {
 }
 
 .btn-primary:hover {
-  background: rgba(59, 130, 246, 0.22);
-  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(240, 90, 42, 0.25);
+  border-color: rgba(240, 90, 42, 0.55);
   color: #ffffff;
   transform: translateY(-1px);
 }
@@ -243,8 +243,8 @@ body {
 }
 
 .btn-secondary:hover {
-  border-color: rgba(59, 130, 246, 0.3);
-  color: #93C5FD;
+  border-color: rgba(240, 90, 42, 0.35);
+  color: #FFAB85;
   transform: translateY(-1px);
 }
 
@@ -261,7 +261,7 @@ body {
 }
 
 .form-input:focus {
-  border-color: rgba(59, 130, 246, 0.45);
+  border-color: rgba(240, 90, 42, 0.45);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -290,19 +290,19 @@ body {
 
 /* Badge */
 .badge-b2b {
-  background: rgba(59, 130, 246, 0.12);
-  color: #93C5FD;
+  background: rgba(240, 90, 42, 0.12);
+  color: #FFAB85;
   font-size: 0.65rem;
   font-weight: 700;
   padding: 2px 7px;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  border: 1px solid rgba(59, 130, 246, 0.22);
+  border: 1px solid rgba(240, 90, 42, 0.25);
 }
 
 /* Text selection */
 ::selection {
-  background: rgba(59, 130, 246, 0.3);
+  background: rgba(240, 90, 42, 0.3);
   color: white;
 }
