@@ -17,7 +17,6 @@ import {
   Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { key: "artists", href: "/artistes" },
@@ -42,6 +41,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -66,7 +66,11 @@ export default function Navbar() {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled ? "glass-nav py-3" : "py-5 bg-transparent"
+        scrolled
+          ? "glass-nav py-3"
+          : isHome
+            ? "py-5 bg-white/20 backdrop-blur-xl"
+            : "py-5 bg-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,7 +80,7 @@ export default function Navbar() {
             href={getLocalePath("/")}
             className="flex flex-col leading-none group"
           >
-            <span className="text-xl font-black tracking-[0.15em] uppercase text-white group-hover:text-primary transition-colors duration-200">
+            <span className={cn("text-xl font-black tracking-[0.15em] uppercase transition-colors duration-200 group-hover:text-primary", isHome && !scrolled ? "text-[#191724]" : "text-white")}>
               PAGA
             </span>
             <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-primary">
@@ -98,7 +102,9 @@ export default function Navbar() {
                     "relative px-4 py-2 text-sm font-medium uppercase tracking-wider transition-colors duration-200",
                     isActive(link.href)
                       ? "text-primary"
-                      : "text-white/80 hover:text-white"
+                      : isHome && !scrolled
+                        ? "text-[#191724]/70 hover:text-[#191724]"
+                        : "text-white/80 hover:text-white"
                   )}
                 >
                   {t(link.key as "artists")}
@@ -115,19 +121,16 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* Theme toggle */}
-            <ThemeToggle />
-
             {/* Language switcher */}
             <div className="hidden md:flex items-center gap-1 glass-card px-3 py-1.5 rounded-full">
               {locales.map((item, index) => (
                 <div key={item.code} className="flex items-center gap-1">
-                  {index > 0 && <span className="text-white/20 text-xs">|</span>}
+                  {index > 0 && <span className={cn("text-xs", isHome && !scrolled ? "text-[#191724]/20" : "text-white/20")}>|</span>}
                   <button
                     onClick={() => switchLocale(item.code)}
                     className={cn(
                       "text-xs font-bold uppercase tracking-wider transition-colors",
-                      locale === item.code ? "text-primary" : "text-white/50 hover:text-white"
+                      locale === item.code ? "text-primary" : isHome && !scrolled ? "text-[#191724]/45 hover:text-[#191724]" : "text-white/50 hover:text-white"
                     )}
                   >
                     {item.label}
@@ -226,7 +229,7 @@ export default function Navbar() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   href={getLocalePath("/connexion")}
-                  className="text-sm font-medium text-white/80 hover:text-white transition-colors px-3 py-2"
+                  className={cn("px-3 py-2 text-sm font-medium transition-colors", isHome && !scrolled ? "text-[#191724]/70 hover:text-[#191724]" : "text-white/80 hover:text-white")}
                 >
                   {t("login")}
                 </Link>

@@ -36,15 +36,15 @@ export default function CookieBanner() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-24 left-3 right-3 z-[60] md:bottom-6 md:left-auto md:right-6 md:max-w-md"
+          className="fixed bottom-28 left-3 right-3 z-[60] md:bottom-24 md:left-auto md:right-6 md:max-w-md"
         >
-          <div className="glass-strong rounded-2xl p-4 shadow-2xl shadow-black/40 sm:p-5">
+          <div className="rounded-2xl border border-white/10 bg-[#10131b]/92 p-3 shadow-2xl shadow-black/40 backdrop-blur-2xl sm:p-5">
             <div className="flex items-start gap-3">
               <div className="hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/20 sm:flex">
                 <Cookie size={18} className="text-primary" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-white/80 leading-relaxed">
+                <p className="text-xs leading-relaxed text-white/82 sm:text-sm">
                   {t("message")}{" "}
                   <Link
                     href={`/${locale}/cookies`}
@@ -54,7 +54,7 @@ export default function CookieBanner() {
                   </Link>
                   .
                 </p>
-                <div className="flex gap-2 mt-4">
+                <div className="mt-3 flex gap-2 sm:mt-4">
                   <button
                     onClick={accept}
                     className="btn-primary text-xs py-2 px-4 flex-1 justify-center"

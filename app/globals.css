@@ -243,6 +243,69 @@ section {
   box-shadow: 0 0 0 9px rgba(66, 216, 255, 0.1), 0 0 30px rgba(66, 216, 255, 1);
 }
 
+.sherrie-theme {
+  --sherrie-ink: #191724;
+  --sherrie-muted: #666275;
+  --sherrie-pink: #d85e98;
+  --sherrie-coral: #ef8d66;
+  --sherrie-blue: #6fc3d2;
+}
+
+.sherrie-theme .carousel-scroll {
+  scrollbar-width: none;
+}
+
+.sherrie-theme .carousel-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.sherrie-scroll-dot {
+  width: 13px;
+  height: 13px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #70c5d3;
+  box-shadow: 0 0 0 8px rgba(112, 197, 211, 0.12), 0 0 28px rgba(112, 197, 211, 0.9);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sherrie-scroll-dot:hover {
+  transform: scale(1.16);
+  box-shadow: 0 0 0 10px rgba(112, 197, 211, 0.15), 0 0 38px rgba(112, 197, 211, 1);
+}
+
+.sherrie-dark-block {
+  position: relative;
+  margin-top: 4rem;
+  padding: 5rem 1rem 9rem;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(216, 94, 152, 0.24), transparent 32rem),
+    radial-gradient(circle at 82% 12%, rgba(112, 197, 211, 0.2), transparent 30rem),
+    linear-gradient(180deg, #15131b 0%, #080910 100%);
+}
+
+.sherrie-dark-block::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 76px 76px;
+  mask-image: linear-gradient(180deg, transparent, black 14%, black 78%, transparent);
+}
+
+.sherrie-dark-block > * {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .mirage-shell {
   perspective: 1600px;
   transform-style: preserve-3d;

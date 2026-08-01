@@ -11,9 +11,9 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home.hero" });
   const descriptions = {
-    fr: "Paga Production - Paga, Mirage avec Alexis Dante, dates, musique, videos et partenariats.",
-    en: "Paga Production - Paga, Mirage with Alexis Dante, dates, music, videos and partnerships.",
-    ko: "Paga Production - Paga, Alexis Dante와 함께하는 Mirage, 공연 일정, 음악, 영상 및 파트너십.",
+    fr: "Paga Production - Paga, Sherrie Sherrie avec Alexis Dante, dates, musique, videos et partenariats.",
+    en: "Paga Production - Paga, Sherrie Sherrie with Alexis Dante, dates, music, videos and partnerships.",
+    ko: "Paga Production - Paga와 Alexis Dante의 Sherrie Sherrie, 공연 일정, 음악, 영상 및 파트너십.",
   };
 
   return {
@@ -48,8 +48,33 @@ async function getHomeData() {
     ]);
     return { events, tracks, videos };
   } catch (error) {
-    console.error("Home data error:", error);
-    return { events: [], tracks: [], videos: [] };
+    console.warn("Home data unavailable, using local preview fallback:", error);
+    const createdAt = new Date("2026-06-01T10:00:00.000Z");
+    return {
+      events: [
+        {
+          id: "fallback-delta",
+          slug: "delta-festival",
+          title_fr: "Delta Festival",
+          title_en: "Delta Festival",
+          venue: "Delta Festival",
+          city: "Marseille",
+          country: "France",
+          date: new Date("2026-06-22T20:00:00.000Z"),
+          endDate: null,
+          ticketUrl: "https://www.delta-festival.com/",
+          isB2B: true,
+          isFeatured: true,
+          createdAt,
+          artists: [
+            { artist: { name: "Paga", slug: "paga" } },
+            { artist: { name: "Alexis Dante", slug: "alexis-dante" } },
+          ],
+        },
+      ],
+      tracks: [],
+      videos: [],
+    };
   }
 }
 

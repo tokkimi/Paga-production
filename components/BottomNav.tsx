@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Users, Mail } from "lucide-react";
+import { CalendarDays, Users, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
@@ -43,20 +42,17 @@ export default function BottomNav() {
 
         <Link
           href={"/" + locale + "/dates"}
-          className="flex min-w-0 items-center justify-center rounded-2xl border px-3 py-2 transition-all"
+          className={cn(
+            "flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 transition-all",
+            isDates ? "bg-cyan-300/10 text-cyan-200" : "text-white/52 hover:bg-white/[0.05] hover:text-white"
+          )}
           style={{
             border: "1.5px solid rgba(125, 220, 255, 0.35)",
             animation: "neonCycle 3.5s ease-in-out infinite",
           }}
         >
-          <Image
-            src="/sherrie-sherrie.png"
-            alt="Sherrie Sherrie"
-            width={90}
-            height={46}
-            className="object-contain"
-            priority
-          />
+          <CalendarDays size={18} />
+          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">{tNav("dates")}</span>
         </Link>
 
         <Link
