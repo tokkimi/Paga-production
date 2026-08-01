@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
-import { Users, Calendar, Mail } from "lucide-react";
+import { Users, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
@@ -37,17 +38,23 @@ export default function BottomNav() {
           <span className="text-[10px] font-semibold uppercase tracking-wider">Artistes</span>
         </Link>
 
-        {/* Dates — center, prominent */}
+        {/* Dates — center, logo Sherrie Sherrie */}
         <Link
           href={`/${locale}/dates`}
-          className="flex flex-col items-center gap-1 px-6 py-2 rounded-xl"
+          className="flex items-center justify-center px-3 py-1 rounded-xl"
           style={{
             border: "1.5px solid",
             animation: "neonCycle 3.5s ease-in-out infinite",
           }}
         >
-          <Calendar size={22} style={{ color: "inherit" }} />
-          <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "inherit" }}>Dates</span>
+          <Image
+            src="/sherrie-sherrie.png"
+            alt="Sherrie Sherrie"
+            width={90}
+            height={46}
+            className="object-contain"
+            priority
+          />
         </Link>
 
         {/* Contact */}
