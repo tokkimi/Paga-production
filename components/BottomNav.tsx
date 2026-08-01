@@ -17,10 +17,11 @@ export default function BottomNav() {
     <nav
       className="md:hidden fixed bottom-4 left-4 right-4 z-50 rounded-2xl"
       style={{
-        background: "rgba(4, 6, 14, 0.88)",
+        background: "rgba(249, 247, 245, 0.94)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(255, 255, 255, 0.07)",
+        border: "1px solid rgba(0, 0, 0, 0.08)",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
       }}
     >
       <div className="flex items-center justify-around px-2 py-3">
@@ -29,7 +30,7 @@ export default function BottomNav() {
           href={`/${locale}/artistes`}
           className={cn(
             "flex flex-col items-center gap-1 px-5 py-1 rounded-xl transition-colors",
-            isArtistes ? "text-primary" : "text-white/50"
+            isArtistes ? "text-primary" : "text-foreground/40"
           )}
         >
           <Users size={20} />
@@ -39,20 +40,20 @@ export default function BottomNav() {
         {/* Dates — center, prominent */}
         <Link
           href={`/${locale}/dates`}
-          className="flex flex-col items-center gap-1 px-6 py-2 rounded-xl transition-all"
+          className="flex flex-col items-center gap-1 px-6 py-2 rounded-xl"
           style={{
-            background: isDates ? "rgba(59, 130, 246, 0.25)" : "rgba(59, 130, 246, 0.12)",
-            border: "1px solid rgba(59, 130, 246, 0.3)",
+            border: "1.5px solid",
+            animation: "neonCycle 3.5s ease-in-out infinite",
           }}
         >
-          <Calendar size={22} className="text-primary" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-primary">Dates</span>
+          <Calendar size={22} style={{ color: "inherit" }} />
+          <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "inherit" }}>Dates</span>
         </Link>
 
         {/* Contact */}
         <a
           href="mailto:booking@pagaproduction.fr"
-          className="flex flex-col items-center gap-1 px-5 py-1 rounded-xl transition-colors text-white/50 hover:text-white"
+          className="flex flex-col items-center gap-1 px-5 py-1 rounded-xl transition-colors text-foreground/40 hover:text-foreground"
         >
           <Mail size={20} />
           <span className="text-[10px] font-semibold uppercase tracking-wider">Contact</span>
