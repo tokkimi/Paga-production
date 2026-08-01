@@ -17,6 +17,7 @@ import {
   Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { key: "artists", href: "/artistes" },
@@ -108,6 +109,9 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            {/* Theme toggle */}
+            <ThemeToggle />
+
             {/* Language switcher */}
             <div className="hidden md:flex items-center gap-1 glass-card px-3 py-1.5 rounded-full">
               <button
