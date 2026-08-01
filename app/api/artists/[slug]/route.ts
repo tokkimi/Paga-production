@@ -7,7 +7,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     const artist = await prisma.artist.findUnique({
       where: { slug },
       include: {
-        events: { orderBy: { date: "asc" } },
+        events: { orderBy: { event: { date: "asc" } } },
         tracks: { orderBy: { order: "asc" } },
       },
     });
