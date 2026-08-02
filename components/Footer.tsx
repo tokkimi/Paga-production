@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { usePathname } from "next/navigation";
 
 const labels = {
   fr: {
@@ -39,11 +38,7 @@ const labels = {
 
 export default function Footer() {
   const locale = useLocale();
-  const pathname = usePathname();
   const text = labels[locale as keyof typeof labels] ?? labels.en;
-
-  if (pathname === `/${locale}` || pathname === `/${locale}/`) return null;
-
   const links = [
     { label: text.dates, href: `/${locale}/dates` },
     { label: text.sponsors, href: `/${locale}/sponsors` },
@@ -55,7 +50,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="sherrie-footer-zone px-4 pb-36 pt-14 sm:px-6">
+    <footer className="sherrie-footer-zone px-4 pb-48 pt-14 sm:px-6 sm:pb-36">
       <div className="mx-auto max-w-7xl">
         <div className="sherrie-legal-strip px-4 py-12 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.62em] text-[#d85e98]/80">

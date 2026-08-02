@@ -2,7 +2,7 @@
 
 import { Pause, Play, X } from "lucide-react";
 import { useLocale } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type ApiTrack = {
   title: string;
@@ -23,9 +23,9 @@ const fallbackTrack: ApiTrack = {
 };
 
 const labels = {
-  fr: { kicker: "Dernière sortie", close: "Fermer" },
-  en: { kicker: "Latest release", close: "Close" },
-  ko: { kicker: "최신 발매", close: "닫기" },
+  fr: { kicker: "Dernière sortie", close: "Fermer", play: "Écouter", pause: "Mettre en pause" },
+  en: { kicker: "Latest release", close: "Close", play: "Play", pause: "Pause" },
+  ko: { kicker: "최신 발매", close: "닫기", play: "듣기", pause: "일시정지" },
 };
 
 function normalizeYoutubeEmbed(url?: string | null) {
@@ -57,8 +57,10 @@ function pickFeatured(tracks: ApiTrack[]) {
 export default function NewReleasePlayer() {
   const locale = useLocale();
   const text = labels[locale as keyof typeof labels] ?? labels.en;
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [track, setTrack] = useState<ApiTrack>(fallbackTrack);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
@@ -83,10 +85,26 @@ export default function NewReleasePlayer() {
   }, []);
 
   const playerUrl = useMemo(() => getPlayableUrl(track), [track]);
+  const isYoutube = playerUrl.includes("youtube.com/embed/");
   const cover = track.cover || youtubeThumbnail(track.youtubeEmbedUrl) || fallbackTrack.cover!;
-  const iframeSrc = playerUrl.includes("youtube.com/embed/")
-    ? `${playerUrl}?rel=0&autoplay=1&controls=0&modestbranding=1`
+  const iframeSrc = isYoutube
+    ? `${playerUrl}?enablejsapi=1&playsinline=1&controls=0&rel=0&modestbranding=1`
     : playerUrl;
+
+  const sendYoutubeCommand = useCallback((command: "playVideo" | "pauseVideo") => {
+    iframeRef.current?.contentWindow?.postMessage(
+      JSON.stringify({ event: "command", func: command, args: [] }),
+      "https://www.youtube.com",
+    );
+  }, []);
+
+  const togglePlayback = () => {
+    const nextPlaying = !isPlaying;
+    if (isYoutube && isReady) {
+      sendYoutubeCommand(nextPlaying ? "playVideo" : "pauseVideo");
+    }
+    setIsPlaying(nextPlaying);
+  };
 
   if (dismissed) return null;
 
@@ -99,29 +117,47 @@ export default function NewReleasePlayer() {
             : "bg-white/25 text-[#111118] shadow-[0_10px_34px_rgba(20,14,18,.04)]"
         }`}
       >
-        {isPlaying && (
+        {isYoutube ? (
           <iframe
+            ref={iframeRef}
             src={iframeSrc}
-            title={track.title}
-            className="pointer-events-none absolute h-px w-px opacity-0"
+            title={`${track.title} audio`}
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2 opacity-[0.001]"
             frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
+            allow="autoplay; encrypted-media; picture-in-picture"
+            tabIndex={-1}
+            aria-hidden="true"
+            onLoad={() => {
+              setIsReady(true);
+              if (isPlaying) sendYoutubeCommand("playVideo");
+            }}
           />
+        ) : (
+          isPlaying && (
+            <iframe
+              src={iframeSrc}
+              title={`${track.title} audio`}
+              className="pointer-events-none absolute h-px w-px opacity-0"
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              tabIndex={-1}
+              aria-hidden="true"
+            />
+          )
         )}
-        <div className="grid grid-cols-[34px_34px_minmax(0,1fr)_18px] items-center gap-2">
+        <div className="relative grid grid-cols-[34px_34px_minmax(0,1fr)_18px] items-center gap-2">
           <button
             type="button"
-            onClick={() => setIsPlaying((value) => !value)}
+            onClick={togglePlayback}
             className={`inline-flex h-[34px] w-[34px] items-center justify-center rounded-[12px] backdrop-blur-md transition hover:scale-[1.03] ${
               isDark ? "bg-white/8 text-white" : "bg-white/18 text-[#111118]"
             }`}
-            aria-label={text.kicker}
+            aria-label={isPlaying ? text.pause : text.play}
           >
             {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
           </button>
           <img src={cover} alt="" className="h-[34px] w-[34px] rounded-[10px] object-cover shadow-[0_8px_18px_rgba(0,0,0,.08)]" />
-          <button type="button" onClick={() => setIsPlaying((value) => !value)} className="min-w-0 text-left">
+          <button type="button" onClick={togglePlayback} className="min-w-0 text-left" aria-label={isPlaying ? text.pause : text.play}>
             <span className="block truncate text-[8px] font-black uppercase tracking-[0.15em] text-[#d85e98]">
               {text.kicker}
             </span>
@@ -132,7 +168,10 @@ export default function NewReleasePlayer() {
           </button>
           <button
             type="button"
-            onClick={() => setDismissed(true)}
+            onClick={() => {
+              if (isYoutube && isReady) sendYoutubeCommand("pauseVideo");
+              setDismissed(true);
+            }}
             className={`inline-flex h-[18px] w-[18px] items-center justify-center rounded-full transition ${
               isDark ? "text-white/42 hover:bg-white/10 hover:text-white" : "text-[#111118]/34 hover:bg-white/35 hover:text-[#111118]"
             }`}
@@ -141,7 +180,7 @@ export default function NewReleasePlayer() {
             <X size={12} />
           </button>
         </div>
-        <div className="mt-1.5 h-[2px] overflow-hidden rounded-full bg-[#d85e98]/12">
+        <div className="relative mt-1.5 h-[2px] overflow-hidden rounded-full bg-[#d85e98]/12">
           {isPlaying && <span className="release-progress-bar" />}
         </div>
       </div>
