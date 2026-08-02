@@ -889,7 +889,13 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
           <div className="relative z-10 mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-4 pb-36 pt-28 sm:px-6 xl:grid-cols-[minmax(0,1fr)_290px]">
             <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: "easeOut" }}>
               <h1 className={`max-w-[800px] text-[clamp(3rem,7vw,6.4rem)] font-black uppercase leading-[.84] tracking-[-.07em] ${light ? "text-[#111118]" : "text-white"}`}>{labels.heroTitle}</h1>
-              <img src="/sherrie-sherrie.png" alt="Sherrie Sherrie" className="ml-auto mt-7 w-[min(52vw,230px)] saturate-90 contrast-125 drop-shadow-[0_0_28px_rgba(177,90,111,.20)] sm:ml-0 sm:w-[min(68vw,360px)]" />
+              <img
+                src="/sherrie-sherrie.png"
+                alt="Sherrie Sherrie"
+                className={`ml-auto mt-7 w-[min(52vw,230px)] saturate-90 contrast-125 drop-shadow-[0_0_28px_rgba(177,90,111,.20)] sm:ml-0 sm:w-[min(68vw,360px)] ${
+                  light ? "block" : "hidden sm:block"
+                }`}
+              />
             </motion.div>
             <motion.div className="mt-24 justify-self-center sm:mt-12 xl:mt-0 xl:justify-self-auto" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }}>
               <MiniDates events={featuredEvents} labels={labels} light={light} />
