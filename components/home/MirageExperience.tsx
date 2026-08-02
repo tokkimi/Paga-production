@@ -900,7 +900,7 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
             </motion.div>
             <motion.div
               className={`justify-self-center xl:justify-self-auto ${
-                darkMode ? "mt-28 sm:mt-16 xl:mt-16" : "mt-24 sm:mt-12 xl:mt-0"
+                darkMode ? "mt-40 sm:mt-24 xl:mt-28" : "mt-24 sm:mt-12 xl:mt-0"
               }`}
               initial={{ opacity: 0, x: 28 }}
               animate={{ opacity: 1, x: 0 }}
