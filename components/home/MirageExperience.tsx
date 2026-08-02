@@ -686,35 +686,34 @@ function FooterActions({ light }: { light: boolean }) {
             </div>
           </div>
         </div>
-        <footer className="sherrie-footer-card mt-10 rounded-[24px] p-5">
-          <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
-            <form onSubmit={submit} className="max-w-xl">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.28em] text-[#aa5d74]">Newsletter</h4>
-              <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required placeholder={labels.placeholder} className="sherrie-footer-input min-w-0 flex-1 rounded-2xl px-4 py-3 text-sm outline-none" />
-                <button type="submit" disabled={status === "loading"} className="sherrie-primary-cta rounded-2xl px-5 py-3 text-xs font-black uppercase tracking-[0.14em]">
-                  {status === "loading" ? "..." : labels.subscribe}
-                </button>
-              </div>
-            </form>
-            <nav className="flex flex-wrap gap-x-5 gap-y-2 text-xs font-bold uppercase tracking-[0.12em]">
+        <footer className="sherrie-legal-strip mt-12 px-4 py-10 text-center">
+          <div className="mx-auto h-px max-w-4xl bg-current/10" />
+          <div className="mx-auto mt-8 max-w-4xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.62em] text-[#d85e98]/80">
+              Music is our freedom
+            </p>
+            <p className="mt-3 text-[10px] font-black uppercase tracking-[0.34em] opacity-58">
+              House · Indie House · Melodic House · Techno
+            </p>
+            <nav className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[11px] font-black uppercase tracking-[0.18em]">
               {[
                 { label: labels.dates, href: `/${locale}/dates` },
                 { label: "Sponsors", href: `/${locale}/sponsors` },
                 { label: labels.joinCta, href: `/${locale}/rejoindre` },
+                { label: labels.contact, href: "#contact" },
                 { label: "CGV", href: `/${locale}/cgv` },
                 { label: "Mentions légales", href: `/${locale}/mentions-legales` },
                 { label: "Confidentialité", href: `/${locale}/politique-confidentialite` },
               ].map((item) => (
-                <Link key={item.href} href={item.href} className="opacity-58 transition hover:opacity-100">
+                <Link key={item.href} href={item.href} className="opacity-64 transition hover:opacity-100">
                   {item.label}
                 </Link>
               ))}
             </nav>
+            <p className="mt-7 text-[11px] opacity-52">
+              © 2026 Sherrie Sherrie. Tous droits réservés.
+            </p>
           </div>
-          <p className="mt-5 border-t border-current/10 pt-4 text-xs opacity-44">
-            © 2026 Sherrie Sherrie. Tous droits réservés.
-          </p>
         </footer>
       </div>
     </section>

@@ -478,6 +478,16 @@ section {
   box-shadow: 0 20px 70px rgba(0,0,0,0.28);
 }
 
+.sherrie-legal-strip {
+  color: rgba(17, 17, 24, 0.74);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.32);
+}
+
+[data-theme="dark"] .sherrie-legal-strip {
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 0 18px rgba(0,0,0,0.55);
+}
+
 .sherrie-footer-input {
   border: 1px solid rgba(17,17,24,0.10);
   background: rgba(255,255,255,0.72);
@@ -502,23 +512,26 @@ section {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  background: linear-gradient(100deg, #d85e98, #ef8d66);
-  box-shadow: 0 12px 28px rgba(216,94,152,0.22);
+  color: #c85586;
+  border: 1px solid rgba(200, 85, 134, 0.62);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 26px rgba(216,94,152,0.10);
 }
 
 .sherrie-outline-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #b14f77;
-  border: 1px solid rgba(216,94,152,0.44);
-  background: rgba(255,255,255,0.32);
+  color: #c85586;
+  border: 1px solid rgba(200, 85, 134, 0.52);
+  background: rgba(255,255,255,0.08);
 }
 
+[data-theme="dark"] .sherrie-primary-cta,
 [data-theme="dark"] .sherrie-outline-cta {
-  color: #ff89b7;
-  background: rgba(0,0,0,0.16);
+  color: #ff8dba;
+  border-color: rgba(255, 141, 186, 0.58);
+  background: rgba(0,0,0,0.10);
 }
 
 .sherrie-dark-block {
