@@ -512,26 +512,34 @@ section {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
   color: #c85586;
   border: 1px solid rgba(200, 85, 134, 0.62);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 26px rgba(216,94,152,0.10);
+  background: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 10px 26px rgba(216,94,152,0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .sherrie-outline-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
   color: #c85586;
   border: 1px solid rgba(200, 85, 134, 0.52);
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.10);
+  box-shadow: 0 10px 26px rgba(216,94,152,0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 [data-theme="dark"] .sherrie-primary-cta,
 [data-theme="dark"] .sherrie-outline-cta {
   color: #ff8dba;
   border-color: rgba(255, 141, 186, 0.58);
-  background: rgba(0,0,0,0.10);
+  background: rgba(26, 20, 32, 0.42);
+  box-shadow: 0 0 22px rgba(255,141,186,0.12);
 }
 
 .sherrie-dark-block {

@@ -203,10 +203,10 @@ function getCopy(locale: string) {
 }
 
 const artwork = {
-  letsGo: "/images/sherrie/lets-go-cover.jpg",
-  letUGo: "/images/sherrie/let-u-go-cover.jpg",
+  letsGo: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02c6b92c13775056fb443d2cf4",
+  letUGo: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02a51dc128e04b80f02c1412ff",
   echoes: "/images/sherrie/echoes-cover.jpg",
-  superstition: "/images/sherrie/superstition-cover.jpg",
+  superstition: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02b9e412900a6ba835786ec6f1",
   everybody: "/images/sherrie/everybody-cover.jpg",
   alive: "/images/sherrie/alive-cover.jpg",
   eivissa: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02d8b5cd30b1a8bba60b35f8e1",
@@ -216,6 +216,15 @@ const artwork = {
 };
 
 const commonTracks: TrackItem[] = [
+  {
+    title: "Sunshine",
+    artist: "Sherrie Sherrie",
+    year: "2026",
+    source: "YouTube",
+    cover: "https://i.ytimg.com/vi/jQytxOJ6ksQ/hqdefault.jpg",
+    youtube: "https://www.youtube.com/embed/jQytxOJ6ksQ",
+    external: "https://www.youtube.com/watch?v=jQytxOJ6ksQ",
+  },
   {
     title: "Let's Go",
     artist: "Paga, Alexis Dante",
@@ -283,6 +292,7 @@ const alexisTracks: TrackItem[] = [
 ];
 
 const commonVideos: VideoClip[] = [
+  { title: "Sherrie Sherrie - Sunshine", embed: "https://www.youtube.com/embed/jQytxOJ6ksQ" },
   { title: "DAVID GUETTA - DISTORTION (PAGA & Alexis Dante & MIIRAGE REMIX)", embed: "https://www.youtube.com/embed/tQnDYtmAsmU" },
   { title: "HUGEL - Movin To The Sun (Alexis Dante & PAGA Remix)", embed: "https://www.youtube.com/embed/yLuwf5FlG0U" },
   { title: "Let U Go - Alexis Dante x Paga", embed: "https://www.youtube.com/embed/jLncFjdTgGw" },
@@ -329,6 +339,8 @@ const storySlides = [
   "/images/sherrie/story-la-villa-paga.jpg",
   "/images/sherrie/story-paga-club-selfie.png",
   "/images/sherrie/story-paga-blue-crowd.png",
+  "/images/sherrie/story-paga-club-selfie.png",
+  "/images/sherrie/story-paga-club-selfie.png",
   "/images/sherrie/story-paga-red-dj.png",
   "/images/sherrie/story-paga-side.png",
   "/images/sherrie/story-paga-decks-red.jpg",
@@ -375,10 +387,12 @@ function AutoPhotoSlideshow({ light }: { light: boolean }) {
 function MiniDates({ events, labels, light }: { events: EventItem[]; labels: ReturnType<typeof getCopy>; light: boolean }) {
   const locale = useLocale();
   const [activeDate, setActiveDate] = useState(0);
+  const touchStartX = useRef<number | null>(null);
   const shown = events.slice(0, 5);
   if (!shown.length) return null;
   const event = shown[activeDate % shown.length];
   const date = new Date(event.date);
+  const showDate = (direction: number) => setActiveDate((activeDate + direction + shown.length) % shown.length);
 
   return (
     <aside className="w-full max-w-[290px]">
@@ -387,14 +401,28 @@ function MiniDates({ events, labels, light }: { events: EventItem[]; labels: Ret
         <span className={`text-[10px] font-bold ${light ? "text-[#111118]/40" : "text-white/45"}`}>{String(activeDate + 1).padStart(2, "0")} / {String(shown.length).padStart(2, "0")}</span>
       </div>
       <div className="grid grid-cols-[16px_minmax(0,1fr)_16px] items-center gap-3">
-        <button type="button" onClick={() => setActiveDate((activeDate - 1 + shown.length) % shown.length)} className="sherrie-scroll-dot" aria-label="Previous date" />
-        <Link href={`/${locale}/dates/${event.slug}`} className={`block min-h-[156px] rounded-[22px] p-4 shadow-[0_18px_60px_rgba(30,24,28,.12)] backdrop-blur-xl transition ${light ? "bg-white/62 text-[#111118] hover:bg-white/80" : "border border-white/12 bg-white/[0.07] text-white hover:bg-white/[0.10]"}`}>
+        <button type="button" onClick={() => showDate(-1)} className="sherrie-scroll-dot" aria-label="Previous date" />
+        <Link
+          href={`/${locale}/dates/${event.slug}`}
+          onTouchStart={(touchEvent) => {
+            touchStartX.current = touchEvent.touches[0]?.clientX ?? null;
+          }}
+          onTouchEnd={(touchEvent) => {
+            if (touchStartX.current === null) return;
+            const delta = touchEvent.changedTouches[0].clientX - touchStartX.current;
+            touchStartX.current = null;
+            if (Math.abs(delta) < 42) return;
+            touchEvent.preventDefault();
+            showDate(delta > 0 ? -1 : 1);
+          }}
+          className={`block min-h-[156px] touch-pan-y rounded-[22px] p-4 shadow-[0_18px_60px_rgba(30,24,28,.12)] backdrop-blur-[12px] transition ${light ? "border border-white/45 bg-white/25 text-[#111118] hover:bg-white/34" : "border border-white/12 bg-white/[0.07] text-white hover:bg-white/[0.10]"}`}
+        >
           <div className="flex items-start justify-between gap-3">
             <time className="text-[10px] font-black uppercase tracking-widest text-[#aa5d74]">
               <span className={`block text-4xl leading-none ${light ? "text-[#111118]" : "text-white"}`}>{date.toLocaleDateString("en", { day: "2-digit" })}</span>
               {date.toLocaleDateString("en", { month: "short" })}
             </time>
-            <span className={`rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-widest ${light ? "bg-black/5 text-[#111118]/64" : "bg-white/10 text-white/70"}`}>{labels.details}</span>
+            <span className={`rounded-full border px-2.5 py-1 text-[9px] font-black uppercase tracking-widest backdrop-blur-[8px] ${light ? "border-white/45 bg-white/25 text-[#111118]/68" : "border-white/12 bg-white/10 text-white/70"}`}>{labels.details}</span>
           </div>
           <strong className="mt-6 block text-lg leading-tight">{event.title_fr || event.title_en}</strong>
           <small className={`mt-3 flex items-center gap-2 text-xs ${light ? "text-[#111118]/55" : "text-white/55"}`}>
@@ -402,7 +430,7 @@ function MiniDates({ events, labels, light }: { events: EventItem[]; labels: Ret
             {event.city} / {event.venue}
           </small>
         </Link>
-        <button type="button" onClick={() => setActiveDate((activeDate + 1) % shown.length)} className="sherrie-scroll-dot" aria-label="Next date" />
+        <button type="button" onClick={() => showDate(1)} className="sherrie-scroll-dot" aria-label="Next date" />
       </div>
     </aside>
   );
@@ -499,11 +527,11 @@ function VideoRail({ clips, light, onPlay }: { clips: VideoClip[]; light: boolea
       <div className="min-w-0 overflow-hidden">
         <div ref={railRef} className="carousel-scroll flex gap-3 pb-3">
           {clips.map((clip) => (
-            <article key={clip.title} className={`carousel-item w-[min(74vw,310px)] shrink-0 overflow-hidden rounded-[18px] shadow-[0_14px_42px_rgba(12,10,18,.10)] ${light ? "bg-white/68 text-[#111118]" : "border border-white/10 bg-white/[0.06] text-white"}`}>
-              <button type="button" onClick={() => onPlay(clip)} className="group relative aspect-[16/10] w-full overflow-hidden text-left">
-                <img src={youtubeThumb(clip.embed)} alt="" className="h-full w-full scale-[1.08] object-cover object-center transition duration-300 group-hover:scale-[1.14]" />
+            <article key={clip.title} className={`carousel-item w-[min(76vw,330px)] shrink-0 overflow-hidden rounded-[18px] shadow-[0_14px_42px_rgba(12,10,18,.10)] backdrop-blur-[8px] ${light ? "bg-white/25 text-[#111118]" : "border border-white/10 bg-white/[0.06] text-white"}`}>
+              <button type="button" onClick={() => onPlay(clip)} className="group relative aspect-video w-full overflow-hidden text-left">
+                <img src={youtubeThumb(clip.embed)} alt="" className="h-full w-full scale-[1.12] object-cover object-center transition duration-300 group-hover:scale-[1.18]" />
                 <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/16 to-black/8" />
-                <span className="absolute left-1/2 top-1/2 inline-flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#111118] shadow-[0_0_28px_rgba(255,255,255,.35)]">
+                <span className="absolute left-1/2 top-1/2 inline-flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/58 bg-white/25 text-[#111118] shadow-[0_0_28px_rgba(255,255,255,.35)] backdrop-blur-[10px]">
                   <Play size={20} fill="currentColor" />
                 </span>
                 <strong className="absolute inset-x-3 bottom-3 line-clamp-2 text-xs font-black leading-tight text-white">{clip.title}</strong>
@@ -644,7 +672,7 @@ function ArtistProfile({
             <h3 className="mb-4 text-lg font-black uppercase tracking-[0.08em]">{labels.catalogue}</h3>
             <CompactCatalogue tracks={catalogue} light={light} onPlay={onPlay} />
           </div>
-          <div className={`min-w-0 lg:border-l lg:pl-7 ${light ? "border-[#111118]/18" : "border-white/16"}`}>
+          <div className={`min-w-0 lg:flex lg:min-h-[348px] lg:flex-col lg:justify-center lg:border-l lg:pl-7 ${light ? "border-[#111118]/18" : "border-white/16"}`}>
             <h3 className="mb-4 text-lg font-black uppercase tracking-[0.08em]">{labels.artistVideos}</h3>
             <VideoRail clips={videos} light={light} onPlay={onVideoPlay} />
           </div>
@@ -663,11 +691,9 @@ function InfoBlocks({ light }: { light: boolean }) {
   ];
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      {steps.map((step, index) => (
+      {steps.map((step) => (
         <article key={step.title} className="sherrie-action-card">
-          <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#d85e98]">0{index + 1}</p>
-          <div className="mt-4 h-9 w-9 rounded-full border border-[#d85e98]/25 shadow-[0_0_24px_rgba(216,94,152,.16)]" />
-          <h3 className="mt-5 text-xl font-black uppercase">{step.title}</h3>
+          <h3 className="text-xl font-black uppercase">{step.title}</h3>
           <p className="mt-3 text-sm leading-relaxed opacity-72">{step.copy}</p>
           <span className="mt-5 block text-2xl text-[#d85e98]">→</span>
         </article>
@@ -709,7 +735,7 @@ function FooterActions({ light }: { light: boolean }) {
             <p className="mt-3 text-sm leading-relaxed opacity-72">{labels.newsletterCopy}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required placeholder={labels.placeholder} className="sherrie-footer-input min-w-0 flex-1 rounded-2xl px-4 py-3 text-sm outline-none" />
-              <button type="submit" disabled={status === "loading"} className="sherrie-primary-cta rounded-2xl px-5 py-3 text-sm font-black uppercase tracking-[0.14em]">
+              <button type="submit" disabled={status === "loading"} className="sherrie-primary-cta rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.12em]">
                 {status === "loading" ? "..." : labels.subscribe}
               </button>
             </div>
@@ -720,8 +746,8 @@ function FooterActions({ light }: { light: boolean }) {
             <h3 className="text-2xl font-black uppercase tracking-[0.04em]">{labels.contactTitle}</h3>
             <p className="mt-3 text-sm leading-relaxed opacity-72">{labels.contactCopy}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href={`/${locale}/sponsors`} className="sherrie-primary-cta rounded-2xl px-5 py-3 text-sm font-black uppercase tracking-[0.14em]">{labels.sponsorCta}</Link>
-              <Link href={`/${locale}/rejoindre`} className="sherrie-outline-cta rounded-2xl px-5 py-3 text-sm font-black uppercase tracking-[0.14em]">{labels.joinCta}</Link>
+              <Link href={`/${locale}/sponsors`} className="sherrie-primary-cta rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.12em]">{labels.sponsorCta}</Link>
+              <Link href={`/${locale}/rejoindre`} className="sherrie-outline-cta rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.12em]">{labels.joinCta}</Link>
             </div>
           </div>
         </div>

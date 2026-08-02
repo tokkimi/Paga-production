@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import BottomNav from "@/components/BottomNav";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import NewReleasePlayer from "@/components/NewReleasePlayer";
 
 export default async function LocaleLayout({
   children,
@@ -26,6 +27,7 @@ export default async function LocaleLayout({
         <Navbar />
         <main className="flex-1 pb-28">{children}</main>
         <Footer />
+        <NewReleasePlayer />
         <BottomNav />
         <CookieBanner />
         <AnalyticsTracker />
