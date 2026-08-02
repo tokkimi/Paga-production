@@ -349,6 +349,14 @@ const storySlides = [
   "/images/sherrie/story-alexis-red.jpg",
 ];
 
+const darkHeroSlides = [
+  "/images/sherrie/dark-hero-01.jpg",
+  "/images/sherrie/dark-hero-02.jpg",
+  "/images/sherrie/dark-hero-03.jpg",
+  "/images/sherrie/dark-hero-04.jpg",
+  "/images/sherrie/dark-hero-05.jpg",
+];
+
 function SectionHeader({ eyebrow, title, copy: text, light }: { eyebrow?: string; title: string; copy?: string; light: boolean }) {
   return (
     <div className="mb-6">
@@ -829,6 +837,7 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
   const light = !darkMode;
   const [activeTrack, setActiveTrack] = useState<TrackItem | null>(null);
   const [activeVideo, setActiveVideo] = useState<VideoClip | null>(null);
+  const [darkHeroIndex, setDarkHeroIndex] = useState(0);
   const sherrieEvents = events.filter((event) => event.isB2B || event.artists?.some((item) => item.artist.slug === "alexis-dante"));
   const featuredEvents = sherrieEvents.length ? sherrieEvents : events;
 
@@ -840,11 +849,42 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
   const commonVideoList = commonVideos.concat(dbVideos.slice(0, 2));
   const pagaVideoList = [...pagaVideos, ...dbVideos].filter((clip, index, list) => list.findIndex((item) => item.title.toLowerCase() === clip.title.toLowerCase()) === index);
 
+  useEffect(() => {
+    if (!darkMode) {
+      setDarkHeroIndex(0);
+      return;
+    }
+    const timer = window.setInterval(() => {
+      setDarkHeroIndex((current) => (current + 1) % darkHeroSlides.length);
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [darkMode]);
+
   return (
     <>
       <div className={`sherrie-theme min-h-screen overflow-hidden transition-colors duration-500 ${light ? "bg-[#f7f4ef] text-[#111118]" : "bg-[#090708] text-white"}`}>
         <section className="relative min-h-[820px] overflow-hidden">
-          <img src="/images/sherrie/duo-booth.png" alt="" className="absolute inset-0 h-full w-full scale-[1.18] object-cover object-[40%_42%] opacity-100 sm:scale-100 sm:object-[58%_42%]" />
+          {light ? (
+            <img
+              src="/images/sherrie/duo-booth.png"
+              alt=""
+              fetchPriority="high"
+              className="absolute inset-0 h-full w-full scale-[1.18] object-cover object-[40%_42%] opacity-100 sm:scale-100 sm:object-[58%_42%]"
+            />
+          ) : (
+            darkHeroSlides.map((slide, index) => (
+              <img
+                key={slide}
+                src={slide}
+                alt=""
+                loading="eager"
+                decoding="async"
+                className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-300 ${
+                  darkHeroIndex === index ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))
+          )}
           <div className={`absolute inset-0 ${light ? "bg-[linear-gradient(90deg,rgba(247,244,239,.34),rgba(247,244,239,.18)_36%,rgba(247,244,239,.02)),linear-gradient(180deg,rgba(247,244,239,0),rgba(247,244,239,.58))]" : "bg-[linear-gradient(90deg,rgba(8,6,8,.50),rgba(8,6,8,.28)_36%,rgba(8,6,8,.06)),linear-gradient(180deg,rgba(8,6,8,.02),rgba(8,6,8,.60))]"}`} />
           <div className="relative z-10 mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-4 pb-36 pt-28 sm:px-6 xl:grid-cols-[minmax(0,1fr)_290px]">
             <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: "easeOut" }}>
