@@ -21,25 +21,43 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const contentType = req.headers.get("content-type") || "";
+    const body = contentType.includes("multipart/form-data")
+      ? Object.fromEntries((await req.formData()).entries())
+      : await req.json();
 
-    const body = await req.json();
-    const { brandName, contactEmail, phone, budget, campaignType, description } = body;
+    const pdf = body.pdf instanceof File ? body.pdf : null;
+    if (pdf && pdf.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: "PDF trop lourd" }, { status: 400 });
+    }
 
-    if (!brandName || !description) {
+    const brandName = String(body.brandName || "").trim();
+    const contactName = String(body.contactName || "").trim();
+    const contactEmail = String(body.contactEmail || "").trim();
+    const phone = String(body.phone || "").trim();
+    const website = String(body.website || "").trim();
+    const budget = String(body.budget || "").trim();
+    const campaignType = String(body.campaignType || "").trim();
+    const goals = String(body.goals || "").trim();
+    const deliverables = String(body.deliverables || "").trim();
+    const description = String(body.description || "").trim();
+
+    if (!brandName || !contactEmail || !description) {
       return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 });
     }
 
     const proposal = await prisma.sponsorProposal.create({
       data: {
         brandName,
-        contactEmail: contactEmail || session.user.email,
-        phone,
-        budget,
-        campaignType,
-        description,
-        userId: session.user.id,
+        contactName: contactName || null,
+        contactEmail,
+        phone: phone || null,
+        website: website || null,
+        budget: budget || null,
+        campaignType: campaignType || null,
+        description: [description, goals && `Objectifs : ${goals}`, deliverables && `Éléments attendus : ${deliverables}`].filter(Boolean).join("\n\n"),
+        requiredAssets: deliverables || null,
+        pressKitUrl: pdf ? `PDF reçu : ${pdf.name} (${Math.round(pdf.size / 1024)} Ko)` : null,
         status: "PENDING",
       },
     });

@@ -23,9 +23,9 @@ const fallbackTrack: ApiTrack = {
 };
 
 const labels = {
-  fr: { kicker: "Nouveau titre", cta: "Écouter le nouveau titre", close: "Réduire" },
-  en: { kicker: "New release", cta: "Listen to the new track", close: "Minimize" },
-  ko: { kicker: "새 릴리스", cta: "새 트랙 듣기", close: "줄이기" },
+  fr: { kicker: "Dernière sortie", close: "Fermer" },
+  en: { kicker: "Latest release", close: "Close" },
+  ko: { kicker: "최신 발매", close: "닫기" },
 };
 
 function normalizeYoutubeEmbed(url?: string | null) {
@@ -89,60 +89,74 @@ export default function NewReleasePlayer() {
   if (dismissed) return null;
 
   return (
-    <aside className="fixed inset-x-4 bottom-[112px] z-[70] mx-auto w-auto max-w-[390px] sm:left-auto sm:right-6 sm:mx-0">
+    <aside className="fixed inset-x-4 bottom-[112px] z-[70] mx-auto w-auto max-w-[460px] sm:left-auto sm:right-6 sm:mx-0">
       <div
-        className={`relative overflow-hidden rounded-[28px] p-3 backdrop-blur-[8px] ${
+        className={`relative overflow-hidden rounded-[30px] border p-2.5 backdrop-blur-xl ${
           isDark
-            ? "border border-white/18 bg-black/24 text-white shadow-[0_0_34px_rgba(255,119,174,.22),0_24px_80px_rgba(0,0,0,.42)]"
-            : "border border-white/55 bg-white/25 text-[#111118] shadow-[0_0_30px_rgba(255,255,255,.46),0_24px_80px_rgba(20,14,18,.20)]"
+            ? "border-white/18 bg-[#171923]/25 text-white shadow-[0_0_28px_rgba(255,255,255,.12),0_24px_80px_rgba(0,0,0,.44)]"
+            : "border-[#12131b]/12 bg-white/25 text-[#111118] shadow-[0_0_30px_rgba(255,255,255,.46),0_22px_70px_rgba(20,14,18,.16)]"
         }`}
       >
-        <img src={cover} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
-        <div className={`absolute inset-0 bg-gradient-to-r ${isDark ? "from-black/74 via-black/42 to-black/18" : "from-white/78 via-white/44 to-white/18"}`} />
-        <div className="relative">
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <span className={`rounded-full border border-[#d85e98]/40 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] backdrop-blur-[3px] ${isDark ? "bg-black/18 text-[#ff8dba]" : "bg-white/28 text-[#c85586]"}`}>
-              {text.kicker}
-            </span>
-            <button type="button" onClick={() => setDismissed(true)} className={`inline-flex h-8 w-8 items-center justify-center rounded-full transition ${isDark ? "bg-black/22 hover:bg-white/12" : "bg-white/28 hover:bg-white/45"}`} aria-label="Fermer">
+        {isOpen ? (
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setDismissed(true)}
+              className={`absolute right-2 top-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full transition ${
+                isDark ? "bg-black/35 hover:bg-white/14" : "bg-white/45 hover:bg-white/65"
+              }`}
+              aria-label={text.close}
+            >
               <X size={15} />
             </button>
-          </div>
-
-          {isOpen ? (
-            <div className="overflow-hidden rounded-[20px] border border-white/45 bg-black shadow-[inset_0_0_0_1px_rgba(255,255,255,.08)]">
+            <div className="overflow-hidden rounded-[24px] border border-white/30 bg-black">
               <iframe
                 src={iframeSrc}
                 title={track.title}
                 width="100%"
-                height="190"
+                height="210"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
             </div>
-          ) : (
-            <button type="button" onClick={() => setIsOpen(true)} className="group grid w-full grid-cols-[72px_minmax(0,1fr)_54px] items-center gap-3 text-left">
-              <img src={cover} alt="" className="h-[72px] w-[72px] rounded-[18px] object-cover shadow-[0_14px_30px_rgba(0,0,0,.18)]" />
-              <span className="min-w-0">
-                <strong className="block truncate text-lg font-black leading-tight">{track.title}</strong>
-                <span className="mt-1 block truncate text-xs font-semibold opacity-70">{track.artistName}</span>
-                <span className={`mt-2 inline-flex rounded-full border border-[#d85e98]/46 bg-white/18 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] ${isDark ? "text-[#ff8dba]" : "text-[#c85586]"}`}>
-                  {text.cta}
-                </span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-[64px_58px_minmax(0,1fr)_32px] items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className={`inline-flex h-16 w-16 items-center justify-center rounded-[20px] border backdrop-blur-xl transition hover:scale-[1.03] ${
+                isDark
+                  ? "border-white/12 bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,.10)]"
+                  : "border-[#111118]/10 bg-white/30 text-[#111118] shadow-[inset_0_1px_0_rgba(255,255,255,.50)]"
+              }`}
+              aria-label={text.kicker}
+            >
+              <Play size={24} fill="currentColor" />
+            </button>
+            <img src={cover} alt="" className="h-[58px] w-[58px] rounded-[16px] object-cover shadow-[0_12px_24px_rgba(0,0,0,.18)]" />
+            <button type="button" onClick={() => setIsOpen(true)} className="min-w-0 text-left">
+              <span className={`block truncate text-xs font-black uppercase tracking-[0.18em] ${isDark ? "text-white/58" : "text-[#111118]/50"}`}>
+                {text.kicker}
               </span>
-              <span className="inline-flex h-[54px] w-[54px] items-center justify-center rounded-[18px] border border-white/60 bg-white/25 text-[#111118] shadow-[0_0_24px_rgba(255,255,255,.52)] backdrop-blur-[8px] transition group-hover:scale-105">
-                <Play size={22} fill="currentColor" />
+              <strong className="mt-0.5 block truncate text-lg font-black uppercase leading-tight">{track.title}</strong>
+              <span className={`block truncate text-xs font-black uppercase tracking-[0.12em] ${isDark ? "text-white/60" : "text-[#111118]/48"}`}>
+                {track.artistName}
               </span>
             </button>
-          )}
-
-          {isOpen && (
-            <button type="button" onClick={() => setIsOpen(false)} className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] opacity-60 transition hover:opacity-100">
-              {text.close}
+            <button
+              type="button"
+              onClick={() => setDismissed(true)}
+              className={`inline-flex h-8 w-8 items-center justify-center rounded-full transition ${
+                isDark ? "text-white/45 hover:bg-white/10 hover:text-white" : "text-[#111118]/38 hover:bg-white/40 hover:text-[#111118]"
+              }`}
+              aria-label={text.close}
+            >
+              <X size={15} />
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </aside>
   );
