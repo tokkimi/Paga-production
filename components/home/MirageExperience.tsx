@@ -897,7 +897,14 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
                 }`}
               />
             </motion.div>
-            <motion.div className="mt-24 justify-self-center sm:mt-12 xl:mt-0 xl:justify-self-auto" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }}>
+            <motion.div
+              className={`justify-self-center xl:justify-self-auto ${
+                darkMode ? "mt-40 sm:mt-24 xl:mt-28" : "mt-24 sm:mt-12 xl:mt-0"
+              }`}
+              initial={{ opacity: 0, x: 28 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }}
+            >
               <MiniDates events={featuredEvents} labels={labels} light={light} />
             </motion.div>
           </div>
