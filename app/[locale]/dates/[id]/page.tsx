@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Calendar, MapPin, Ticket, Users, ArrowLeft, ExternalLink } from "lucide-react";
+import { Calendar, MapPin, Ticket, ArrowLeft, ExternalLink } from "lucide-react";
 import EventCard from "@/components/EventCard";
 import type { Metadata } from "next";
 
@@ -83,12 +83,6 @@ export default async function EventPage({ params }: EventPageProps) {
           </p>
 
           <div className="flex flex-wrap items-start gap-3 mb-4">
-            {event.isB2B && (
-              <span className="badge-b2b flex items-center gap-1">
-                <Users size={10} />
-                B2B
-              </span>
-            )}
             {isPast && (
               <span className="text-xs font-bold uppercase tracking-wider text-white/30 border border-white/15 rounded px-2 py-0.5">
                 Passé

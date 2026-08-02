@@ -48,7 +48,7 @@ export default function Newsletter() {
           <div className="relative overflow-hidden rounded-2xl border border-cyan-200/15 bg-white/[0.035] px-5 py-7 backdrop-blur-xl sm:px-8">
             <div className="relative z-10 grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)]">
               <div>
-                <p className="mb-2 text-[10px] font-black uppercase tracking-[0.32em] text-cyan-300">Paga updates</p>
+                <p className="mb-2 text-[10px] font-black uppercase tracking-[0.32em] text-cyan-300">Sherrie updates</p>
                 <h2 className="text-lg font-bold uppercase tracking-[0.08em]">{t("title")}</h2>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/48">{t("subtitle")}</p>
               </div>

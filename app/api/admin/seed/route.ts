@@ -34,10 +34,10 @@ async function runSeed() {
   const alexis = await prisma.artist.create({
     data: {
       slug: "alexis-dante", name: "Alexis Dante",
-      bio_fr: "Alexis Dante est un DJ et producteur basé dans le Sud de la France. Partenaire B2B régulier de Paga, il apporte sa sensibilité unique aux sets partagés.",
-      bio_en: "Alexis Dante is a DJ and producer based in the South of France. A regular B2B partner of Paga, he brings his unique sensitivity to shared sets.",
-      shortBio_fr: "DJ & producteur. B2B Paga. Afro house, melodic techno.",
-      shortBio_en: "DJ & producer. B2B Paga. Afro house, melodic techno.",
+      bio_fr: "Alexis Dante est un DJ et producteur basé dans le Sud de la France. Partenaire musical régulier de Paga, il apporte sa sensibilité unique aux sets partagés.",
+      bio_en: "Alexis Dante is a DJ and producer based in the South of France. A regular musical partner of Paga, he brings his unique sensitivity to shared sets.",
+      shortBio_fr: "DJ & producteur. Duo avec Paga. Afro house, melodic techno.",
+      shortBio_en: "DJ & producer. Duo with Paga. Afro house, melodic techno.",
       instagram: "https://www.instagram.com/alexis.dante", isActive: true, order: 1,
     },
   });

@@ -8,7 +8,7 @@ export default function PolitiqueConfidentialitePage() {
         <div className="space-y-8 text-white/70 leading-relaxed">
           <section>
             <h2 className="text-xl font-bold text-white mb-3">1. Responsable du traitement</h2>
-            <p>Paga Production est responsable du traitement de vos données personnelles collectées via ce site.</p>
+            <p>Sherrie Sherrie est responsable du traitement de vos données personnelles collectées via ce site.</p>
           </section>
 
           <section>

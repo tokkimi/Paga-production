@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import MirageExperience from "@/components/home/MirageExperience";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
@@ -11,13 +11,13 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home.hero" });
   const descriptions = {
-    fr: "Paga Production - Paga, Sherrie Sherrie avec Alexis Dante, dates, musique, videos et partenariats.",
-    en: "Paga Production - Paga, Sherrie Sherrie with Alexis Dante, dates, music, videos and partnerships.",
-    ko: "Paga Production - Paga와 Alexis Dante의 Sherrie Sherrie, 공연 일정, 음악, 영상 및 파트너십.",
+    fr: "Sherrie Sherrie - Paga et Alexis Dante, dates, musique, videos et partenariats.",
+    en: "Sherrie Sherrie - Paga and Alexis Dante, dates, music, videos and partnerships.",
+    ko: "Sherrie Sherrie - Paga와 Alexis Dante, 공연 일정, 음악, 영상 및 파트너십.",
   };
 
   return {
-    title: "Paga Production | " + t("subtitle"),
+    title: "Sherrie Sherrie | " + t("subtitle"),
     description: descriptions[locale as keyof typeof descriptions] || descriptions.en,
   };
 }

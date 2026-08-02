@@ -16,7 +16,7 @@
   "home": {
     "hero": {
       "subtitle": "Summer Tour 2026",
-      "b2b": "B2B with Alexis Dante",
+      "b2b": "With Alexis Dante",
       "cta_dates": "View Dates",
       "cta_artists": "Discover Artists",
       "scroll": "Scroll"
@@ -80,7 +80,7 @@
   },
   "artists": {
     "title": "Artists",
-    "subtitle": "Discover Paga Production artists",
+    "subtitle": "Discover Sherrie Sherrie artists",
     "filter_all": "All",
     "listen": "Listen",
     "events": "Dates",
@@ -93,13 +93,13 @@
     "title": "Dates",
     "subtitle": "All events and concerts",
     "filter_all": "All",
-    "filter_b2b": "B2B",
+    "filter_b2b": "Duo",
     "upcoming": "Upcoming",
     "past": "Past",
     "no_upcoming": "No upcoming dates",
     "no_past": "No past dates",
     "tickets": "Book",
-    "b2b_label": "B2B",
+    "b2b_label": "Duo",
     "sold_out": "Sold out",
     "free": "Free",
     "tba": "TBA"
@@ -107,7 +107,7 @@
   "sponsors": {
     "eyebrow": "Partnerships",
     "title": "Partnerships",
-    "subtitle": "Connect your brand with Paga Production through a custom proposal.",
+    "subtitle": "Connect your brand with Sherrie Sherrie through a custom proposal.",
     "why_title": "Why join us?",
     "reach_title": "Our Reach",
     "reach_desc": "Thousands of fans across France, Europe and a strong opening toward Asia",
@@ -157,7 +157,7 @@
   },
   "join": {
     "title": "Join the Family",
-    "subtitle": "Are you an artist and want to join the Paga Production universe?",
+    "subtitle": "Are you an artist and want to join the Sherrie Sherrie universe?",
     "step1": "Personal info",
     "step2": "Music links",
     "step3": "Social media",
@@ -182,7 +182,7 @@
     "login_title": "Login",
     "login_subtitle": "Welcome back",
     "register_title": "Sign Up",
-    "register_subtitle": "Join the Paga Production community",
+    "register_subtitle": "Join the Sherrie Sherrie community",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm password",
@@ -242,7 +242,7 @@
     "newsletter_btn": "Subscribe",
     "newsletter_error": "An error occurred.",
     "made": "Made in the South of France",
-    "copyright": "© 2026 Paga Production. All rights reserved.",
+    "copyright": "© 2026 Sherrie Sherrie. All rights reserved.",
     "cgv": "Terms",
     "mentions": "Legal Notice",
     "privacy": "Privacy",

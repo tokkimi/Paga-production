@@ -60,7 +60,7 @@ export default function SponsorsPage() {
   };
 
   return (
-    <div className="min-h-screen px-4 pb-20 pt-24">
+    <div className="sherrie-page min-h-screen px-4 pb-20 pt-24">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-primary">{t("eyebrow")}</p>

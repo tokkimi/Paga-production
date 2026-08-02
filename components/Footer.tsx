@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Send } from "lucide-react";
@@ -10,10 +11,13 @@ export default function Footer() {
   const tNav = useTranslations("nav");
   const tNewsletter = useTranslations("home.newsletter");
   const locale = useLocale();
+  const pathname = usePathname();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
   const getLocalePath = (href: string) => "/" + locale + href;
+
+  if (pathname === `/${locale}` || pathname === `/${locale}/`) return null;
 
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,55 +39,43 @@ export default function Footer() {
   };
 
   const links = [
-    { label: tNav("artists"), href: "/artistes" },
     { label: tNav("dates"), href: "/dates" },
     { label: tNav("sponsors"), href: "/sponsors" },
     { label: tNav("join"), href: "/rejoindre" },
   ];
 
   return (
-    <footer className="border-t border-white/[0.06] pb-28">
+    <footer className="sherrie-page border-t border-[#111118]/10 pb-28">
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.15fr_.75fr_1.1fr]">
-          <div>
-            <Link href={getLocalePath("/")} className="mb-5 block">
-              <div className="text-xl font-black tracking-[0.15em] uppercase text-white">PAGA</div>
-              <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.35em] text-primary/70">
-                PRODUCTION
-              </div>
-            </Link>
-            <p className="mb-6 text-xs leading-relaxed text-white/40">{t("description")}</p>
-            <a
-              href="https://www.instagram.com/paga_lmsa"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs tracking-wider text-white/40 transition-colors hover:text-white"
-            >
-              Instagram
-            </a>
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1fr_.85fr_1.15fr]">
+          <div className="rounded-[22px] bg-white/62 p-5 shadow-[0_18px_58px_rgba(30,24,28,.08)]">
+            <h4 className="mb-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#aa5d74]">Newsletter</h4>
+            <p className="text-sm leading-relaxed text-[#111118]/58">{t("newsletter_desc")}</p>
           </div>
 
           <div>
-            <h4 className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">
+            <h4 className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#111118]/35">
               {t("links")}
             </h4>
             <ul className="space-y-3">
               {links.map((link) => (
                 <li key={link.href}>
-                  <Link href={getLocalePath(link.href)} className="text-sm text-white/50 transition-colors hover:text-white">
+                  <Link href={getLocalePath(link.href)} className="text-sm text-[#111118]/58 transition-colors hover:text-[#111118]">
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-            <div className="mt-6 border-t border-white/5 pt-6">
+            <div className="mt-6 border-t border-[#111118]/10 pt-6">
               <ul className="space-y-2">
                 {[
                   { label: t("mentions"), href: "/mentions-legales" },
                   { label: t("privacy"), href: "/politique-confidentialite" },
+                  { label: "CGV", href: "/cgv" },
+                  { label: "Cookies", href: "/cookies" },
                 ].map((link) => (
                   <li key={link.href}>
-                    <Link href={getLocalePath(link.href)} className="text-xs text-white/30 transition-colors hover:text-white/60">
+                    <Link href={getLocalePath(link.href)} className="text-xs text-[#111118]/42 transition-colors hover:text-[#111118]/70">
                       {link.label}
                     </Link>
                   </li>
@@ -93,10 +85,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">
+            <h4 className="mb-5 text-[10px] font-bold uppercase tracking-[0.3em] text-[#111118]/35">
               {t("newsletter")}
             </h4>
-            <p className="mb-4 text-xs leading-relaxed text-white/40">{t("newsletter_desc")}</p>
+            <p className="mb-4 text-xs leading-relaxed text-[#111118]/50">{t("newsletter_desc")}</p>
             {status === "success" ? (
               <p className="text-xs text-green-400/80">{tNewsletter("success")}</p>
             ) : (
@@ -119,9 +111,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-white/5 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-white/25">{t("copyright")}</p>
-          <p className="text-xs text-white/20">{t("made")}</p>
+        <div className="mt-10 flex flex-col gap-2 border-t border-[#111118]/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-[#111118]/35">{t("copyright")}</p>
+          <p className="text-xs text-[#111118]/30">{t("made")}</p>
         </div>
       </div>
     </footer>

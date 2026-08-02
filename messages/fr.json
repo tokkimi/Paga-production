@@ -16,7 +16,7 @@
   "home": {
     "hero": {
       "subtitle": "Summer Tour 2026",
-      "b2b": "En B2B avec Alexis Dante",
+      "b2b": "Avec Alexis Dante",
       "cta_dates": "Voir les dates",
       "cta_artists": "Découvrir les artistes",
       "scroll": "Défiler"
@@ -80,7 +80,7 @@
   },
   "artists": {
     "title": "Artistes",
-    "subtitle": "Découvrez les artistes de Paga Production",
+    "subtitle": "Découvrez les artistes de Sherrie Sherrie",
     "filter_all": "Tous",
     "listen": "Écouter",
     "events": "Dates",
@@ -93,13 +93,13 @@
     "title": "Dates",
     "subtitle": "Tous les événements et concerts",
     "filter_all": "Tous",
-    "filter_b2b": "B2B",
+    "filter_b2b": "Duo",
     "upcoming": "À venir",
     "past": "Passées",
     "no_upcoming": "Aucune date à venir",
     "no_past": "Aucune date passée",
     "tickets": "Réserver",
-    "b2b_label": "B2B",
+    "b2b_label": "Duo",
     "sold_out": "Complet",
     "free": "Gratuit",
     "tba": "À confirmer"
@@ -107,7 +107,7 @@
   "sponsors": {
     "eyebrow": "Partenariats",
     "title": "Partenariats",
-    "subtitle": "Associez votre marque à l'énergie de Paga Production avec une proposition sur mesure.",
+    "subtitle": "Associez votre marque à l'énergie de Sherrie Sherrie avec une proposition sur mesure.",
     "why_title": "Pourquoi nous rejoindre ?",
     "reach_title": "Notre portée",
     "reach_desc": "Des milliers de fans en France, en Europe et une ouverture forte vers l'Asie",
@@ -157,7 +157,7 @@
   },
   "join": {
     "title": "Rejoindre la famille",
-    "subtitle": "Vous êtes artiste et vous voulez intégrer l'univers Paga Production ?",
+    "subtitle": "Vous êtes artiste et vous voulez intégrer l'univers Sherrie Sherrie ?",
     "step1": "Infos personnelles",
     "step2": "Liens musicaux",
     "step3": "Réseaux sociaux",
@@ -182,7 +182,7 @@
     "login_title": "Connexion",
     "login_subtitle": "Bienvenue de retour",
     "register_title": "Inscription",
-    "register_subtitle": "Rejoignez la communauté Paga Production",
+    "register_subtitle": "Rejoignez la communauté Sherrie Sherrie",
     "email": "Email",
     "password": "Mot de passe",
     "confirm_password": "Confirmer le mot de passe",
@@ -242,7 +242,7 @@
     "newsletter_btn": "S'abonner",
     "newsletter_error": "Une erreur est survenue.",
     "made": "Créé dans le Sud de la France",
-    "copyright": "© 2026 Paga Production. Tous droits réservés.",
+    "copyright": "© 2026 Sherrie Sherrie. Tous droits réservés.",
     "cgv": "CGV",
     "mentions": "Mentions légales",
     "privacy": "Confidentialité",

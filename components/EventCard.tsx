@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
-import { MapPin, Ticket, Users } from "lucide-react";
+import { MapPin, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface EventCardProps {
@@ -46,38 +46,32 @@ export default function EventCard({ event, index = 0, compact = false }: EventCa
       <Link href={`/${locale}/dates/${event.slug}`} className="block">
         <div
           className={cn(
-            "group grid items-center gap-4 rounded-2xl border border-cyan-200/15 bg-white/[0.045] backdrop-blur-xl transition-all duration-200 hover:border-cyan-200/35 hover:bg-white/[0.075]",
+            "event-card-shell group grid items-center gap-4 rounded-2xl border border-cyan-200/15 bg-white/[0.045] backdrop-blur-xl transition-all duration-200 hover:border-cyan-200/35 hover:bg-white/[0.075]",
             compact ? "grid-cols-[62px_minmax(0,1fr)] px-4 py-3" : "grid-cols-[78px_minmax(0,1fr)_auto] px-5 py-4",
             isPast && "opacity-45"
           )}
         >
           <div className="text-center">
-            <div className={cn("text-3xl font-black leading-none tabular-nums", event.isFeatured ? "text-cyan-300" : "text-white")}>
+            <div className={cn("event-card-day text-3xl font-black leading-none tabular-nums", event.isFeatured ? "text-cyan-300" : "text-white")}>
               {day}
             </div>
-            <div className="mt-1 text-[10px] font-black uppercase tracking-widest text-white/42">
+            <div className="event-card-muted mt-1 text-[10px] font-black uppercase tracking-widest text-white/42">
               {month}
             </div>
           </div>
 
           <div className="min-w-0">
             <div className="mb-1 flex flex-wrap items-center gap-2">
-              {event.isB2B && (
-                <span className="badge-b2b inline-flex items-center gap-1">
-                  <Users size={9} />
-                  B2B
-                </span>
-              )}
               {event.isFeatured && (
                 <span className="rounded-full border border-cyan-200/20 bg-cyan-300/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-cyan-200">
                   Featured
                 </span>
               )}
             </div>
-            <h3 className={cn("truncate font-bold tracking-[-0.03em] text-white transition-colors group-hover:text-cyan-200", compact ? "text-sm" : "text-lg")}>
+            <h3 className={cn("event-card-title truncate font-bold tracking-[-0.03em] text-white transition-colors group-hover:text-cyan-200", compact ? "text-sm" : "text-lg")}>
               {title}
             </h3>
-            <div className="mt-1 flex items-center gap-1.5 text-xs text-white/48">
+            <div className="event-card-muted mt-1 flex items-center gap-1.5 text-xs text-white/48">
               <MapPin size={11} className="shrink-0 text-cyan-300/65" />
               <span className="truncate">
                 {event.venue} / {event.city}
@@ -92,10 +86,10 @@ export default function EventCard({ event, index = 0, compact = false }: EventCa
               {event.ticketUrl && !isPast ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-cyan-200/25 px-3 py-2 text-xs font-bold text-cyan-200 group-hover:bg-cyan-300/10">
                   <Ticket size={12} />
-                  Details
+                  Détails
                 </span>
               ) : (
-                <span className="text-xs font-bold uppercase tracking-wider text-white/32">Details</span>
+                <span className="event-card-muted text-xs font-bold uppercase tracking-wider text-white/32">Détails</span>
               )}
             </div>
           )}

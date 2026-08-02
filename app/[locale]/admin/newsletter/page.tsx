@@ -95,7 +95,7 @@ export default function AdminNewsletterPage() {
             <form onSubmit={handleSend} className="space-y-4">
               <div>
                 <label className="text-xs font-medium text-white/60 block mb-1.5">Sujet *</label>
-                <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required className="form-input" placeholder="🎵 Nouvelles dates Paga Production" />
+                <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)} required className="form-input" placeholder="🎵 Nouvelles dates Sherrie Sherrie" />
               </div>
               <div>
                 <label className="text-xs font-medium text-white/60 block mb-1.5">Contenu HTML *</label>

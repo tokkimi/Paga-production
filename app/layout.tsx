@@ -13,26 +13,26 @@ const metadataBase = new URL(siteUrl.startsWith("http") ? siteUrl : "https://" +
 
 export const metadata: Metadata = {
   title: {
-    default: "Paga Production | DJ Label",
-    template: "%s | Paga Production",
+    default: "Sherrie Sherrie | DJ Project",
+    template: "%s | Sherrie Sherrie",
   },
   description:
-    "Paga Production is a DJ label and artist management platform for bookings, music, events and brand partnerships.",
-  keywords: ["Paga", "DJ", "label", "France", "Korea", "Asia", "Alexis Dante", "electro", "techno", "summer tour 2026"],
+    "Sherrie Sherrie is the DJ project by Paga and Alexis Dante for bookings, music, events and brand partnerships.",
+  keywords: ["Sherrie Sherrie", "Paga", "DJ", "France", "Korea", "Asia", "Alexis Dante", "electro", "house", "summer tour 2026"],
   openGraph: {
     type: "website",
     locale: "fr_FR",
     url: "https://paga-production.vercel.app",
-    siteName: "Paga Production",
-    title: "Paga Production | DJ Label",
+    siteName: "Sherrie Sherrie",
+    title: "Sherrie Sherrie | DJ Project",
     description:
-      "DJ label and artist management platform for bookings, music, events and brand partnerships.",
+      "DJ project by Paga and Alexis Dante for bookings, music, events and brand partnerships.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Paga Production",
+    title: "Sherrie Sherrie",
     description:
-      "DJ label and artist management platform for bookings, music, events and brand partnerships.",
+      "DJ project by Paga and Alexis Dante for bookings, music, events and brand partnerships.",
   },
   metadataBase,
 };

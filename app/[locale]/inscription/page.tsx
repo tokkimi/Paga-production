@@ -72,7 +72,7 @@ export default function InscriptionPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 pt-16">
+    <div className="sherrie-page min-h-screen flex items-center justify-center px-4 pt-16">
       <div className="absolute inset-0">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-primary/8 blur-[100px]" />
       </div>
@@ -84,19 +84,14 @@ export default function InscriptionPage() {
       >
         <div className="text-center mb-8">
           <Link href={`/${locale}`}>
-            <div className="text-3xl font-black tracking-[0.15em] uppercase text-white">
-              PAGA
-            </div>
-            <div className="text-xs font-semibold tracking-[0.3em] uppercase text-primary">
-              PRODUCTION
-            </div>
+            <img src="/sherrie-sherrie.png" alt="Sherrie Sherrie" className="mx-auto h-20 w-auto max-w-[220px] object-contain drop-shadow-[0_0_18px_rgba(209,93,143,.24)]" />
           </Link>
         </div>
 
         <div className="glass-card p-8">
           <h1 className="text-2xl font-black uppercase mb-2">Inscription</h1>
           <p className="text-white/60 text-sm mb-8">
-            Rejoignez la communauté Paga Production
+            Rejoignez la communauté Sherrie Sherrie
           </p>
 
           <div className="grid grid-cols-2 gap-3 mb-6">

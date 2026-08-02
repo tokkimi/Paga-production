@@ -15,11 +15,12 @@ import {
   Settings,
   Music,
   Briefcase,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { key: "artists", href: "/artistes" },
   { key: "dates", href: "/dates" },
   { key: "sponsors", href: "/sponsors" },
   { key: "join", href: "/rejoindre" },
@@ -41,12 +42,20 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [sherrieDarkMode, setSherrieDarkMode] = useState(false);
   const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
+  const sherrieLightMode = !sherrieDarkMode;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const isDark = localStorage.getItem("sherrie-theme") === "dark";
+    setSherrieDarkMode(isDark);
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
   }, []);
 
   const switchLocale = (newLocale: string) => {
@@ -62,15 +71,19 @@ export default function Navbar() {
     return pathname.includes(href);
   };
 
+  const toggleSherrieTheme = () => {
+    const next = !sherrieDarkMode;
+    setSherrieDarkMode(next);
+    localStorage.setItem("sherrie-theme", next ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
+    window.dispatchEvent(new CustomEvent("sherrie-theme-change", { detail: next ? "dark" : "light" }));
+  };
+
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled
-          ? "glass-nav py-3"
-          : isHome
-            ? "py-5 bg-white/20 backdrop-blur-xl"
-            : "py-5 bg-transparent"
+        "sherrie-floating-top fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        !isHome || scrolled ? "sherrie-floating-top-solid py-3" : "py-5"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,14 +91,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href={getLocalePath("/")}
-            className="flex flex-col leading-none group"
+            className="group flex items-center leading-none"
           >
-            <span className={cn("text-xl font-black tracking-[0.15em] uppercase transition-colors duration-200 group-hover:text-primary", isHome && !scrolled ? "text-[#191724]" : "text-white")}>
-              PAGA
-            </span>
-            <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-primary">
-              PRODUCTION
-            </span>
+            <img src="/sherrie-sherrie.png" alt="Sherrie Sherrie" className="h-20 w-auto max-w-[220px] object-contain saturate-90 drop-shadow-[0_0_22px_rgba(209,93,143,.28)] transition duration-200 group-hover:brightness-110" />
           </Link>
 
           {/* Desktop Nav */}
@@ -102,9 +110,7 @@ export default function Navbar() {
                     "relative px-4 py-2 text-sm font-medium uppercase tracking-wider transition-colors duration-200",
                     isActive(link.href)
                       ? "text-primary"
-                      : isHome && !scrolled
-                        ? "text-[#191724]/70 hover:text-[#191724]"
-                        : "text-white/80 hover:text-white"
+                      : sherrieLightMode ? "text-[#111118]/68 hover:text-[#111118]" : "text-white/80 hover:text-white"
                   )}
                 >
                   {t(link.key as "artists")}
@@ -122,15 +128,15 @@ export default function Navbar() {
           {/* Right side */}
           <div className="flex items-center gap-3">
             {/* Language switcher */}
-            <div className="hidden md:flex items-center gap-1 glass-card px-3 py-1.5 rounded-full">
+            <div className={cn("hidden md:flex items-center gap-1 rounded-full px-3 py-1.5 backdrop-blur-[2px]", sherrieLightMode ? "bg-white/12 text-[#111118]" : "glass-card")}>
               {locales.map((item, index) => (
                 <div key={item.code} className="flex items-center gap-1">
-                  {index > 0 && <span className={cn("text-xs", isHome && !scrolled ? "text-[#191724]/20" : "text-white/20")}>|</span>}
+                  {index > 0 && <span className={cn("text-xs", sherrieLightMode ? "text-[#111118]/20" : "text-white/20")}>|</span>}
                   <button
                     onClick={() => switchLocale(item.code)}
                     className={cn(
                       "text-xs font-bold uppercase tracking-wider transition-colors",
-                      locale === item.code ? "text-primary" : isHome && !scrolled ? "text-[#191724]/45 hover:text-[#191724]" : "text-white/50 hover:text-white"
+                      locale === item.code ? "text-primary" : sherrieLightMode ? "text-[#111118]/50 hover:text-[#111118]" : "text-white/50 hover:text-white"
                     )}
                   >
                     {item.label}
@@ -139,15 +145,24 @@ export default function Navbar() {
               ))}
             </div>
 
-            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2.5 py-1.5 backdrop-blur-xl md:hidden">
+            <button
+              type="button"
+              onClick={toggleSherrieTheme}
+              aria-label={sherrieDarkMode ? "Mode clair" : "Mode sombre"}
+              className={cn("hidden h-9 w-9 items-center justify-center rounded-full backdrop-blur-[2px] transition md:flex", sherrieLightMode ? "bg-white/12 text-[#111118]/75 hover:text-[#111118]" : "border border-white/10 bg-black/20 text-white/80 hover:bg-white/10 hover:text-white")}
+            >
+              {sherrieDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+
+            <div className={cn("flex items-center gap-1 rounded-full px-2.5 py-1.5 backdrop-blur-[2px] md:hidden", sherrieLightMode ? "bg-white/12 text-[#111118]" : "border border-white/10 bg-black/20")}>
               {locales.map((item, index) => (
                 <div key={item.code} className="flex items-center gap-1">
-                  {index > 0 && <span className="text-white/20">/</span>}
+                  {index > 0 && <span className={cn(sherrieLightMode ? "text-[#111118]/20" : "text-white/20")}>/</span>}
                   <button
                     onClick={() => switchLocale(item.code)}
                     className={cn(
                       "text-[10px] font-black uppercase tracking-wider transition-colors",
-                      locale === item.code ? "text-cyan-300" : "text-white/40"
+                      locale === item.code ? "text-cyan-300" : sherrieLightMode ? "text-[#111118]/44" : "text-white/40"
                     )}
                   >
                     {item.label}
@@ -155,6 +170,15 @@ export default function Navbar() {
                 </div>
               ))}
             </div>
+
+            <button
+              type="button"
+              onClick={toggleSherrieTheme}
+              aria-label={sherrieDarkMode ? "Mode clair" : "Mode sombre"}
+              className={cn("flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-[2px] transition md:hidden", sherrieLightMode ? "bg-white/12 text-[#111118]/75" : "border border-white/10 bg-black/20 text-white/80 hover:bg-white/10")}
+            >
+              {sherrieDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
 
             {/* Auth */}
             {session ? (
@@ -229,7 +253,7 @@ export default function Navbar() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   href={getLocalePath("/connexion")}
-                  className={cn("px-3 py-2 text-sm font-medium transition-colors", isHome && !scrolled ? "text-[#191724]/70 hover:text-[#191724]" : "text-white/80 hover:text-white")}
+                className={cn("px-3 py-2 text-sm font-medium transition-colors", sherrieLightMode ? "text-[#111118]/68 hover:text-[#111118]" : "text-white/80 hover:text-white")}
                 >
                   {t("login")}
                 </Link>

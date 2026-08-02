@@ -31,7 +31,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   ];
 
   return <div className="min-h-screen px-4 pb-28 pt-24"><div className="mx-auto max-w-7xl">
-    <div className="mb-9"><p className="text-xs font-bold uppercase tracking-[0.4em] text-cyan-300">Administration</p><h1 className="mt-2 text-4xl font-black uppercase">Paga Control Room</h1><p className="mt-2 text-white/45">Bienvenue {session.user.name || session.user.email}. Toute l'activité est centralisée ici.</p></div>
+    <div className="mb-9"><p className="text-xs font-bold uppercase tracking-[0.4em] text-cyan-300">Administration</p><h1 className="mt-2 text-4xl font-black uppercase">Sherrie Control Room</h1><p className="mt-2 text-white/45">Bienvenue {session.user.name || session.user.email}. Toute l'activité est centralisée ici.</p></div>
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{cards.map((card) => { const Icon = card.icon; return <Link key={card.label} href={card.href} className="glass-card group p-5 transition-all hover:border-cyan-200/35"><Icon size={22} className={"mb-4 " + card.color} /><div className="text-3xl font-black transition-colors group-hover:text-cyan-200">{card.value}</div><div className="mt-1 text-[10px] font-bold uppercase tracking-wider text-white/40">{card.label}</div></Link>; })}</div>
     <div className="mt-6 grid gap-4 lg:grid-cols-3">
       <Link href={"/" + locale + "/admin/partenariats"} className="glass-card p-6"><Megaphone className="mb-4 text-orange-300" /><h2 className="font-bold">Piloter le business</h2><p className="mt-2 text-sm text-white/45">Opportunités, campagnes, bookings, budgets, livrables et documents.</p></Link>

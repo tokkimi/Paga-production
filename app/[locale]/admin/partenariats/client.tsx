@@ -138,7 +138,7 @@ export default function PartenariatsClient() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.35em] text-cyan-300">CRM Paga Production</p>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.35em] text-cyan-300">CRM Sherrie Sherrie</p>
             <h1 className="text-3xl font-black uppercase sm:text-4xl">Business board</h1>
             <p className="mt-2 text-sm text-white/45">Sponsors, campagnes, bookings, budgets, contacts et documents.</p>
           </div>

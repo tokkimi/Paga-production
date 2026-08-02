@@ -37,17 +37,17 @@ async function main() {
   const alexis = await prisma.artist.create({
     data: {
       slug: "alexis-dante", name: "Alexis Dante",
-      bio_fr: "Alexis Dante est un DJ et producteur basé dans le Sud de la France. Partenaire B2B régulier de Paga, il apporte sa sensibilité unique aux sets partagés, mêlant profondeur musicale et énergie festival. Son style éclectique voyage de l'afro house à la techno mélodique.\n\nEnsemble, Paga et Alexis Dante forment l'un des duos les plus prometteurs de la scène électronique française.",
-      bio_en: "Alexis Dante is a DJ and producer based in the South of France. A regular B2B partner of Paga, he brings his unique sensitivity to shared sets, blending musical depth with festival energy.\n\nTogether, Paga and Alexis Dante form one of the most promising duos on the French electronic music scene.",
-      shortBio_fr: "DJ & producteur. B2B Paga. Afro house, melodic techno.",
-      shortBio_en: "DJ & producer. B2B Paga. Afro house, melodic techno.",
+      bio_fr: "Alexis Dante est un DJ et producteur basé dans le Sud de la France. Partenaire musical régulier de Paga, il apporte sa sensibilité unique aux sets partagés, mêlant profondeur musicale et énergie festival. Son style éclectique voyage de l'afro house à la techno mélodique.\n\nEnsemble, Paga et Alexis Dante forment l'un des duos les plus prometteurs de la scène électronique française.",
+      bio_en: "Alexis Dante is a DJ and producer based in the South of France. A regular musical partner of Paga, he brings his unique sensitivity to shared sets, blending musical depth with festival energy.\n\nTogether, Paga and Alexis Dante form one of the most promising duos on the French electronic music scene.",
+      shortBio_fr: "DJ & producteur. Duo avec Paga. Afro house, melodic techno.",
+      shortBio_en: "DJ & producer. Duo with Paga. Afro house, melodic techno.",
       instagram: "https://www.instagram.com/alexis.dante", isActive: true, order: 1,
     },
   });
   console.log("✅ Artists created");
 
   const events = [
-    { slug: "rooftop-party-ibiza-2026", title_fr: "Rooftop Party", title_en: "Rooftop Party", venue: "Rooftop", city: "Ibiza", country: "Espagne", date: new Date("2026-06-11T22:00:00"), description_fr: "Une soirée exceptionnelle sur un rooftop d'Ibiza avec Paga et Alexis Dante en B2B.", isB2B: true, isFeatured: true, artistIds: [paga.id, alexis.id] },
+    { slug: "rooftop-party-ibiza-2026", title_fr: "Rooftop Party", title_en: "Rooftop Party", venue: "Rooftop", city: "Ibiza", country: "Espagne", date: new Date("2026-06-11T22:00:00"), description_fr: "Une soirée exceptionnelle sur un rooftop d'Ibiza avec Paga et Alexis Dante en duo.", isB2B: true, isFeatured: true, artistIds: [paga.id, alexis.id] },
     { slug: "la-villa-gruissan-2026", title_fr: "La Villa", title_en: "La Villa", venue: "La Villa", city: "Gruissan", country: "France", date: new Date("2026-06-13T23:00:00"), isB2B: false, isFeatured: false, artistIds: [paga.id] },
     { slug: "white-sand-andernos-2026", title_fr: "White Sand", title_en: "White Sand", venue: "White Sand", city: "Andernos-les-Bains", country: "France", date: new Date("2026-06-14T22:00:00"), isB2B: false, isFeatured: false, artistIds: [paga.id] },
     { slug: "delta-festival-marseille-juin-2026", title_fr: "Delta Festival (TBA)", title_en: "Delta Festival (TBA)", venue: "Delta Festival", city: "Marseille", country: "France", date: new Date("2026-06-21T18:00:00"), description_fr: "TBA - Détails à confirmer.", isB2B: false, isFeatured: true, artistIds: [paga.id] },
@@ -56,7 +56,7 @@ async function main() {
     { slug: "riv-music-live-2026", title_fr: "Riv' Music Live", title_en: "Riv' Music Live", venue: "Riv' Music", city: "Rive-de-Gier", country: "France", date: new Date("2026-07-13T20:00:00"), isB2B: false, isFeatured: false, artistIds: [paga.id] },
     { slug: "scandals-pool-party-lyon-2026", title_fr: "Scandals Pool Party", title_en: "Scandals Pool Party", venue: "Hôtel des Séquoias, Ruy-Montceau", city: "Lyon", country: "France", date: new Date("2026-07-14T10:00:00"), description_fr: "La pool party la plus hot de l'été ! De 10h à 2h, Paga met le feu au bord de la piscine de l'Hôtel des Séquoias.", isB2B: false, isFeatured: true, artistIds: [paga.id] },
     { slug: "fetes-murataises-2026", title_fr: "Les Fêtes Murataises", title_en: "Les Fêtes Murataises", venue: "Fêtes Murataises", city: "Murat-sur-Vèbre", country: "France", date: new Date("2026-07-17T21:00:00"), isB2B: false, isFeatured: false, artistIds: [paga.id] },
-    { slug: "azur-festival-la-crau-2026", title_fr: "Azur Festival", title_en: "Azur Festival", venue: "Parc du Béal", city: "La Crau", country: "France", date: new Date("2026-07-18T17:00:00"), description_fr: "Paga et Alexis Dante en B2B à l'Azur Festival - Special Guest. Un set inoubliable au Parc du Béal dans le Var.", isB2B: true, isFeatured: true, artistIds: [paga.id, alexis.id] },
+    { slug: "azur-festival-la-crau-2026", title_fr: "Azur Festival", title_en: "Azur Festival", venue: "Parc du Béal", city: "La Crau", country: "France", date: new Date("2026-07-18T17:00:00"), description_fr: "Paga et Alexis Dante en duo à l'Azur Festival - Special Guest. Un set inoubliable au Parc du Béal dans le Var.", isB2B: true, isFeatured: true, artistIds: [paga.id, alexis.id] },
     { slug: "delta-festival-marseille-juillet-2026", title_fr: "Delta Festival", title_en: "Delta Festival", venue: "Delta Festival", city: "Marseille", country: "France", date: new Date("2026-07-23T18:00:00"), isB2B: false, isFeatured: true, artistIds: [paga.id] },
     { slug: "rosa-fest-chailly-2026", title_fr: "Rosa'Fest Festival", title_en: "Rosa'Fest Festival", venue: "Rosa'Fest", city: "Chailly-en-Gâtinais", country: "France", date: new Date("2026-07-25T20:00:00"), isB2B: false, isFeatured: false, artistIds: [paga.id] },
     { slug: "le-sun-corse-2026", title_fr: "Le Sun", title_en: "Le Sun", venue: "Le Sun", city: "Corse", country: "France", date: new Date("2026-07-27T23:00:00"), isB2B: false, isFeatured: false, artistIds: [paga.id] },

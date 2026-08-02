@@ -100,7 +100,7 @@ export default function AdminDatesPage() {
                 <div className="font-bold flex items-center gap-2">
                   {e.title_fr}
                   {e.isFeatured && <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">Featured</span>}
-                  {e.isB2B && <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">B2B</span>}
+                  {e.isB2B && <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">Duo</span>}
                 </div>
                 <div className="text-xs text-white/50">{new Date(e.date).toLocaleDateString("fr-FR")} · {e.venue}, {e.city}</div>
               </div>
@@ -148,7 +148,7 @@ export default function AdminDatesPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <input type="checkbox" id="isB2B" checked={form.isB2B} onChange={(e) => setForm((p) => ({ ...p, isB2B: e.target.checked }))} className="w-4 h-4 accent-primary" />
-                      <label htmlFor="isB2B" className="text-sm text-white/70">B2B</label>
+                      <label htmlFor="isB2B" className="text-sm text-white/70">Duo</label>
                     </div>
                   </div>
                 </div>

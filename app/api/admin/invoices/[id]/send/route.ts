@@ -28,7 +28,7 @@ export async function POST(
   const { Resend } = await import("resend");
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error: sendError } = await resend.emails.send({
-    from: "Paga Production <noreply@pagaproduction.fr>",
+    from: "Sherrie Sherrie <noreply@pagaproduction.fr>",
     to: invoice.clientEmail,
     subject: `Facture ${invoice.invoiceNumber} — AP Management`,
     html,

@@ -3,64 +3,47 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { CalendarDays, Users, Mail } from "lucide-react";
+import { CalendarDays, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
   const pathname = usePathname();
   const locale = useLocale();
-  const tNav = useTranslations("nav");
   const tContact = useTranslations("home.contact");
 
   if (pathname === `/${locale}` || pathname === `/${locale}/`) return null;
 
   const isDates = pathname.includes("/dates");
-  const isArtistes = pathname.includes("/artistes");
 
   return (
-    <nav
-      className="fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-[560px] rounded-[22px] md:bottom-5"
-      style={{
-        background: "rgba(5, 10, 20, 0.64)",
-        backdropFilter: "blur(28px) saturate(145%)",
-        WebkitBackdropFilter: "blur(28px) saturate(145%)",
-        border: "1px solid rgba(125, 220, 255, 0.18)",
-        boxShadow: "0 18px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.06)",
-      }}
-    >
-      <div className="grid grid-cols-3 items-center gap-1 p-2">
-        <Link
-          href={"/" + locale + "/artistes"}
-          className={cn(
-            "flex min-w-0 items-center justify-center gap-2 rounded-2xl px-3 py-3 transition-all",
-            isArtistes ? "bg-cyan-300/10 text-cyan-200" : "text-white/52 hover:bg-white/[0.05] hover:text-white"
-          )}
-        >
-          <Users size={18} />
-          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">{tNav("artists")}</span>
-        </Link>
-
+    <nav className="sherrie-floating-nav fixed inset-x-0 bottom-0 z-50 px-4 pb-4 pt-3">
+      <div className="mx-auto grid w-[min(92vw,500px)] grid-cols-3 items-center gap-1">
         <Link
           href={"/" + locale + "/dates"}
           className={cn(
-            "flex min-w-0 items-center justify-center gap-2 rounded-2xl border px-3 py-3 transition-all",
-            isDates ? "bg-cyan-300/10 text-cyan-200" : "text-white/52 hover:bg-white/[0.05] hover:text-white"
+            "sherrie-nav-button flex min-w-0 items-center justify-center gap-2 px-3 py-3 text-xs font-black uppercase tracking-[0.14em] transition-all",
+            isDates && "sherrie-nav-button-active"
           )}
-          style={{
-            border: "1.5px solid rgba(125, 220, 255, 0.35)",
-            animation: "neonCycle 3.5s ease-in-out infinite",
-          }}
         >
-          <CalendarDays size={18} />
-          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">{tNav("dates")}</span>
+          <CalendarDays size={16} />
+          <span>Dates</span>
+        </Link>
+
+        <Link
+          href={"/" + locale}
+          aria-label="Sherrie Sherrie"
+          className="relative flex h-20 min-w-0 items-center justify-center"
+        >
+          <span className="absolute h-16 w-36 rounded-full bg-[#ef6aa4]/18 blur-2xl" />
+          <img src="/sherrie-sherrie.png" alt="Sherrie Sherrie" className="relative h-24 w-auto max-w-[230px] object-contain drop-shadow-[0_0_28px_rgba(239,106,164,.30)]" />
         </Link>
 
         <Link
           href={"/" + locale + "#contact"}
-          className="flex min-w-0 items-center justify-center gap-2 rounded-2xl px-3 py-3 text-white/52 transition-all hover:bg-white/[0.05] hover:text-white"
+          className="sherrie-nav-button flex min-w-0 items-center justify-center gap-2 px-3 py-3 text-xs font-black uppercase tracking-[0.14em] transition-all"
         >
-          <Mail size={18} />
-          <span className="text-[10px] font-bold uppercase tracking-[0.12em] sm:text-xs">{tContact("title")}</span>
+          <span>{tContact("title")}</span>
+          <Mail size={16} />
         </Link>
       </div>
     </nav>

@@ -9,7 +9,7 @@ export default function MentionsLegalesPage() {
           <section>
             <h2 className="text-xl font-bold text-white mb-3">Éditeur du site</h2>
             <div className="space-y-1">
-              <p><span className="text-white/50">Société :</span> Paga Production</p>
+              <p><span className="text-white/50">Société :</span> Sherrie Sherrie</p>
               <p><span className="text-white/50">Statut :</span> SAS</p>
               <p><span className="text-white/50">Adresse :</span> France</p>
               <p><span className="text-white/50">Contact :</span> formulaire disponible sur le site</p>
@@ -27,7 +27,7 @@ export default function MentionsLegalesPage() {
 
           <section>
             <h2 className="text-xl font-bold text-white mb-3">Propriété intellectuelle</h2>
-            <p>L&apos;ensemble du contenu de ce site (textes, images, vidéos, logos, musiques) est protégé par le droit d&apos;auteur. Toute reproduction, même partielle, est interdite sans autorisation préalable de Paga Production.</p>
+            <p>L&apos;ensemble du contenu de ce site (textes, images, vidéos, logos, musiques) est protégé par le droit d&apos;auteur. Toute reproduction, même partielle, est interdite sans autorisation préalable de Sherrie Sherrie.</p>
           </section>
 
           <section>

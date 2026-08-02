@@ -22,7 +22,7 @@ interface Event {
   artists: { artist: { name: string; slug: string } }[];
 }
 
-type FilterType = "all" | "paga" | "alexis-dante" | "b2b";
+type FilterType = "all" | "paga" | "alexis-dante";
 
 export default function DatesPage() {
   const t = useTranslations("dates");
@@ -48,19 +48,18 @@ export default function DatesPage() {
   }, [tab]);
 
   const filteredEvents = events.filter((e) => {
-    if (filter === "b2b") return e.isB2B;
     if (filter === "paga") return e.artists.some((a) => a.artist.slug === "paga");
     if (filter === "alexis-dante") return e.artists.some((a) => a.artist.slug === "alexis-dante");
     return true;
   });
 
   return (
-    <div className="min-h-screen px-4 pb-20 pt-24">
+    <div className="sherrie-page min-h-screen px-4 pb-20 pt-24">
       <div className="mx-auto max-w-4xl">
         <div className="mb-12 text-center">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.4em] text-primary">Live</p>
           <h1 className="section-title mb-4">{t("title")}</h1>
-          <p className="text-sm text-white/40">{t("subtitle")}</p>
+          <p className="text-sm text-[#111118]/52">{t("subtitle")}</p>
         </div>
 
         <div className="glass-card mx-auto mb-6 flex max-w-sm gap-2 rounded-xl p-1">
@@ -68,7 +67,7 @@ export default function DatesPage() {
             <button
               key={item}
               onClick={() => setTab(item)}
-              className={cn("flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all", tab === item ? "bg-primary text-white" : "text-white/60 hover:text-white")}
+              className={cn("flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all", tab === item ? "bg-primary text-white" : "text-[#111118]/58 hover:text-[#111118]")}
             >
               {item === "upcoming" ? t("upcoming") : t("past")}
             </button>
@@ -76,17 +75,16 @@ export default function DatesPage() {
         </div>
 
         <div className="mb-8 flex flex-wrap items-center gap-2">
-          <FilterIcon size={14} className="text-white/40" />
+          <FilterIcon size={14} className="text-[#111118]/45" />
           {[
             { value: "all", label: t("filter_all") },
             { value: "paga", label: "Paga" },
             { value: "alexis-dante", label: "Alexis Dante" },
-            { value: "b2b", label: t("filter_b2b") },
           ].map((item) => (
             <button
               key={item.value}
               onClick={() => setFilter(item.value as FilterType)}
-              className={cn("rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all", filter === item.value ? "bg-primary text-white" : "glass-card text-white/60 hover:text-white")}
+              className={cn("rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all", filter === item.value ? "bg-primary text-white" : "glass-card text-[#111118]/58 hover:text-[#111118]")}
             >
               {item.label}
             </button>
@@ -108,7 +106,7 @@ export default function DatesPage() {
             ))}
           </div>
         ) : filteredEvents.length === 0 ? (
-          <div className="py-20 text-center text-white/40">
+          <div className="py-20 text-center text-[#111118]/45">
             {tab === "upcoming" ? t("no_upcoming") : t("no_past")}
           </div>
         ) : (

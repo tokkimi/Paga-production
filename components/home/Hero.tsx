@@ -46,7 +46,7 @@ export default function Hero() {
             Summer Tour 2026
           </p>
           <h1 className="text-[clamp(3.5rem,9vw,7rem)] font-black uppercase leading-[0.86] tracking-[-0.08em] text-white">
-            Paga Production
+            Paga
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-white/64">
             Nocturnal tech house, melodic pressure and festival energy between France, Europe and the Mediterranean.
