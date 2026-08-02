@@ -57,10 +57,19 @@ export async function POST(req: NextRequest) {
         campaignType: campaignType || null,
         description: [description, goals && `Objectifs : ${goals}`, deliverables && `Éléments attendus : ${deliverables}`].filter(Boolean).join("\n\n"),
         requiredAssets: deliverables || null,
+        pressKitName: pdf?.name || null,
+        pressKitMimeType: pdf?.type || null,
+        pressKitData: pdf ? new Uint8Array(await pdf.arrayBuffer()) : null,
         pressKitUrl: pdf ? `PDF reçu : ${pdf.name} (${Math.round(pdf.size / 1024)} Ko)` : null,
         status: "PENDING",
       },
     });
+    if (pdf) {
+      await prisma.sponsorProposal.update({
+        where: { id: proposal.id },
+        data: { pressKitUrl: `/api/admin/sponsors/${proposal.id}/document` },
+      });
+    }
     return NextResponse.json(proposal, { status: 201 });
   } catch (error) {
     console.error("Sponsors POST error:", error);

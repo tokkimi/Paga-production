@@ -264,6 +264,9 @@ model SponsorProposal {
   deliverables    String?
   requiredAssets  String?
   pressKitUrl     String?
+  pressKitName    String?
+  pressKitMimeType String?
+  pressKitData    Bytes?
   boardUrl        String?
   contractUrl     String?
   invoiceUrl      String?

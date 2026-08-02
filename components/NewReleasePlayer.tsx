@@ -1,6 +1,6 @@
 "use client";
 
-import { Play, X } from "lucide-react";
+import { Pause, Play, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
@@ -58,7 +58,7 @@ export default function NewReleasePlayer() {
   const locale = useLocale();
   const text = labels[locale as keyof typeof labels] ?? labels.en;
   const [track, setTrack] = useState<ApiTrack>(fallbackTrack);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
@@ -84,79 +84,66 @@ export default function NewReleasePlayer() {
 
   const playerUrl = useMemo(() => getPlayableUrl(track), [track]);
   const cover = track.cover || youtubeThumbnail(track.youtubeEmbedUrl) || fallbackTrack.cover!;
-  const iframeSrc = isOpen && playerUrl.includes("youtube.com/embed/") ? `${playerUrl}?rel=0&autoplay=1` : playerUrl;
+  const iframeSrc = playerUrl.includes("youtube.com/embed/")
+    ? `${playerUrl}?rel=0&autoplay=1&controls=0&modestbranding=1`
+    : playerUrl;
 
   if (dismissed) return null;
 
   return (
-    <aside className="fixed inset-x-4 bottom-[112px] z-[70] mx-auto w-auto max-w-[460px] sm:left-auto sm:right-6 sm:mx-0">
+    <aside className="fixed inset-x-3 bottom-[96px] z-[70] mx-auto w-auto max-w-[300px] sm:left-auto sm:right-6 sm:mx-0">
       <div
-        className={`relative overflow-hidden rounded-[30px] border p-2.5 backdrop-blur-xl ${
+        className={`relative overflow-hidden rounded-[22px] p-1.5 backdrop-blur-xl ${
           isDark
-            ? "border-white/18 bg-[#171923]/25 text-white shadow-[0_0_28px_rgba(255,255,255,.12),0_24px_80px_rgba(0,0,0,.44)]"
-            : "border-[#12131b]/12 bg-white/25 text-[#111118] shadow-[0_0_30px_rgba(255,255,255,.46),0_22px_70px_rgba(20,14,18,.16)]"
+            ? "bg-[#171923]/25 text-white shadow-[0_10px_34px_rgba(0,0,0,.12)]"
+            : "bg-white/25 text-[#111118] shadow-[0_10px_34px_rgba(20,14,18,.04)]"
         }`}
       >
-        {isOpen ? (
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setDismissed(true)}
-              className={`absolute right-2 top-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full transition ${
-                isDark ? "bg-black/35 hover:bg-white/14" : "bg-white/45 hover:bg-white/65"
-              }`}
-              aria-label={text.close}
-            >
-              <X size={15} />
-            </button>
-            <div className="overflow-hidden rounded-[24px] border border-white/30 bg-black">
-              <iframe
-                src={iframeSrc}
-                title={track.title}
-                width="100%"
-                height="210"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-[64px_58px_minmax(0,1fr)_32px] items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setIsOpen(true)}
-              className={`inline-flex h-16 w-16 items-center justify-center rounded-[20px] border backdrop-blur-xl transition hover:scale-[1.03] ${
-                isDark
-                  ? "border-white/12 bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,.10)]"
-                  : "border-[#111118]/10 bg-white/30 text-[#111118] shadow-[inset_0_1px_0_rgba(255,255,255,.50)]"
-              }`}
-              aria-label={text.kicker}
-            >
-              <Play size={24} fill="currentColor" />
-            </button>
-            <img src={cover} alt="" className="h-[58px] w-[58px] rounded-[16px] object-cover shadow-[0_12px_24px_rgba(0,0,0,.18)]" />
-            <button type="button" onClick={() => setIsOpen(true)} className="min-w-0 text-left">
-              <span className={`block truncate text-xs font-black uppercase tracking-[0.18em] ${isDark ? "text-white/58" : "text-[#111118]/50"}`}>
-                {text.kicker}
-              </span>
-              <strong className="mt-0.5 block truncate text-lg font-black uppercase leading-tight">{track.title}</strong>
-              <span className={`block truncate text-xs font-black uppercase tracking-[0.12em] ${isDark ? "text-white/60" : "text-[#111118]/48"}`}>
-                {track.artistName}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setDismissed(true)}
-              className={`inline-flex h-8 w-8 items-center justify-center rounded-full transition ${
-                isDark ? "text-white/45 hover:bg-white/10 hover:text-white" : "text-[#111118]/38 hover:bg-white/40 hover:text-[#111118]"
-              }`}
-              aria-label={text.close}
-            >
-              <X size={15} />
-            </button>
-          </div>
+        {isPlaying && (
+          <iframe
+            src={iframeSrc}
+            title={track.title}
+            className="pointer-events-none absolute h-px w-px opacity-0"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         )}
+        <div className="grid grid-cols-[34px_34px_minmax(0,1fr)_18px] items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsPlaying((value) => !value)}
+            className={`inline-flex h-[34px] w-[34px] items-center justify-center rounded-[12px] backdrop-blur-md transition hover:scale-[1.03] ${
+              isDark ? "bg-white/8 text-white" : "bg-white/18 text-[#111118]"
+            }`}
+            aria-label={text.kicker}
+          >
+            {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
+          </button>
+          <img src={cover} alt="" className="h-[34px] w-[34px] rounded-[10px] object-cover shadow-[0_8px_18px_rgba(0,0,0,.08)]" />
+          <button type="button" onClick={() => setIsPlaying((value) => !value)} className="min-w-0 text-left">
+            <span className="block truncate text-[8px] font-black uppercase tracking-[0.15em] text-[#d85e98]">
+              {text.kicker}
+            </span>
+            <strong className="mt-0.5 block truncate text-[12px] font-black uppercase leading-tight">{track.title}</strong>
+            <span className={`block truncate text-[8px] font-black uppercase tracking-[0.10em] ${isDark ? "text-white/42" : "text-[#111118]/38"}`}>
+              {track.artistName}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setDismissed(true)}
+            className={`inline-flex h-[18px] w-[18px] items-center justify-center rounded-full transition ${
+              isDark ? "text-white/42 hover:bg-white/10 hover:text-white" : "text-[#111118]/34 hover:bg-white/35 hover:text-[#111118]"
+            }`}
+            aria-label={text.close}
+          >
+            <X size={12} />
+          </button>
+        </div>
+        <div className="mt-1.5 h-[2px] overflow-hidden rounded-full bg-[#d85e98]/12">
+          {isPlaying && <span className="release-progress-bar" />}
+        </div>
       </div>
     </aside>
   );

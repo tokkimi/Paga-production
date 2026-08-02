@@ -25,7 +25,7 @@ export default async function LocaleLayout({
     <Providers locale={locale} messages={messages}>
       <div className="flex min-h-screen flex-col">
         <Navbar />
-        <main className="flex-1 pb-28">{children}</main>
+        <main className="site-main flex-1">{children}</main>
         <Footer />
         <NewReleasePlayer />
         <BottomNav />

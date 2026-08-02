@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { CalendarDays, MapPin, MessageCircle, Play, X } from "lucide-react";
+import { CalendarDays, MapPin, MessageCircle, Pause, Play, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -211,6 +211,7 @@ const artwork = {
   alive: "/images/sherrie/alive-cover.jpg",
   eivissa: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02d8b5cd30b1a8bba60b35f8e1",
   getUpDance: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e028ab55d4cdcb10ce490dc6cbf",
+  itsAlright: "https://is1-ssl.mzstatic.com/image/thumb/Music/f5/3a/fc/mzi.bitylpnw.jpg/600x600bb.jpg",
   alexis: "/images/mirage/alexis-remastered.png",
   paga: "/images/sherrie/paga-blue.png",
 };
@@ -271,7 +272,7 @@ const pagaOfficialTracks: TrackItem[] = [
   { title: "Joie de vivre", artist: "Paga, Anton Wick", year: "2026", source: "YouTube Music / Spotify", cover: artwork.superstition, external: "https://www.youtube.com/playlist?list=PLtSJdYuQcGgV1qhIYFUbyjEDMF3KmBI-R" },
   { title: "Cochabamba", artist: "Paga, Anton Wick", year: "2025", source: "Spotify", cover: artwork.superstition, external: "https://open.spotify.com/search/Paga%20Anton%20Wick%20Cochabamba" },
   { title: "Get Ready For This", artist: "Paga, Anton Wick", year: "2025", source: "Spotify", cover: artwork.superstition, external: "https://open.spotify.com/search/Paga%20Anton%20Wick%20Get%20Ready%20For%20This" },
-  { title: "Allez L'OM", artist: "Paga, Bengous, Elams, Hollis l'Infâme", year: "Music", source: "Spotify / Shazam", cover: artwork.paga, external: "https://open.spotify.com/search/Paga%20Allez%20L'OM" },
+  { title: "Allez L'OM", artist: "Paga, Bengous, Elams, Hollis l'Infâme", year: "Music", source: "YouTube / Spotify", cover: "https://i.ytimg.com/vi/LwjdOHpljMI/hqdefault.jpg", youtube: "https://www.youtube.com/embed/LwjdOHpljMI", external: "https://www.youtube.com/watch?v=LwjdOHpljMI" },
 ];
 
 const alexisTracks: TrackItem[] = [
@@ -288,7 +289,7 @@ const alexisTracks: TrackItem[] = [
   { title: "Alive - Tony Romera Remix", artist: "Alexis Dante, J.M. Sicky, Eva Menson", year: "2011", source: "Deezer", cover: artwork.alive, player: "https://widget.deezer.com/widget/dark/album/1156008", external: "https://www.deezer.com/album/1156008" },
   { title: "Eivissa - Deluna Remix", artist: "Amine Edge, Alexis Dante", year: "2011", source: "Spotify", cover: artwork.eivissa, spotify: "https://open.spotify.com/embed/track/3H1CHmv20ipbZ4NUhYolp7?utm_source=generator", external: "https://open.spotify.com/intl-tr/track/3H1CHmv20ipbZ4NUhYolp7" },
   { title: "Get Up Dance - Radio Edit", artist: "Alexis Dante, J.M. Sicky, Eva Menson", year: "2010", source: "Spotify / Shazam", cover: artwork.getUpDance, spotify: "https://open.spotify.com/embed/track/1wHLmzEcce4dbiWYMIxQvi?utm_source=generator", external: "https://open.spotify.com/track/1wHLmzEcce4dbiWYMIxQvi" },
-  { title: "It's Alright - Radio Edit", artist: "Alexis Dante, J.M. Sicky, Eva Menson", year: "2009", source: "Apple Music / Shazam", cover: artwork.alexis, player: "https://embed.music.apple.com/us/song/its-alright-radio-edit/315461982", external: "https://music.apple.com/us/song/its-alright-radio-edit/315461982" },
+  { title: "It's Alright - Radio Edit", artist: "Alexis Dante, J.M. Sicky, Eva Menson", year: "2009", source: "Apple Music / Shazam", cover: artwork.itsAlright, player: "https://embed.music.apple.com/us/song/its-alright-radio-edit/315461982", external: "https://music.apple.com/us/song/its-alright-radio-edit/315461982" },
 ];
 
 const commonVideos: VideoClip[] = [
@@ -337,8 +338,6 @@ const storySlides = [
   "/images/sherrie/story-duo-yellow.png",
   "/images/sherrie/story-la-villa-duo.jpg",
   "/images/sherrie/story-la-villa-paga.jpg",
-  "/images/sherrie/story-paga-best-crowd.png",
-  "/images/sherrie/story-paga-best-crowd.png",
   "/images/sherrie/story-paga-club-selfie.png",
   "/images/sherrie/story-paga-blue-crowd.png",
   "/images/sherrie/story-paga-best-crowd.png",
@@ -500,6 +499,16 @@ function youtubeThumb(embed: string) {
   return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "/images/sherrie/duo-booth.png";
 }
 
+function normalizeYoutubeUrl(url?: string) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  const short = trimmed.match(/youtu\.be\/([^?&]+)/)?.[1];
+  const watch = trimmed.match(/[?&]v=([^?&]+)/)?.[1];
+  const embed = trimmed.match(/youtube\.com\/embed\/([^?&]+)/)?.[1];
+  const id = embed || short || watch;
+  return id ? `https://www.youtube.com/embed/${id}` : trimmed;
+}
+
 function CompactCatalogue({ tracks, light, onPlay }: { tracks: TrackItem[]; light: boolean; onPlay: (track: TrackItem) => void }) {
   return (
     <div className="relative">
@@ -548,20 +557,55 @@ function VideoRail({ clips, light, onPlay }: { clips: VideoClip[]; light: boolea
 }
 
 function FloatingTrackPlayer({ track, onClose, light }: { track: TrackItem | null; onClose: () => void; light: boolean }) {
+  const [isPlaying, setIsPlaying] = useState(true);
+
   if (!track) return null;
+
+  const rawPlayer = normalizeYoutubeUrl(track.youtube) || track.spotify || track.player || track.external;
+  const iframeSrc = rawPlayer.includes("youtube.com/embed/")
+    ? `${rawPlayer}?rel=0&autoplay=1&controls=0&modestbranding=1`
+    : rawPlayer;
+
   return (
-    <div className="fixed inset-x-4 bottom-28 z-[95] mx-auto max-w-xl">
-      <div className={`rounded-[22px] p-3 shadow-[0_24px_90px_rgba(0,0,0,.24)] backdrop-blur-xl ${light ? "bg-white/92 text-[#111118]" : "border border-white/10 bg-[#11131d]/94 text-white"}`}>
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <strong className="block truncate text-sm">{track.title}</strong>
-            <span className={`block truncate text-xs ${light ? "text-[#111118]/52" : "text-white/52"}`}>{track.artist}</span>
-          </div>
-          <button type="button" onClick={onClose} className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${light ? "bg-black/6" : "bg-white/10"}`} aria-label="Fermer">
-            <X size={16} />
+    <div className="fixed inset-x-3 bottom-[92px] z-[95] mx-auto max-w-[360px] sm:left-auto sm:right-6 sm:mx-0">
+      <div className={`relative overflow-hidden rounded-[24px] p-2 shadow-[0_18px_62px_rgba(18,12,18,.12)] backdrop-blur-xl ${light ? "bg-white/25 text-[#111118]" : "bg-[#171923]/25 text-white"}`}>
+        {isPlaying && rawPlayer !== "#" && (
+          <iframe
+            src={iframeSrc}
+            title={track.title}
+            className="pointer-events-none absolute h-px w-px opacity-0"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        )}
+        <div className="grid grid-cols-[42px_40px_minmax(0,1fr)_24px] items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setIsPlaying((value) => !value)}
+            className={`inline-flex h-[42px] w-[42px] items-center justify-center rounded-[15px] transition hover:scale-[1.03] ${light ? "bg-white/24 text-[#111118]" : "bg-white/10 text-white"}`}
+            aria-label="Écouter"
+          >
+            {isPlaying ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}
+          </button>
+          <img src={track.cover} alt="" className="h-10 w-10 rounded-[12px] object-cover shadow-[0_8px_18px_rgba(0,0,0,.12)]" />
+          <button type="button" onClick={() => setIsPlaying((value) => !value)} className="min-w-0 text-left">
+            <span className="block truncate text-[9px] font-black uppercase tracking-[0.16em] text-[#d85e98]">Lecture</span>
+            <strong className="mt-0.5 block truncate text-sm font-black uppercase leading-tight">{track.title}</strong>
+            <span className={`block truncate text-[10px] font-black uppercase tracking-[0.10em] ${light ? "text-[#111118]/42" : "text-white/46"}`}>{track.artist}</span>
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`inline-flex h-6 w-6 items-center justify-center rounded-full transition ${light ? "text-[#111118]/38 hover:bg-white/40 hover:text-[#111118]" : "text-white/45 hover:bg-white/10 hover:text-white"}`}
+            aria-label="Fermer"
+          >
+            <X size={14} />
           </button>
         </div>
-        <Player track={track} />
+        <div className="mt-2 h-[2px] overflow-hidden rounded-full bg-[#d85e98]/15">
+          {isPlaying && <span className="release-progress-bar" />}
+        </div>
       </div>
     </div>
   );
@@ -753,35 +797,6 @@ function FooterActions({ light }: { light: boolean }) {
             </div>
           </div>
         </div>
-        <footer className="sherrie-legal-strip mt-12 px-4 py-10 text-center">
-          <div className="mx-auto h-px max-w-4xl bg-current/10" />
-          <div className="mx-auto mt-8 max-w-4xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.62em] text-[#d85e98]/80">
-              Music is our freedom
-            </p>
-            <p className="mt-3 text-[10px] font-black uppercase tracking-[0.34em] opacity-58">
-              House · Indie House · Melodic House · Techno
-            </p>
-            <nav className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[11px] font-black uppercase tracking-[0.18em]">
-              {[
-                { label: labels.dates, href: `/${locale}/dates` },
-                { label: "Sponsors", href: `/${locale}/sponsors` },
-                { label: labels.joinCta, href: `/${locale}/rejoindre` },
-                { label: labels.contact, href: "#contact" },
-                { label: "CGV", href: `/${locale}/cgv` },
-                { label: "Mentions légales", href: `/${locale}/mentions-legales` },
-                { label: "Confidentialité", href: `/${locale}/politique-confidentialite` },
-              ].map((item) => (
-                <Link key={item.href} href={item.href} className="opacity-64 transition hover:opacity-100">
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <p className="mt-7 text-[11px] opacity-52">
-              © 2026 Sherrie Sherrie. Tous droits réservés.
-            </p>
-          </div>
-        </footer>
       </div>
     </section>
   );
@@ -873,7 +888,7 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
           name={labels.pagaProfileTitle}
           eyebrow={labels.pagaProfileEyebrow}
           text={labels.pagaProfileText}
-          image="/images/sherrie/paga-profile-live.png"
+          image="/images/sherrie/paga-profile-current.png"
           socials={[
             { label: "Instagram", href: "https://www.instagram.com/paga_lmsa", kind: "instagram" },
             { label: "YouTube", href: "https://www.youtube.com/@pagaproduction", kind: "youtube" },
