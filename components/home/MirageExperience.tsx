@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { CalendarDays, ExternalLink, MapPin, MessageCircle, Play, X } from "lucide-react";
+import { CalendarDays, MapPin, MessageCircle, Play, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -203,12 +203,12 @@ function getCopy(locale: string) {
 }
 
 const artwork = {
-  letsGo: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02c6b92c13775056fb443d2cf4",
-  letUGo: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02a51dc128e04b80f02c1412ff",
+  letsGo: "/images/sherrie/lets-go-cover.jpg",
+  letUGo: "/images/sherrie/let-u-go-cover.jpg",
   echoes: "/images/sherrie/echoes-cover.jpg",
   superstition: "/images/sherrie/superstition-cover.jpg",
-  everybody: "https://cdn-images.dzcdn.net/images/cover/710201398d2aa8eb50a543a9570c9cac/500x500-000000-80-0-0.jpg",
-  alive: "https://cdn-images.dzcdn.net/images/cover/b7b17781ce5595fda33b778969cc7fd1/500x500-000000-80-0-0.jpg",
+  everybody: "/images/sherrie/everybody-cover.jpg",
+  alive: "/images/sherrie/alive-cover.jpg",
   eivissa: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02d8b5cd30b1a8bba60b35f8e1",
   getUpDance: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e028ab55d4cdcb10ce490dc6cbf",
   alexis: "/images/mirage/alexis-remastered.png",
@@ -323,6 +323,19 @@ const sherrieVideos: VideoClip[] = [
   { title: "Never Come Back (Extended Mix)", embed: "https://www.youtube.com/embed/dDC9S3hRqYA" },
 ];
 
+const storySlides = [
+  "/images/sherrie/story-duo-yellow.png",
+  "/images/sherrie/story-la-villa-duo.jpg",
+  "/images/sherrie/story-la-villa-paga.jpg",
+  "/images/sherrie/story-paga-club-selfie.png",
+  "/images/sherrie/story-paga-blue-crowd.png",
+  "/images/sherrie/story-paga-red-dj.png",
+  "/images/sherrie/story-paga-side.png",
+  "/images/sherrie/story-paga-decks-red.jpg",
+  "/images/sherrie/story-alexis-bw-booth.jpg",
+  "/images/sherrie/story-alexis-red.jpg",
+];
+
 function SectionHeader({ eyebrow, title, copy: text, light }: { eyebrow?: string; title: string; copy?: string; light: boolean }) {
   return (
     <div className="mb-6">
@@ -330,6 +343,32 @@ function SectionHeader({ eyebrow, title, copy: text, light }: { eyebrow?: string
       <h2 className={`mt-2 text-[clamp(1.7rem,3.5vw,3rem)] font-black uppercase leading-[0.95] tracking-[0.04em] ${light ? "text-[#111118]" : "text-white"}`}>{title}</h2>
       {text && <p className={`mt-4 max-w-2xl text-base leading-relaxed ${light ? "text-[#111118]/62" : "text-white/60"}`}>{text}</p>}
     </div>
+  );
+}
+
+function AutoPhotoSlideshow({ light }: { light: boolean }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % storySlides.length);
+    }, 2000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <figure className={`relative aspect-[16/10] overflow-hidden rounded-[30px] shadow-[0_24px_90px_rgba(30,24,28,.14)] ${light ? "bg-white/58" : "border border-white/10 bg-white/[0.055]"}`}>
+      <motion.img
+        key={storySlides[index]}
+        src={storySlides[index]}
+        alt=""
+        initial={{ opacity: 0, scale: 1.04 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.65, ease: "easeOut" }}
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+    </figure>
   );
 }
 
@@ -399,9 +438,9 @@ function TrackCard({ track, light, labels, onPlay }: { track: TrackItem; light: 
         <button type="button" onClick={() => onPlay(track)} className={`inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-black ${light ? "bg-[#111118] text-white" : "bg-[#1a2036] text-[#b9d4ff]"}`}>
           <Play size={13} /> {labels.listen}
         </button>
-        <a href={track.external} target="_blank" rel="noreferrer" aria-label={labels.open} className={`inline-flex w-10 items-center justify-center rounded-xl ${light ? "bg-black/5 text-[#111118]/58" : "bg-white/8 text-white/62"}`}>
-          <ExternalLink size={14} />
-        </a>
+        <button type="button" onClick={() => onPlay(track)} aria-label={labels.listen} className={`inline-flex w-10 items-center justify-center rounded-xl ${light ? "bg-black/5 text-[#111118]/58" : "bg-white/8 text-white/62"}`}>
+          <Play size={14} />
+        </button>
       </div>
     </article>
   );
@@ -431,19 +470,19 @@ function youtubeThumb(embed: string) {
   return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : "/images/sherrie/duo-booth.png";
 }
 
-function CompactCatalogue({ tracks, light }: { tracks: TrackItem[]; light: boolean }) {
+function CompactCatalogue({ tracks, light, onPlay }: { tracks: TrackItem[]; light: boolean; onPlay: (track: TrackItem) => void }) {
   return (
     <div className="relative">
       <div className={`max-h-[360px] overflow-y-auto pr-1 ${light ? "text-[#111118]" : "text-white"}`}>
         {tracks.map((track) => (
-          <a key={`${track.title}-compact`} href={track.external} target="_blank" rel="noreferrer" className={`mb-2 grid grid-cols-[52px_minmax(0,1fr)_24px] items-center gap-3 rounded-2xl p-2 transition ${light ? "bg-white/64 hover:bg-white" : "bg-white/[0.055] hover:bg-white/[0.09]"}`}>
+          <button key={`${track.title}-compact`} type="button" onClick={() => onPlay(track)} className={`mb-2 grid w-full grid-cols-[52px_minmax(0,1fr)_24px] items-center gap-3 rounded-2xl p-2 text-left transition ${light ? "bg-white/64 hover:bg-white" : "bg-white/[0.055] hover:bg-white/[0.09]"}`}>
             <img src={track.cover} alt="" className="h-12 w-12 rounded-xl object-cover" onError={(event) => { event.currentTarget.src = artwork.alexis; }} />
             <span className="min-w-0">
               <strong className="block truncate text-sm">{track.title}</strong>
               <small className={`block truncate text-xs ${light ? "text-[#111118]/48" : "text-white/48"}`}>{track.artist}</small>
             </span>
-            <ExternalLink size={14} className={light ? "text-[#111118]/40" : "text-white/40"} />
-          </a>
+            <Play size={14} className={light ? "text-[#111118]/40" : "text-white/40"} />
+          </button>
         ))}
       </div>
     </div>
@@ -460,15 +499,15 @@ function VideoRail({ clips, light, onPlay }: { clips: VideoClip[]; light: boolea
       <div className="min-w-0 overflow-hidden">
         <div ref={railRef} className="carousel-scroll flex gap-3 pb-3">
           {clips.map((clip) => (
-            <article key={clip.title} className={`carousel-item w-[min(72vw,260px)] shrink-0 overflow-hidden rounded-[18px] shadow-[0_14px_42px_rgba(12,10,18,.10)] ${light ? "bg-white/68 text-[#111118]" : "border border-white/10 bg-white/[0.06] text-white"}`}>
-              <button type="button" onClick={() => onPlay(clip)} className="group relative aspect-video w-full overflow-hidden text-left">
-                <img src={youtubeThumb(clip.embed)} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
-                <span className="absolute inset-0 bg-black/22" />
+            <article key={clip.title} className={`carousel-item w-[min(74vw,310px)] shrink-0 overflow-hidden rounded-[18px] shadow-[0_14px_42px_rgba(12,10,18,.10)] ${light ? "bg-white/68 text-[#111118]" : "border border-white/10 bg-white/[0.06] text-white"}`}>
+              <button type="button" onClick={() => onPlay(clip)} className="group relative aspect-[16/10] w-full overflow-hidden text-left">
+                <img src={youtubeThumb(clip.embed)} alt="" className="h-full w-full scale-[1.08] object-cover object-center transition duration-300 group-hover:scale-[1.14]" />
+                <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/16 to-black/8" />
                 <span className="absolute left-1/2 top-1/2 inline-flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#111118] shadow-[0_0_28px_rgba(255,255,255,.35)]">
                   <Play size={20} fill="currentColor" />
                 </span>
+                <strong className="absolute inset-x-3 bottom-3 line-clamp-2 text-xs font-black leading-tight text-white">{clip.title}</strong>
               </button>
-              <h3 className="line-clamp-2 px-3 py-2.5 text-xs font-black leading-tight">{clip.title}</h3>
             </article>
           ))}
         </div>
@@ -600,12 +639,12 @@ function ArtistProfile({
           <MusicRail tracks={latest} light={light} labels={labels} onPlay={onPlay} />
         </div>
 
-        <div className="mt-8 grid gap-7 lg:grid-cols-[minmax(0,.9fr)_minmax(280px,.55fr)]">
-          <div>
+        <div className="mt-8 grid gap-7 lg:grid-cols-2 lg:items-start">
+          <div className="min-w-0">
             <h3 className="mb-4 text-lg font-black uppercase tracking-[0.08em]">{labels.catalogue}</h3>
-            <CompactCatalogue tracks={catalogue} light={light} />
+            <CompactCatalogue tracks={catalogue} light={light} onPlay={onPlay} />
           </div>
-          <div>
+          <div className={`min-w-0 lg:border-l lg:pl-7 ${light ? "border-[#111118]/18" : "border-white/16"}`}>
             <h3 className="mb-4 text-lg font-black uppercase tracking-[0.08em]">{labels.artistVideos}</h3>
             <VideoRail clips={videos} light={light} onPlay={onVideoPlay} />
           </div>
@@ -763,13 +802,13 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
       <div className={`sherrie-theme min-h-screen overflow-hidden transition-colors duration-500 ${light ? "bg-[#f7f4ef] text-[#111118]" : "bg-[#090708] text-white"}`}>
         <section className="relative min-h-[820px] overflow-hidden">
           <img src="/images/sherrie/duo-booth.png" alt="" className="absolute inset-0 h-full w-full scale-[1.18] object-cover object-[40%_42%] opacity-100 sm:scale-100 sm:object-[58%_42%]" />
-          <div className={`absolute inset-0 ${light ? "bg-[linear-gradient(90deg,rgba(247,244,239,.34),rgba(247,244,239,.18)_36%,rgba(247,244,239,.02)),linear-gradient(180deg,rgba(247,244,239,0),rgba(247,244,239,.58))]" : "bg-[linear-gradient(90deg,rgba(8,6,8,.78),rgba(8,6,8,.48)_36%,rgba(8,6,8,.10)),linear-gradient(180deg,rgba(8,6,8,.03),rgba(8,6,8,.88))]"}`} />
+          <div className={`absolute inset-0 ${light ? "bg-[linear-gradient(90deg,rgba(247,244,239,.34),rgba(247,244,239,.18)_36%,rgba(247,244,239,.02)),linear-gradient(180deg,rgba(247,244,239,0),rgba(247,244,239,.58))]" : "bg-[linear-gradient(90deg,rgba(8,6,8,.50),rgba(8,6,8,.28)_36%,rgba(8,6,8,.06)),linear-gradient(180deg,rgba(8,6,8,.02),rgba(8,6,8,.60))]"}`} />
           <div className="relative z-10 mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-4 pb-36 pt-28 sm:px-6 xl:grid-cols-[minmax(0,1fr)_290px]">
             <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: "easeOut" }}>
               <h1 className={`max-w-[800px] text-[clamp(3rem,7vw,6.4rem)] font-black uppercase leading-[.84] tracking-[-.07em] ${light ? "text-[#111118]" : "text-white"}`}>{labels.heroTitle}</h1>
               <img src="/sherrie-sherrie.png" alt="Sherrie Sherrie" className="ml-auto mt-7 w-[min(52vw,230px)] saturate-90 contrast-125 drop-shadow-[0_0_28px_rgba(177,90,111,.20)] sm:ml-0 sm:w-[min(68vw,360px)]" />
             </motion.div>
-            <motion.div className="justify-self-center xl:justify-self-auto" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }}>
+            <motion.div className="mt-24 justify-self-center sm:mt-12 xl:mt-0 xl:justify-self-auto" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.12, ease: "easeOut" }}>
               <MiniDates events={featuredEvents} labels={labels} light={light} />
             </motion.div>
           </div>
@@ -783,9 +822,7 @@ function SherrieHome({ events, tracks, videos, darkMode }: { events: EventItem[]
                 <h2 className={`text-[clamp(2.4rem,6vw,5.8rem)] font-black uppercase leading-[.88] tracking-[-.055em] ${light ? "text-[#111118]" : "text-white"}`}>{labels.storyTitle}</h2>
                 <p className={`mt-6 text-sm leading-relaxed ${light ? "text-[#111118]/62" : "text-white/62"}`}>{labels.storyText}</p>
               </div>
-              <figure className={`aspect-[16/10] overflow-hidden rounded-[30px] shadow-[0_24px_90px_rgba(30,24,28,.14)] ${light ? "bg-white/58" : "border border-white/10 bg-white/[0.055]"}`}>
-                <img src="/images/sherrie/paga-crowd.png" alt="" className="h-full w-full object-cover" />
-              </figure>
+              <AutoPhotoSlideshow light={light} />
             </div>
           </div>
         </section>

@@ -451,9 +451,9 @@ section {
 
 [data-theme="dark"] .sherrie-footer-zone::before {
   background:
-    linear-gradient(180deg, rgba(9,7,8,0.18), rgba(9,7,8,0.86) 30%, rgba(9,7,8,0.78)),
+    linear-gradient(180deg, rgba(9,7,8,0.12), rgba(9,7,8,0.42) 30%, rgba(9,7,8,0.58)),
     url("/images/sherrie/footer-dark-bg.png") center bottom / cover no-repeat;
-  opacity: .60;
+  opacity: .94;
 }
 
 .sherrie-action-card,
