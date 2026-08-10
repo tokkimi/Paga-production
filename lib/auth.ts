@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { checkRateLimitIdentity } from "@/lib/rate-limit";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -14,7 +15,10 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) throw new Error("Email et mot de passe requis");
-        const user = await prisma.user.findUnique({ where: { email: credentials.email.toLowerCase() } });
+        const email = credentials.email.trim().toLowerCase().slice(0, 200);
+        const rateLimit = await checkRateLimitIdentity("auth-email", email, 10, 15 * 60 * 1000);
+        if (!rateLimit.allowed) throw new Error("Trop de tentatives. Réessayez plus tard.");
+        const user = await prisma.user.findUnique({ where: { email } });
         if (!user || !user.password) throw new Error("Identifiants invalides");
         const isValid = await bcrypt.compare(credentials.password, user.password);
         if (!isValid) throw new Error("Identifiants invalides");

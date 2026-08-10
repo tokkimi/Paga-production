@@ -8,7 +8,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || "https://paga-production.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.sherriesherrie.com";
 const metadataBase = new URL(siteUrl.startsWith("http") ? siteUrl : "https://" + siteUrl);
 
 export const metadata: Metadata = {
@@ -17,22 +17,21 @@ export const metadata: Metadata = {
     template: "%s | Sherrie Sherrie",
   },
   description:
-    "Sherrie Sherrie is the DJ project by Paga and Alexis Dante for bookings, music, events and brand partnerships.",
-  keywords: ["Sherrie Sherrie", "Paga", "DJ", "France", "Korea", "Asia", "Alexis Dante", "electro", "house", "summer tour 2026"],
+    "Sherrie Sherrie, le projet DJ de Paga et Alexis Dante : musique, dates, booking, collaborations et boutique officielle.",
+  keywords: ["Sherrie Sherrie", "Paga", "Alexis Dante", "DJ", "house", "musique électronique", "dates", "merch", "boutique officielle"],
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://paga-production.vercel.app",
     siteName: "Sherrie Sherrie",
     title: "Sherrie Sherrie | DJ Project",
     description:
-      "DJ project by Paga and Alexis Dante for bookings, music, events and brand partnerships.",
+      "Projet DJ de Paga et Alexis Dante : musique, dates, booking et boutique officielle.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Sherrie Sherrie",
     description:
-      "DJ project by Paga and Alexis Dante for bookings, music, events and brand partnerships.",
+      "Projet DJ de Paga et Alexis Dante : musique, dates, booking et boutique officielle.",
   },
   metadataBase,
 };

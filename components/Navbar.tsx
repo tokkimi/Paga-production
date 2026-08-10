@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const navLinks = [
+  { key: "shop", href: "/shop" },
   { key: "dates", href: "/dates" },
   { key: "sponsors", href: "/sponsors" },
   { key: "join", href: "/rejoindre" },
@@ -113,7 +114,7 @@ export default function Navbar() {
                       : sherrieLightMode ? "text-[#111118]/68 hover:text-[#111118]" : "text-white/80 hover:text-white"
                   )}
                 >
-                  {t(link.key as "artists")}
+                  {t(link.key as "shop" | "dates" | "sponsors" | "join")}
                   {isActive(link.href) && (
                     <motion.div
                       layoutId="nav-underline"
@@ -308,7 +309,7 @@ export default function Navbar() {
                         : "text-white/80 hover:bg-white/10 hover:text-white"
                     )}
                   >
-                    {t(link.key as "artists")}
+                    {t(link.key as "shop" | "dates" | "sponsors" | "join")}
                   </Link>
                 );
               })}

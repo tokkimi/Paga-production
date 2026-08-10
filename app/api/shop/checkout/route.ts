@@ -1,0 +1,161 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getStripeClient } from "@/lib/stripe";
+import { checkRateLimit } from "@/lib/rate-limit";
+
+type CheckoutItem = {
+  productId?: unknown;
+  quantity?: unknown;
+  size?: unknown;
+  color?: unknown;
+};
+
+const text = (value: unknown, max: number) => String(value ?? "").trim().slice(0, max);
+
+export async function POST(request: Request) {
+  try {
+    const rateLimit = await checkRateLimit(request, "shop-checkout", 8, 10 * 60 * 1000);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Trop de tentatives. Réessayez dans quelques minutes." },
+        { status: 429, headers: { "Retry-After": String(rateLimit.retryAfter) } },
+      );
+    }
+    const body = (await request.json()) as Record<string, unknown>;
+    if (text(body.company, 100)) return NextResponse.json({ error: "Requête refusée." }, { status: 400 });
+    const rawItems = Array.isArray(body.items) ? (body.items as CheckoutItem[]).slice(0, 20) : [];
+    const customerName = text(body.customerName, 140);
+    const customerEmail = text(body.customerEmail, 200).toLowerCase();
+    const addressLine1 = text(body.addressLine1, 240);
+    const postalCode = text(body.postalCode, 30);
+    const city = text(body.city, 120);
+    const country = text(body.country, 120);
+    const locale = ["fr", "en", "ko"].includes(String(body.locale)) ? String(body.locale) : "fr";
+
+    if (!rawItems.length) throw new Error("Votre panier est vide.");
+    if (body.termsAccepted !== true) throw new Error("Vous devez accepter les CGV avant de commander.");
+    if (!customerName || !customerEmail.includes("@")) throw new Error("Nom et email valides requis.");
+    if (!addressLine1 || !postalCode || !city || !country) throw new Error("Adresse de livraison incomplète.");
+
+    const normalizedItems = rawItems.map((item) => ({
+      productId: text(item.productId, 80),
+      quantity: Math.max(1, Math.min(10, Math.trunc(Number(item.quantity ?? 1)) || 1)),
+      size: text(item.size, 40) || null,
+      color: text(item.color, 60) || null,
+    }));
+    const productIds = [...new Set(normalizedItems.map((item) => item.productId).filter(Boolean))];
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds }, isActive: true },
+      include: { images: { orderBy: { order: "asc" }, take: 1 } },
+    });
+    const productMap = new Map(products.map((product) => [product.id, product]));
+
+    const items = normalizedItems.map((item) => {
+      const product = productMap.get(item.productId);
+      if (!product) throw new Error("Un produit du panier n'est plus disponible.");
+      if (product.sizes.length && (!item.size || !product.sizes.includes(item.size))) {
+        throw new Error(`Choisissez une taille valide pour ${product.name}.`);
+      }
+      if (product.colors.length && (!item.color || !product.colors.includes(item.color))) {
+        throw new Error(`Choisissez une couleur valide pour ${product.name}.`);
+      }
+      if (product.trackStock && item.quantity > product.stock) {
+        throw new Error(`Stock insuffisant pour ${product.name}.`);
+      }
+      return { ...item, product };
+    });
+
+    const currencies = new Set(items.map((item) => item.product.currency));
+    if (currencies.size !== 1) throw new Error("Les produits doivent utiliser la même devise.");
+    const currency = items[0].product.currency;
+    const subtotalCents = items.reduce(
+      (total, item) => total + item.product.priceCents * item.quantity,
+      0,
+    );
+    const shippingCents = 0;
+    const totalCents = subtotalCents + shippingCents;
+    const orderNumber = `SS-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
+
+    const order = await prisma.shopOrder.create({
+      data: {
+        orderNumber,
+        customerName,
+        customerEmail,
+        phone: text(body.phone, 50) || null,
+        addressLine1,
+        addressLine2: text(body.addressLine2, 240) || null,
+        postalCode,
+        city,
+        country,
+        note: text(body.note, 1_500) || null,
+        subtotalCents,
+        shippingCents,
+        totalCents,
+        currency,
+        termsAcceptedAt: new Date(),
+        termsVersion: "2026-08-10",
+        items: {
+          create: items.map((item) => ({
+            productId: item.product.id,
+            productName: item.product.name,
+            productSlug: item.product.slug,
+            unitPriceCents: item.product.priceCents,
+            quantity: item.quantity,
+            size: item.size,
+            color: item.color,
+          })),
+        },
+      },
+    });
+
+    const origin = new URL(request.url).origin;
+    const confirmationUrl = `${origin}/${locale}/shop/confirmation?order=${encodeURIComponent(order.id)}`;
+    const stripe = getStripeClient();
+    if (!stripe) {
+      return NextResponse.json({ url: confirmationUrl, orderNumber, paymentConfigured: false });
+    }
+
+    try {
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        customer_email: customerEmail,
+        billing_address_collection: "auto",
+        shipping_address_collection: {
+          allowed_countries: ["FR", "BE", "ES", "IT", "DE", "NL", "LU", "PT", "CH", "GB", "KR"],
+        },
+        allow_promotion_codes: true,
+        line_items: items.map((item) => ({
+          quantity: item.quantity,
+          price_data: {
+            currency: item.product.currency.toLowerCase(),
+            unit_amount: item.product.priceCents,
+            product_data: {
+              name: item.product.name,
+              description: [item.size && `Taille ${item.size}`, item.color && `Couleur ${item.color}`]
+                .filter(Boolean)
+                .join(" · ") || undefined,
+              images: item.product.images[0]?.url ? [item.product.images[0].url] : undefined,
+              metadata: { productId: item.product.id },
+            },
+          },
+        })),
+        metadata: { orderId: order.id, orderNumber },
+        success_url: `${confirmationUrl}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/${locale}/shop?checkout=cancelled`,
+      });
+      await prisma.shopOrder.update({
+        where: { id: order.id },
+        data: { status: "AWAITING_PAYMENT", stripeSessionId: session.id },
+      });
+      return NextResponse.json({ url: session.url, orderNumber, paymentConfigured: true });
+    } catch (stripeError) {
+      console.error("Stripe checkout unavailable", stripeError);
+      return NextResponse.json({ url: confirmationUrl, orderNumber, paymentConfigured: false });
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Impossible de créer la commande." },
+      { status: 400 },
+    );
+  }
+}

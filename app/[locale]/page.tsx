@@ -17,8 +17,19 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
   };
 
   return {
-    title: "Sherrie Sherrie | " + t("subtitle"),
+    title: { absolute: "Sherrie Sherrie | " + t("subtitle") },
     description: descriptions[locale as keyof typeof descriptions] || descriptions.en,
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { fr: "/fr", en: "/en", ko: "/ko" },
+    },
+    openGraph: {
+      type: "website",
+      url: `/${locale}`,
+      locale: locale === "fr" ? "fr_FR" : locale === "ko" ? "ko_KR" : "en_GB",
+      title: "Sherrie Sherrie | " + t("subtitle"),
+      description: descriptions[locale as keyof typeof descriptions] || descriptions.en,
+    },
   };
 }
 

@@ -100,6 +100,7 @@ function checkSecret(req: NextRequest): boolean {
 }
 
 export async function GET(req: NextRequest) {
+  if (process.env.VERCEL_ENV) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!checkSecret(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -108,6 +109,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  if (process.env.VERCEL_ENV) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!checkSecret(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

@@ -491,8 +491,8 @@ function MusicRail({ tracks, light, labels, onPlay }: { tracks: TrackItem[]; lig
       <button type="button" onClick={() => scroll(-1)} className="sherrie-scroll-dot justify-self-center" aria-label="Previous tracks" />
       <div className="min-w-0 overflow-hidden">
         <div ref={railRef} className="carousel-scroll flex gap-3 pb-3">
-          {tracks.map((track) => (
-            <TrackCard key={`${track.title}-${track.artist}`} track={track} light={light} labels={labels} onPlay={onPlay} />
+          {tracks.map((track, trackIndex) => (
+            <TrackCard key={`${track.title}-${track.artist}-${trackIndex}`} track={track} light={light} labels={labels} onPlay={onPlay} />
           ))}
         </div>
       </div>
@@ -521,8 +521,8 @@ function CompactCatalogue({ tracks, light, onPlay }: { tracks: TrackItem[]; ligh
   return (
     <div className="relative">
       <div className={`max-h-[360px] overflow-y-auto pr-1 ${light ? "text-[#111118]" : "text-white"}`}>
-        {tracks.map((track) => (
-          <button key={`${track.title}-compact`} type="button" onClick={() => onPlay(track)} className={`mb-2 grid w-full grid-cols-[52px_minmax(0,1fr)_24px] items-center gap-3 rounded-2xl p-2 text-left transition ${light ? "bg-white/64 hover:bg-white" : "bg-white/[0.055] hover:bg-white/[0.09]"}`}>
+        {tracks.map((track, trackIndex) => (
+          <button key={`${track.title}-compact-${trackIndex}`} type="button" onClick={() => onPlay(track)} className={`mb-2 grid w-full grid-cols-[52px_minmax(0,1fr)_24px] items-center gap-3 rounded-2xl p-2 text-left transition ${light ? "bg-white/64 hover:bg-white" : "bg-white/[0.055] hover:bg-white/[0.09]"}`}>
             <img src={track.cover} alt="" className="h-12 w-12 rounded-xl object-cover" onError={(event) => { event.currentTarget.src = artwork.alexis; }} />
             <span className="min-w-0">
               <strong className="block truncate text-sm">{track.title}</strong>

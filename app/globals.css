@@ -228,6 +228,23 @@ section {
   color: #ff8dba;
 }
 
+[data-theme="dark"] .shop-product-card,
+[data-theme="dark"] .shop-product-panel {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 22px 76px rgba(0, 0, 0, 0.24);
+}
+
+[data-theme="dark"] .shop-filter-pill {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(255, 141, 186, 0.30);
+  color: #ff9bc4;
+}
+
+[data-theme="dark"] .shop-accent-text {
+  color: #ff9bc4;
+}
+
 .sherrie-page .event-card-shell {
   background: rgba(255, 255, 255, 0.68);
   border-color: rgba(17, 17, 24, 0.10);
