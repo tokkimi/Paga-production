@@ -3,21 +3,22 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Users, CalendarDays, Music, Video, Building2, Mail, BarChart3, Mic, UserRoundSearch, Megaphone, Receipt } from "lucide-react";
+import { Users, CalendarDays, Music, Video, Building2, Mail, BarChart3, Mic, UserRoundSearch, Megaphone, Receipt, ShoppingBag } from "lucide-react";
 
 export default async function AdminPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") redirect("/" + locale);
 
-  const [users, events, artists, tracks, videos, sponsors, subscribers, applications, campaigns, bookings, invoices] = await Promise.all([
+  const [users, events, artists, tracks, videos, sponsors, subscribers, applications, campaigns, bookings, invoices, products, shopOrders] = await Promise.all([
     prisma.user.count(), prisma.event.count(), prisma.artist.count(), prisma.track.count(), prisma.video.count(),
     prisma.sponsorProposal.count(), prisma.newsletterSubscriber.count({ where: { isActive: true } }),
     prisma.artistApplication.count(), prisma.campaign.count(), prisma.privateBooking.count(),
-    prisma.invoice.count(),
+    prisma.invoice.count(), prisma.product.count(), prisma.shopOrder.count(),
   ]);
 
   const cards = [
+    { label: "Boutique", value: `${products} / ${shopOrders}`, icon: ShoppingBag, href: "/" + locale + "/admin/boutique", color: "text-pink-300" },
     { label: "CRM & sponsors", value: sponsors + campaigns + bookings, icon: Building2, href: "/" + locale + "/admin/partenariats", color: "text-orange-300" },
     { label: "Candidatures", value: applications, icon: UserRoundSearch, href: "/" + locale + "/admin/candidatures", color: "text-cyan-300" },
     { label: "Statistiques", value: "Live", icon: BarChart3, href: "/" + locale + "/admin/statistiques", color: "text-blue-300" },

@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 const labels = {
   fr: {
     dates: "Dates",
+    shop: "Shop",
     sponsors: "Sponsors",
     join: "Rejoindre",
     contact: "Contact",
@@ -16,6 +17,7 @@ const labels = {
   },
   en: {
     dates: "Dates",
+    shop: "Shop",
     sponsors: "Sponsors",
     join: "Join",
     contact: "Contact",
@@ -26,6 +28,7 @@ const labels = {
   },
   ko: {
     dates: "일정",
+    shop: "샵",
     sponsors: "스폰서",
     join: "참여하기",
     contact: "문의",
@@ -40,6 +43,7 @@ export default function Footer() {
   const locale = useLocale();
   const text = labels[locale as keyof typeof labels] ?? labels.en;
   const links = [
+    { label: text.shop, href: `/${locale}/shop` },
     { label: text.dates, href: `/${locale}/dates` },
     { label: text.sponsors, href: `/${locale}/sponsors` },
     { label: text.join, href: `/${locale}/rejoindre` },

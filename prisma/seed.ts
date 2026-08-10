@@ -14,13 +14,30 @@ async function main() {
 
   console.log("🌱 Seeding database...");
 
-  const adminPassword = await bcrypt.hash("Admin@Paga2026!", 12);
-  const brandPassword = await bcrypt.hash("Brand@Test2026!", 12);
-  const userPassword = await bcrypt.hash("User@Test2026!", 12);
+  const adminEmail = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPlainPassword = process.env.SEED_ADMIN_PASSWORD;
+  if (!adminEmail || !adminPlainPassword) {
+    throw new Error("SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required");
+  }
+  if (
+    adminPlainPassword.length < 16 ||
+    !/[a-z]/.test(adminPlainPassword) ||
+    !/[A-Z]/.test(adminPlainPassword) ||
+    !/\d/.test(adminPlainPassword) ||
+    !/[^A-Za-z0-9]/.test(adminPlainPassword)
+  ) {
+    throw new Error("SEED_ADMIN_PASSWORD must be at least 16 characters and include upper, lower, number and symbol");
+  }
 
-  await prisma.user.create({ data: { email: "admin@pagaproduction.fr", name: "Admin Paga", password: adminPassword, role: "ADMIN" } });
-  await prisma.user.create({ data: { email: "marque@test.fr", name: "Marque Test", password: brandPassword, role: "BRAND" } });
-  await prisma.user.create({ data: { email: "user@test.fr", name: "Fan Test", password: userPassword, role: "USER" } });
+  const adminPassword = await bcrypt.hash(adminPlainPassword, 12);
+  await prisma.user.create({
+    data: {
+      email: adminEmail,
+      name: "Administration Sherrie Sherrie",
+      password: adminPassword,
+      role: "ADMIN",
+    },
+  });
   console.log("✅ Users created");
 
   const paga = await prisma.artist.create({
@@ -92,7 +109,7 @@ async function main() {
 
   await prisma.newsletterSubscriber.create({ data: { email: "fan@example.com", name: "Fan Example", isActive: true } });
   console.log("✅ Newsletter subscriber created");
-  console.log("\n🎉 Database seeded!\n\n📋 Credentials:\n  Admin: admin@pagaproduction.fr / Admin@Paga2026!\n  Brand: marque@test.fr / Brand@Test2026!\n  User:  user@test.fr / User@Test2026!");
+  console.log("\nDatabase seeded. The administrator email comes from SEED_ADMIN_EMAIL; no password is printed.");
 }
 
 main()

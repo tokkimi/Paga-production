@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 function deviceFromAgent(agent: string) {
   if (/tablet|ipad/i.test(agent)) return "tablet";
@@ -18,15 +19,17 @@ function browserFromAgent(agent: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    const rateLimit = await checkRateLimit(req, "analytics", 300, 10 * 60 * 1000);
+    if (!rateLimit.allowed) return NextResponse.json({ success: false }, { status: 429, headers: { "Retry-After": String(rateLimit.retryAfter) } });
     const body = await req.json();
-    const userAgent = req.headers.get("user-agent") || "";
+    const userAgent = (req.headers.get("user-agent") || "").slice(0, 500);
     const forwarded = req.headers.get("x-forwarded-for") || "";
     const ipHash = forwarded ? createHash("sha256").update(forwarded.split(",")[0] + (process.env.NEXTAUTH_SECRET || "paga")).digest("hex").slice(0, 20) : null;
     const common = {
       path: String(body.path || "/").slice(0, 500),
-      locale: body.locale || null,
-      referrer: body.referrer || null,
-      sessionId: body.sessionId || null,
+      locale: body.locale ? String(body.locale).slice(0, 10) : null,
+      referrer: body.referrer ? String(body.referrer).slice(0, 500) : null,
+      sessionId: body.sessionId ? String(body.sessionId).slice(0, 120) : null,
       ipHash,
       country: req.headers.get("x-vercel-ip-country"),
       city: req.headers.get("x-vercel-ip-city"),

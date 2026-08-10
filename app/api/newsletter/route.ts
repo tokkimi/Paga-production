@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
+    const rateLimit = await checkRateLimit(req, "newsletter", 5, 60 * 60 * 1000);
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: "Trop de tentatives. Réessayez plus tard." }, { status: 429, headers: { "Retry-After": String(rateLimit.retryAfter) } });
+    }
+    const body = await req.json();
+    const email = String(body.email || "").trim().toLowerCase().slice(0, 200);
     if (!email || !email.includes("@")) {
       return NextResponse.json({ error: "Email invalide" }, { status: 400 });
     }

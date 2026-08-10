@@ -11,6 +11,7 @@ export default function Contact() {
   const t = useTranslations("home.contact");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [form, setForm] = useState({ name: "", email: "", subject: "booking", message: "" });
+  const [website, setWebsite] = useState("");
 
   const update = (key: string, value: string) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -21,7 +22,7 @@ export default function Contact() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, website }),
       });
       if (res.ok) {
         setStatus("success");
@@ -64,6 +65,7 @@ export default function Contact() {
           </div>
 
           <form onSubmit={handleSubmit} className="glass-card p-5 sm:p-6">
+            <label className="sr-only" aria-hidden="true">Site web<input tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} /></label>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block">
                 <span className="mb-1.5 block text-xs font-medium text-white/60">{t("name")}</span>

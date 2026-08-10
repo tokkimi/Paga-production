@@ -33,6 +33,7 @@ export default function SponsorsPage() {
     description: "",
   });
   const [pdf, setPdf] = useState<File | null>(null);
+  const [companyFax, setCompanyFax] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,6 +42,7 @@ export default function SponsorsPage() {
     try {
       const payload = new FormData();
       Object.entries(form).forEach(([key, value]) => payload.append(key, value));
+      payload.append("companyFax", companyFax);
       if (pdf) payload.append("pdf", pdf);
 
       const res = await fetch("/api/sponsors", {
@@ -125,6 +127,7 @@ export default function SponsorsPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              <label className="sr-only" aria-hidden="true">Fax société<input tabIndex={-1} autoComplete="off" value={companyFax} onChange={(event) => setCompanyFax(event.target.value)} /></label>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-white/60">{t("brand_name")} *</label>
@@ -170,7 +173,7 @@ export default function SponsorsPage() {
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-white/60">PDF / brief de campagne</label>
                 <input type="file" accept="application/pdf,.pdf" onChange={(e) => setPdf(e.target.files?.[0] || null)} className="form-input file:mr-4 file:rounded-lg file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-bold file:text-white" />
-                <p className="mt-1 text-xs text-white/40">PDF accepté, maximum 5 Mo.</p>
+                <p className="mt-1 text-xs text-white/40">PDF uniquement, maximum 4 Mo.</p>
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-white/60">{t("description")} *</label>

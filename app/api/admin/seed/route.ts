@@ -8,16 +8,29 @@ async function runSeed() {
     return { message: "Database already seeded", users: existingUsers };
   }
 
-  const adminPassword = await bcrypt.hash("Admin@Paga2026!", 12);
-  const brandPassword = await bcrypt.hash("Brand@Test2026!", 12);
-  const userPassword = await bcrypt.hash("User@Test2026!", 12);
+  const adminEmail = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPlainPassword = process.env.SEED_ADMIN_PASSWORD;
+  if (!adminEmail || !adminPlainPassword) {
+    throw new Error("SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required");
+  }
+  if (
+    adminPlainPassword.length < 16 ||
+    !/[a-z]/.test(adminPlainPassword) ||
+    !/[A-Z]/.test(adminPlainPassword) ||
+    !/\d/.test(adminPlainPassword) ||
+    !/[^A-Za-z0-9]/.test(adminPlainPassword)
+  ) {
+    throw new Error("SEED_ADMIN_PASSWORD must be at least 16 characters and include upper, lower, number and symbol");
+  }
 
-  await prisma.user.createMany({
-    data: [
-      { email: "admin@pagaproduction.fr", name: "Admin Paga", password: adminPassword, role: "ADMIN" },
-      { email: "marque@test.fr", name: "Marque Test", password: brandPassword, role: "BRAND" },
-      { email: "user@test.fr", name: "Fan Test", password: userPassword, role: "USER" },
-    ],
+  const adminPassword = await bcrypt.hash(adminPlainPassword, 12);
+  await prisma.user.create({
+    data: {
+      email: adminEmail,
+      name: "Administration Sherrie Sherrie",
+      password: adminPassword,
+      role: "ADMIN",
+    },
   });
 
   const paga = await prisma.artist.create({
@@ -88,7 +101,7 @@ async function runSeed() {
     ],
   });
 
-  return { message: "Database seeded successfully", created: { users: 3, artists: 2, events: events.length, tracks: 10, videos: 2 } };
+  return { message: "Database seeded successfully", created: { users: 1, artists: 2, events: events.length, tracks: 10, videos: 2 } };
 }
 
 function checkSecret(req: NextRequest): boolean {
@@ -100,6 +113,7 @@ function checkSecret(req: NextRequest): boolean {
 }
 
 export async function GET(req: NextRequest) {
+  if (process.env.VERCEL_ENV) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!checkSecret(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -108,6 +122,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  if (process.env.VERCEL_ENV) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!checkSecret(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
