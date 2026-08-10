@@ -245,11 +245,20 @@ export default function AdminShopPage() {
                     {product.images.length ? (
                       <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
                         {product.images.map((image, index) => (
-                          <div key={image.id} className="group/image relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-white/10">
-                            <Image src={image.url} alt="" fill sizes="56px" className="object-cover" />
-                            <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/65 opacity-0 transition group-hover/image:opacity-100">
-                              <button type="button" onClick={() => makeCover(product.id, image.id)} className="p-1 text-yellow-300" title="Définir en couverture"><Star size={12} fill={index === 0 ? "currentColor" : "none"} /></button>
-                              <button type="button" onClick={() => removeImage(product.id, image.id)} className="p-1 text-red-300" title="Supprimer"><Trash2 size={12} /></button>
+                          <div key={image.id} className={`relative h-20 w-24 shrink-0 overflow-hidden rounded-xl border ${index === 0 ? "border-yellow-300/80" : "border-white/10"}`}>
+                            <Image src={image.url} alt="" fill sizes="96px" className="object-cover" />
+                            <div className="absolute inset-x-1 bottom-1 flex items-center gap-1 rounded-lg bg-black/80 p-1 backdrop-blur-md">
+                              <button
+                                type="button"
+                                onClick={() => makeCover(product.id, image.id)}
+                                className={`flex min-w-0 flex-1 items-center justify-center gap-1 rounded-md px-1 py-1 text-[8px] font-black uppercase ${index === 0 ? "bg-yellow-300 text-black" : "bg-white/10 text-white"}`}
+                                aria-label={index === 0 ? "Image principale" : "Définir comme image principale"}
+                                title={index === 0 ? "Image principale" : "Définir comme image principale"}
+                              >
+                                <Star size={10} fill={index === 0 ? "currentColor" : "none"} />
+                                {index === 0 ? "Principale" : "Choisir"}
+                              </button>
+                              <button type="button" onClick={() => removeImage(product.id, image.id)} className="rounded-md bg-red-500/15 p-1.5 text-red-300" title="Supprimer" aria-label="Supprimer l'image"><Trash2 size={11} /></button>
                             </div>
                           </div>
                         ))}
