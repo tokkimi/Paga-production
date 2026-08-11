@@ -15,6 +15,10 @@ export function serializeProduct(product: Product & { images: ProductImage[] }):
     descriptionKo: product.descriptionKo,
     details: product.details,
     category: product.category,
+    collection: product.collection,
+    audience: product.audience,
+    // Supplier provenance is kept in the authenticated admin API only.
+    sourceUrl: null,
     priceCents: product.priceCents,
     currency: product.currency,
     sizes: product.sizes,
@@ -33,4 +37,3 @@ export function serializeProduct(product: Product & { images: ProductImage[] }):
     })),
   };
 }
-

@@ -1,4 +1,4 @@
-import type { ProductCategoryValue } from "@/lib/shop";
+import type { ProductAudienceValue, ProductCategoryValue } from "@/lib/shop";
 
 export type ShopImage = {
   id: string;
@@ -19,6 +19,9 @@ export type ShopProduct = {
   descriptionKo: string | null;
   details: string | null;
   category: ProductCategoryValue;
+  collection: string;
+  audience: ProductAudienceValue;
+  sourceUrl: string | null;
   priceCents: number;
   currency: string;
   sizes: string[];
@@ -45,4 +48,3 @@ export type CartItem = {
   color: string | null;
   quantity: number;
 };
-

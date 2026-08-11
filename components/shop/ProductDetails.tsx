@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Check, ChevronLeft, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useMemo, useState } from "react";
-import { CATEGORY_LABELS, formatPrice } from "@/lib/shop";
+import { AUDIENCE_LABELS, CATEGORY_LABELS, colorSwatchValue, formatPrice } from "@/lib/shop";
 import type { ShopProduct } from "@/lib/shop-types";
 import { useShopCart } from "@/components/shop/ShopCartProvider";
 
@@ -64,9 +64,9 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
                   src={product.images[activeImage].url}
                   alt={product.images[activeImage].alt || content.name}
                   fill
-                  priority
+                  preload
                   sizes="(max-width: 1024px) 100vw, 56vw"
-                  className="object-cover"
+                  className="object-contain p-3 sm:p-5"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center"><ShoppingBag size={54} className="text-[#c85586]/22" /></div>
@@ -90,7 +90,7 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
           </div>
 
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="text-[10px] font-black uppercase tracking-[0.32em] text-[#c85586]">{CATEGORY_LABELS[product.category][locale as "fr" | "en" | "ko"] || CATEGORY_LABELS[product.category].fr}</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#c85586]">{product.collection} · {AUDIENCE_LABELS[product.audience][locale as "fr" | "en" | "ko"] || AUDIENCE_LABELS[product.audience].fr} · {CATEGORY_LABELS[product.category][locale as "fr" | "en" | "ko"] || CATEGORY_LABELS[product.category].fr}</p>
             <h1 className="mt-3 text-[clamp(2.5rem,6vw,5.5rem)] font-black uppercase leading-[.86] tracking-[-.055em]">{content.name}</h1>
             <p className="shop-accent-text mt-6 text-2xl font-black text-[#c85586]">{formatPrice(product.priceCents, product.currency, locale)}</p>
             {content.description ? <p className="mt-6 whitespace-pre-line text-sm leading-7 opacity-62">{content.description}</p> : null}
@@ -107,9 +107,9 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
 
               {product.colors.length ? (
                 <div>
-                  <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] opacity-48">{labels.color}</p>
+                  <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] opacity-48">{labels.color} <span className="ml-2 text-[#c85586] opacity-100">{color}</span></p>
                   <div className="flex flex-wrap gap-2">
-                    {product.colors.map((item) => <button type="button" key={item} onClick={() => setColor(item)} className={`rounded-xl border px-4 py-2.5 text-xs font-black transition ${color === item ? "border-[#c85586] bg-[#c85586] text-white" : "border-[#c85586]/20 bg-white/20"}`}>{item}</button>)}
+                    {product.colors.map((item) => <button type="button" key={item} onClick={() => setColor(item)} title={item} aria-label={`${labels.color} ${item}`} className={`h-9 w-9 rounded-full border-2 p-1 transition ${color === item ? "scale-110 border-[#c85586] shadow-[0_0_0_3px_rgba(200,85,134,.18)]" : "border-black/10 hover:scale-105"}`}><span className="block h-full w-full rounded-full border border-black/10" style={{ background: colorSwatchValue(item) }} /></button>)}
                   </div>
                 </div>
               ) : null}

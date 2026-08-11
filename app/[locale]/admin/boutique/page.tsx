@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Edit2, ImagePlus, Package, Plus, ShoppingBag, Star, Trash2, Truck, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { CATEGORY_LABELS, PRODUCT_CATEGORIES, formatPrice, normalizeProductSlug, type ProductCategoryValue } from "@/lib/shop";
+import { AUDIENCE_LABELS, CATEGORY_LABELS, PRODUCT_AUDIENCES, PRODUCT_CATEGORIES, formatPrice, normalizeProductSlug, type ProductAudienceValue, type ProductCategoryValue } from "@/lib/shop";
 import type { ShopProduct } from "@/lib/shop-types";
 
 type ShopOrderStatus = "PENDING" | "AWAITING_PAYMENT" | "PAID" | "PROCESSING" | "SHIPPED" | "COMPLETED" | "CANCELLED";
@@ -47,6 +47,9 @@ const EMPTY_FORM = {
   descriptionKo: "",
   details: "",
   category: "TSHIRT" as ProductCategoryValue,
+  collection: "Essentiel",
+  audience: "MIXTE" as ProductAudienceValue,
+  sourceUrl: "",
   price: "",
   sizes: "",
   colors: "",
@@ -112,6 +115,9 @@ export default function AdminShopPage() {
       descriptionKo: product.descriptionKo || "",
       details: product.details || "",
       category: product.category,
+      collection: product.collection,
+      audience: product.audience,
+      sourceUrl: product.sourceUrl || "",
       price: (product.priceCents / 100).toFixed(2),
       sizes: product.sizes.join(", "),
       colors: product.colors.join(", "),
@@ -237,7 +243,7 @@ export default function AdminShopPage() {
                     </div>
                   </div>
                   <div className="p-5">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#ff8dba]">{CATEGORY_LABELS[product.category].fr}</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#ff8dba]">{product.collection} · {AUDIENCE_LABELS[product.audience].fr} · {CATEGORY_LABELS[product.category].fr}</p>
                     <div className="mt-2 flex justify-between gap-4"><h2 className="font-black uppercase">{product.name}</h2><strong className="text-[#ff8dba]">{formatPrice(product.priceCents, product.currency)}</strong></div>
                     <p className="mt-2 text-xs text-white/40">{product.sizes.length ? product.sizes.join(" · ") : "Taille unique"}{product.colors.length ? ` · ${product.colors.join(" · ")}` : ""}</p>
                     <p className="mt-1 text-xs text-white/40">{product.trackStock ? `Stock : ${product.stock}` : "Stock non suivi"} · {product.images.length} image(s)</p>
@@ -320,6 +326,8 @@ export default function AdminShopPage() {
                     <Field label="Nom FR *"><input className="form-input" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value, slug: editId ? current.slug : normalizeProductSlug(event.target.value) }))} /></Field>
                     <div className="grid gap-3 sm:grid-cols-2"><Field label="Nom EN"><input className="form-input" value={form.nameEn} onChange={(event) => setForm((current) => ({ ...current, nameEn: event.target.value }))} /></Field><Field label="Nom KO"><input className="form-input" value={form.nameKo} onChange={(event) => setForm((current) => ({ ...current, nameKo: event.target.value }))} /></Field></div>
                     <Field label="Adresse URL *"><input className="form-input" value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: normalizeProductSlug(event.target.value) }))} /></Field>
+                    <div className="grid gap-3 sm:grid-cols-2"><Field label="Collection *"><input className="form-input" value={form.collection} onChange={(event) => setForm((current) => ({ ...current, collection: event.target.value }))} placeholder="Essentiel" /></Field><Field label="Public"><select className="form-input" value={form.audience} onChange={(event) => setForm((current) => ({ ...current, audience: event.target.value as ProductAudienceValue }))}>{PRODUCT_AUDIENCES.map((item) => <option key={item} value={item}>{AUDIENCE_LABELS[item].fr}</option>)}</select></Field></div>
+                    <Field label="Lien fournisseur (privé, non affiché dans la boutique)"><input type="url" className="form-input" value={form.sourceUrl} onChange={(event) => setForm((current) => ({ ...current, sourceUrl: event.target.value }))} placeholder="https://..." /></Field>
                     <Field label="Description FR"><textarea rows={4} className="form-input resize-none" value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} /></Field>
                     <div className="grid gap-3 sm:grid-cols-2"><Field label="Description EN"><textarea rows={3} className="form-input resize-none" value={form.descriptionEn} onChange={(event) => setForm((current) => ({ ...current, descriptionEn: event.target.value }))} /></Field><Field label="Description KO"><textarea rows={3} className="form-input resize-none" value={form.descriptionKo} onChange={(event) => setForm((current) => ({ ...current, descriptionKo: event.target.value }))} /></Field></div>
                     <Field label="Détails, matière, entretien"><textarea rows={4} className="form-input resize-none" value={form.details} onChange={(event) => setForm((current) => ({ ...current, details: event.target.value }))} /></Field>

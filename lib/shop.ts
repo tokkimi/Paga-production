@@ -1,5 +1,6 @@
 export const PRODUCT_CATEGORIES = [
   "TSHIRT",
+  "TANK",
   "HOODIE",
   "CAP",
   "HAT",
@@ -10,8 +11,79 @@ export const PRODUCT_CATEGORIES = [
 
 export type ProductCategoryValue = (typeof PRODUCT_CATEGORIES)[number];
 
+export const PRODUCT_AUDIENCES = ["MIXTE", "HOMME", "FEMME"] as const;
+export type ProductAudienceValue = (typeof PRODUCT_AUDIENCES)[number];
+
+export const AUDIENCE_LABELS: Record<ProductAudienceValue, { fr: string; en: string; ko: string }> = {
+  MIXTE: { fr: "Mixte", en: "Unisex", ko: "공용" },
+  HOMME: { fr: "Homme", en: "Men", ko: "남성" },
+  FEMME: { fr: "Femme", en: "Women", ko: "여성" },
+};
+
+const COLOR_SWATCHES: Record<string, string> = {
+  "blanc / noir": "linear-gradient(135deg, #ffffff 0 48%, #151515 52% 100%)",
+  "blanc / rouge": "linear-gradient(135deg, #ffffff 0 48%, #bd3034 52% 100%)",
+  "blanc / bleu marine": "linear-gradient(135deg, #ffffff 0 48%, #17213b 52% 100%)",
+  noir: "#151515",
+  "noir de jais": "#101010",
+  "noir graphite": "#282828",
+  blanc: "#ffffff",
+  os: "#eee9dc",
+  naturel: "#e6d8bd",
+  sable: "#c9b18d",
+  beige: "#d8c3a5",
+  bronze: "#8b5e3c",
+  "marron kaki": "#655442",
+  shiitake: "#8f7865",
+  argile: "#a96f5b",
+  gris: "#8a8a8a",
+  "gris clair": "#c8c8c8",
+  "gris fonce": "#454545",
+  "gris fume": "#767676",
+  "gris ardoise": "#59616a",
+  "gris chine": "#a6a6a6",
+  "gris anthracite chine": "#4b4b4b",
+  "avoine chine": "#c9bca6",
+  marine: "#17213b",
+  "bleu fonce": "#1c3155",
+  "bleu nuit": "#101a31",
+  bleu: "#3568b8",
+  "bleu clair": "#8fc9e8",
+  "bleu roi chine": "#4169a8",
+  "denim chine": "#637d9c",
+  "denim delave": "#7f9aae",
+  oceanside: "#247d86",
+  rouge: "#bd3034",
+  "rouge coquelicot": "#d83b32",
+  "rouge fonce": "#7d2028",
+  rose: "#e88da9",
+  "rose clair": "#f2b4c8",
+  prune: "#653b5c",
+  violet: "#6f4a9e",
+  "basil green": "#597153",
+  "vert jade": "#3f8a72",
+  "vert treillis": "#596044",
+  "vert olive clair": "#8f9668",
+  "olive clair": "#9a9b6a",
+  vert: "#3b7d4b",
+  "vert foret": "#254f3b",
+  kaki: "#767451",
+  "vert kiwi": "#8ebf43",
+  jaune: "#e8c53a",
+  "jaune creme": "#f0dd87",
+  creme: "#eee0bb",
+};
+
+export function colorSwatchValue(name: string) {
+  const normalized = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  if (COLOR_SWATCHES[normalized]) return COLOR_SWATCHES[normalized];
+  const match = Object.entries(COLOR_SWATCHES).find(([key]) => normalized.includes(key));
+  return match?.[1] || "#c8b9bf";
+}
+
 export const CATEGORY_LABELS: Record<ProductCategoryValue, { fr: string; en: string; ko: string }> = {
   TSHIRT: { fr: "T-shirts", en: "T-shirts", ko: "티셔츠" },
+  TANK: { fr: "Débardeurs", en: "Tank tops", ko: "민소매" },
   HOODIE: { fr: "Hoodies", en: "Hoodies", ko: "후디" },
   CAP: { fr: "Casquettes", en: "Caps", ko: "캡" },
   HAT: { fr: "Chapeaux", en: "Hats", ko: "모자" },
@@ -57,6 +129,9 @@ export type ProductInput = {
   descriptionKo: string | null;
   details: string | null;
   category: ProductCategoryValue;
+  collection: string;
+  audience: ProductAudienceValue;
+  sourceUrl: string | null;
   priceCents: number;
   currency: string;
   sizes: string[];
@@ -74,6 +149,9 @@ export function parseProductInput(body: Record<string, unknown>): ProductInput {
   const category = PRODUCT_CATEGORIES.includes(body.category as ProductCategoryValue)
     ? (body.category as ProductCategoryValue)
     : "OTHER";
+  const audience = PRODUCT_AUDIENCES.includes(body.audience as ProductAudienceValue)
+    ? (body.audience as ProductAudienceValue)
+    : "MIXTE";
   const priceCents = Number.isInteger(body.priceCents)
     ? Number(body.priceCents)
     : Math.round(Number(body.price ?? 0) * 100);
@@ -101,6 +179,9 @@ export function parseProductInput(body: Record<string, unknown>): ProductInput {
     descriptionKo: optionalText(body.descriptionKo, 5_000),
     details: optionalText(body.details, 5_000),
     category,
+    collection: optionalText(body.collection, 80) || "Essentiel",
+    audience,
+    sourceUrl: optionalText(body.sourceUrl, 2_000),
     priceCents,
     currency: "EUR",
     sizes: normalizeOptionList(body.sizes),

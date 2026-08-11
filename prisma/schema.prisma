@@ -584,12 +584,19 @@ model Invoice {
 
 enum ProductCategory {
   TSHIRT
+  TANK
   HOODIE
   CAP
   HAT
   JACKET
   ACCESSORY
   OTHER
+}
+
+enum ProductAudience {
+  MIXTE
+  HOMME
+  FEMME
 }
 
 model Product {
@@ -603,6 +610,9 @@ model Product {
   descriptionKo String?
   details       String?
   category      ProductCategory @default(OTHER)
+  collection    String          @default("Essentiel")
+  audience      ProductAudience @default(MIXTE)
+  sourceUrl     String?
   priceCents    Int
   currency      String          @default("EUR")
   sizes         String[]        @default([])
@@ -618,6 +628,7 @@ model Product {
   updatedAt     DateTime        @updatedAt
 
   @@index([category, isActive])
+  @@index([collection, audience, isActive])
   @@index([isFeatured, order])
 }
 
