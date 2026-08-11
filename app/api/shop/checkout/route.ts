@@ -78,6 +78,13 @@ export async function POST(request: Request) {
     const shippingCents = 0;
     const totalCents = subtotalCents + shippingCents;
     const orderNumber = `SS-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
+    const stripe = getStripeClient();
+    if (!stripe) {
+      return NextResponse.json(
+        { error: "Le paiement est temporairement indisponible. Aucune commande n'a été créée." },
+        { status: 503 },
+      );
+    }
 
     const order = await prisma.shopOrder.create({
       data: {
@@ -114,14 +121,11 @@ export async function POST(request: Request) {
 
     const origin = new URL(request.url).origin;
     const confirmationUrl = `${origin}/${locale}/shop/confirmation?order=${encodeURIComponent(order.id)}`;
-    const stripe = getStripeClient();
-    if (!stripe) {
-      return NextResponse.json({ url: confirmationUrl, orderNumber, paymentConfigured: false });
-    }
 
     try {
       const session = await stripe.checkout.sessions.create({
         mode: "payment",
+        client_reference_id: order.id,
         customer_email: customerEmail,
         billing_address_collection: "auto",
         shipping_address_collection: {
@@ -144,17 +148,27 @@ export async function POST(request: Request) {
           },
         })),
         metadata: { orderId: order.id, orderNumber },
+        payment_intent_data: { metadata: { orderId: order.id, orderNumber } },
         success_url: `${confirmationUrl}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/${locale}/shop?checkout=cancelled`,
+        expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       });
+      if (!session.url) throw new Error("Stripe n'a pas retourné d'URL de paiement.");
       await prisma.shopOrder.update({
         where: { id: order.id },
         data: { status: "AWAITING_PAYMENT", stripeSessionId: session.id },
       });
-      return NextResponse.json({ url: session.url, orderNumber, paymentConfigured: true });
+      return NextResponse.json({ url: session.url, orderNumber });
     } catch (stripeError) {
-      console.error("Stripe checkout unavailable", stripeError);
-      return NextResponse.json({ url: confirmationUrl, orderNumber, paymentConfigured: false });
+      await prisma.shopOrder.update({ where: { id: order.id }, data: { status: "CANCELLED" } });
+      console.error("Stripe checkout unavailable", {
+        type: stripeError instanceof Error ? stripeError.name : "UnknownError",
+        message: stripeError instanceof Error ? stripeError.message : "Unknown Stripe error",
+      });
+      return NextResponse.json(
+        { error: "Le paiement est temporairement indisponible. Aucune somme n'a été débitée." },
+        { status: 502 },
+      );
     }
   } catch (error) {
     return NextResponse.json(

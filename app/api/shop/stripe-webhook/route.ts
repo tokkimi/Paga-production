@@ -20,11 +20,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Signature invalide." }, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
+  const paidEvent =
+    event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded";
+  const cancelledEvent =
+    event.type === "checkout.session.async_payment_failed" || event.type === "checkout.session.expired";
+
+  if (paidEvent) {
     const session = event.data.object as Stripe.Checkout.Session;
+    if (session.payment_status !== "paid") return NextResponse.json({ received: true });
     const orderId = session.metadata?.orderId;
     if (orderId) {
-      const order = await prisma.shopOrder.findUnique({ where: { id: orderId }, include: { items: true } });
+      const order = await prisma.shopOrder.findFirst({
+        where: { id: orderId, stripeSessionId: session.id },
+        include: { items: true },
+      });
       if (order && order.status !== "PAID") {
         await prisma.$transaction(async (transaction) => {
           for (const item of order.items) {
@@ -45,8 +54,16 @@ export async function POST(request: Request) {
         });
       }
     }
+  } else if (cancelledEvent) {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const orderId = session.metadata?.orderId;
+    if (orderId) {
+      await prisma.shopOrder.updateMany({
+        where: { id: orderId, stripeSessionId: session.id, status: "AWAITING_PAYMENT" },
+        data: { status: "CANCELLED" },
+      });
+    }
   }
 
   return NextResponse.json({ received: true });
 }
-
