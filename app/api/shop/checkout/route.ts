@@ -25,7 +25,6 @@ export async function POST(request: Request) {
     }
     const body = (await request.json()) as Record<string, unknown>;
     const session = await getServerSession(authOptions);
-    if (text(body.company, 100)) return NextResponse.json({ error: "Requête refusée." }, { status: 400 });
     const rawItems = Array.isArray(body.items) ? (body.items as CheckoutItem[]).slice(0, 20) : [];
     const customerName = text(body.customerName, 140) || text(session?.user.name, 140);
     const customerEmail = (session?.user.email || text(body.customerEmail, 200)).toLowerCase();

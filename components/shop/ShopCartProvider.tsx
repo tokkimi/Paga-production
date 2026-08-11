@@ -105,7 +105,6 @@ const initialCheckout = {
   city: "",
   country: "France",
   note: "",
-  company: "",
   termsAccepted: false,
 };
 
@@ -307,7 +306,6 @@ export default function ShopCartProvider({ children }: { children: React.ReactNo
                   </div>
 
                   <form onSubmit={checkout} className="space-y-3">
-                    <label className="sr-only" aria-hidden="true">Société<input tabIndex={-1} autoComplete="off" value={form.company} onChange={(event) => setForm((current) => ({ ...current, company: event.target.value }))} /></label>
                     <h3 className="mb-3 text-sm font-black uppercase tracking-wider">{labels.details}</h3>
                     <div className="grid gap-3 sm:grid-cols-2">
                       <input required className="form-input" placeholder={labels.name} value={form.customerName || session?.user.name || ""} onChange={(event) => setForm((current) => ({ ...current, customerName: event.target.value }))} />
