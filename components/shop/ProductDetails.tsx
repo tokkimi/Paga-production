@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { AUDIENCE_LABELS, CATEGORY_LABELS, colorSwatchValue, formatPrice } from "@/lib/shop";
 import type { ShopProduct } from "@/lib/shop-types";
 import { useShopCart } from "@/components/shop/ShopCartProvider";
+import FavoriteButton from "@/components/shop/FavoriteButton";
 
 const copy = {
   fr: { back: "Retour au shop", size: "Taille", color: "Couleur", quantity: "Quantité", add: "Ajouter au panier", added: "Ajouté au panier", details: "Détails", stock: "En stock", low: "Plus que {count} en stock", soldOut: "Épuisé", standard: "Taille unique" },
@@ -59,6 +60,7 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
         <div className="grid gap-8 lg:grid-cols-[1.12fr_.88fr] lg:gap-14">
           <div>
             <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] border border-[#c85586]/14 bg-[radial-gradient(circle_at_50%_35%,rgba(239,106,164,.16),transparent_58%)] shadow-[0_24px_90px_rgba(60,30,45,.10)]">
+              <FavoriteButton productId={product.id} className="absolute right-5 top-5 z-10 h-12 w-12" />
               {product.images[activeImage] ? (
                 <Image
                   src={product.images[activeImage].url}

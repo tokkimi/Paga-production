@@ -9,6 +9,7 @@ import { useLocale } from "next-intl";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { formatPrice } from "@/lib/shop";
 import type { CartItem } from "@/lib/shop-types";
+import { useSession } from "next-auth/react";
 
 type CartContextValue = {
   items: CartItem[];
@@ -116,6 +117,7 @@ export function useShopCart() {
 
 export default function ShopCartProvider({ children }: { children: React.ReactNode }) {
   const locale = useLocale();
+  const { data: session } = useSession();
   const pathname = usePathname();
   const labels = copy[locale as keyof typeof copy] ?? copy.fr;
   const [items, setItems] = useState<CartItem[]>([]);
@@ -126,13 +128,16 @@ export default function ShopCartProvider({ children }: { children: React.ReactNo
   const [error, setError] = useState("");
 
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") as CartItem[];
-      if (Array.isArray(stored)) setItems(stored.filter((item) => item.productId && item.quantity > 0).slice(0, 40));
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-    setReady(true);
+    const timer = window.setTimeout(() => {
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") as CartItem[];
+        if (Array.isArray(stored)) setItems(stored.filter((item) => item.productId && item.quantity > 0).slice(0, 40));
+      } catch {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      setReady(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -141,7 +146,9 @@ export default function ShopCartProvider({ children }: { children: React.ReactNo
   }, [items, ready]);
 
   useEffect(() => {
-    if (pathname.includes("/shop/confirmation")) setItems([]);
+    if (!pathname.includes("/shop/confirmation")) return;
+    const timer = window.setTimeout(() => setItems([]), 0);
+    return () => window.clearTimeout(timer);
   }, [pathname]);
 
   const addItem = useCallback((item: Omit<CartItem, "key">) => {
@@ -174,7 +181,9 @@ export default function ShopCartProvider({ children }: { children: React.ReactNo
 
   const checkout = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!form.customerName || !form.customerEmail || !form.addressLine1 || !form.postalCode || !form.city || !form.country) {
+    const customerName = form.customerName || session?.user.name || "";
+    const customerEmail = session?.user.email || form.customerEmail;
+    if (!customerName || !customerEmail || !form.addressLine1 || !form.postalCode || !form.city || !form.country) {
       setError(labels.required);
       return;
     }
@@ -190,6 +199,8 @@ export default function ShopCartProvider({ children }: { children: React.ReactNo
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          customerName,
+          customerEmail,
           locale,
           items: items.map(({ productId, quantity, size, color }) => ({ productId, quantity, size, color })),
         }),
@@ -299,8 +310,8 @@ export default function ShopCartProvider({ children }: { children: React.ReactNo
                     <label className="sr-only" aria-hidden="true">Société<input tabIndex={-1} autoComplete="off" value={form.company} onChange={(event) => setForm((current) => ({ ...current, company: event.target.value }))} /></label>
                     <h3 className="mb-3 text-sm font-black uppercase tracking-wider">{labels.details}</h3>
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <input required className="form-input" placeholder={labels.name} value={form.customerName} onChange={(event) => setForm((current) => ({ ...current, customerName: event.target.value }))} />
-                      <input required type="email" className="form-input" placeholder={labels.email} value={form.customerEmail} onChange={(event) => setForm((current) => ({ ...current, customerEmail: event.target.value }))} />
+                      <input required className="form-input" placeholder={labels.name} value={form.customerName || session?.user.name || ""} onChange={(event) => setForm((current) => ({ ...current, customerName: event.target.value }))} />
+                      <input required readOnly={Boolean(session?.user.email)} type="email" className="form-input" placeholder={labels.email} value={session?.user.email || form.customerEmail} onChange={(event) => setForm((current) => ({ ...current, customerEmail: event.target.value }))} />
                     </div>
                     <input className="form-input" placeholder={labels.phone} value={form.phone} onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))} />
                     <input required className="form-input" placeholder={labels.address1} value={form.addressLine1} onChange={(event) => setForm((current) => ({ ...current, addressLine1: event.target.value }))} />

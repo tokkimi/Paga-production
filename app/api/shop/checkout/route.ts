@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripeClient } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 type CheckoutItem = {
   productId?: unknown;
@@ -22,10 +24,11 @@ export async function POST(request: Request) {
       );
     }
     const body = (await request.json()) as Record<string, unknown>;
+    const session = await getServerSession(authOptions);
     if (text(body.company, 100)) return NextResponse.json({ error: "Requête refusée." }, { status: 400 });
     const rawItems = Array.isArray(body.items) ? (body.items as CheckoutItem[]).slice(0, 20) : [];
-    const customerName = text(body.customerName, 140);
-    const customerEmail = text(body.customerEmail, 200).toLowerCase();
+    const customerName = text(body.customerName, 140) || text(session?.user.name, 140);
+    const customerEmail = (session?.user.email || text(body.customerEmail, 200)).toLowerCase();
     const addressLine1 = text(body.addressLine1, 240);
     const postalCode = text(body.postalCode, 30);
     const city = text(body.city, 120);
@@ -78,6 +81,7 @@ export async function POST(request: Request) {
 
     const order = await prisma.shopOrder.create({
       data: {
+        userId: session?.user.id || null,
         orderNumber,
         customerName,
         customerEmail,

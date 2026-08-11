@@ -32,6 +32,10 @@ model User {
   sponsorProposals SponsorProposal[]
 
   artistApplication ArtistApplication?
+
+  productFavorites ProductFavorite[]
+
+  shopOrders ShopOrder[]
 }
 
 enum Role {
@@ -600,8 +604,8 @@ enum ProductAudience {
 }
 
 model Product {
-  id            String          @id @default(cuid())
-  slug          String          @unique
+  id            String            @id @default(cuid())
+  slug          String            @unique
   name          String
   nameEn        String?
   nameKo        String?
@@ -609,27 +613,41 @@ model Product {
   descriptionEn String?
   descriptionKo String?
   details       String?
-  category      ProductCategory @default(OTHER)
-  collection    String          @default("Essentiel")
-  audience      ProductAudience @default(MIXTE)
+  category      ProductCategory   @default(OTHER)
+  collection    String            @default("Essentiel")
+  audience      ProductAudience   @default(MIXTE)
   sourceUrl     String?
   priceCents    Int
-  currency      String          @default("EUR")
-  sizes         String[]        @default([])
-  colors        String[]        @default([])
-  stock         Int             @default(0)
-  trackStock    Boolean         @default(false)
-  isActive      Boolean         @default(true)
-  isFeatured    Boolean         @default(false)
-  order         Int             @default(0)
+  currency      String            @default("EUR")
+  sizes         String[]          @default([])
+  colors        String[]          @default([])
+  stock         Int               @default(0)
+  trackStock    Boolean           @default(false)
+  isActive      Boolean           @default(true)
+  isFeatured    Boolean           @default(false)
+  order         Int               @default(0)
   images        ProductImage[]
   orderItems    ShopOrderItem[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  favorites     ProductFavorite[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@index([category, isActive])
   @@index([collection, audience, isActive])
   @@index([isFeatured, order])
+}
+
+model ProductFavorite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId, createdAt])
+  @@index([productId])
 }
 
 model ProductImage {
@@ -657,6 +675,7 @@ enum ShopOrderStatus {
 
 model ShopOrder {
   id                    String          @id @default(cuid())
+  userId                String?
   orderNumber           String          @unique
   status                ShopOrderStatus @default(PENDING)
   customerName          String
@@ -677,11 +696,13 @@ model ShopOrder {
   termsAcceptedAt       DateTime        @default(now())
   termsVersion          String          @default("2026-08-10")
   items                 ShopOrderItem[]
+  user                  User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 
   @@index([status, createdAt])
   @@index([customerEmail])
+  @@index([userId, createdAt])
 }
 
 model ShopOrderItem {

@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, UserPlus, AlertCircle, User, Briefcase } from "lucide-react";
+import Image from "next/image";
 
-export default function InscriptionPage() {
+function InscriptionContent() {
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedCallback = searchParams.get("callbackUrl") || "";
+  const callbackUrl = requestedCallback.startsWith("/") && !requestedCallback.startsWith("//") ? requestedCallback : `/${locale}`;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -31,8 +35,8 @@ export default function InscriptionPage() {
       return;
     }
 
-    if (form.password.length < 8) {
-      setError("Le mot de passe doit contenir au moins 8 caractères");
+    if (form.password.length < 12 || !/[a-z]/.test(form.password) || !/[A-Z]/.test(form.password) || !/\d/.test(form.password)) {
+      setError("Le mot de passe doit contenir au moins 12 caractères, une majuscule, une minuscule et un chiffre.");
       return;
     }
 
@@ -63,7 +67,7 @@ export default function InscriptionPage() {
         redirect: false,
       });
 
-      router.push(`/${locale}`);
+      router.push(callbackUrl);
     } catch {
       setError("Une erreur est survenue");
     } finally {
@@ -84,7 +88,7 @@ export default function InscriptionPage() {
       >
         <div className="text-center mb-8">
           <Link href={`/${locale}`}>
-            <img src="/sherrie-sherrie.png" alt="Sherrie Sherrie" className="mx-auto h-20 w-auto max-w-[220px] object-contain drop-shadow-[0_0_18px_rgba(209,93,143,.24)]" />
+            <Image src="/sherrie-sherrie.png" alt="Sherrie Sherrie" width={440} height={160} priority className="mx-auto h-20 w-auto max-w-[220px] object-contain drop-shadow-[0_0_18px_rgba(209,93,143,.24)]" />
           </Link>
         </div>
 
@@ -215,7 +219,7 @@ export default function InscriptionPage() {
             <p className="text-sm text-white/60">
               Déjà un compte ?{" "}
               <Link
-                href={`/${locale}/connexion`}
+                href={`/${locale}/connexion?callbackUrl=${encodeURIComponent(callbackUrl)}`}
                 className="text-primary hover:text-secondary transition-colors font-medium"
               >
                 Se connecter
@@ -226,4 +230,8 @@ export default function InscriptionPage() {
       </motion.div>
     </div>
   );
+}
+
+export default function InscriptionPage() {
+  return <Suspense fallback={<div className="sherrie-page min-h-screen" />}><InscriptionContent /></Suspense>;
 }

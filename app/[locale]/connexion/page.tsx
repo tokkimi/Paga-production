@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
+import Image from "next/image";
 
-export default function ConnexionPage() {
+function ConnexionContent() {
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedCallback = searchParams.get("callbackUrl") || "";
+  const callbackUrl = requestedCallback.startsWith("/") && !requestedCallback.startsWith("//") ? requestedCallback : `/${locale}`;
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
@@ -31,7 +35,7 @@ export default function ConnexionPage() {
       if (result?.error) {
         setError("Identifiants incorrects");
       } else {
-        router.push(`/${locale}`);
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch {
@@ -54,7 +58,7 @@ export default function ConnexionPage() {
       >
         <div className="text-center mb-8">
           <Link href={`/${locale}`}>
-            <img src="/sherrie-sherrie.png" alt="Sherrie Sherrie" className="mx-auto h-20 w-auto max-w-[220px] object-contain drop-shadow-[0_0_18px_rgba(209,93,143,.24)]" />
+            <Image src="/sherrie-sherrie.png" alt="Sherrie Sherrie" width={440} height={160} priority className="mx-auto h-20 w-auto max-w-[220px] object-contain drop-shadow-[0_0_18px_rgba(209,93,143,.24)]" />
           </Link>
         </div>
 
@@ -129,7 +133,7 @@ export default function ConnexionPage() {
             <p className="text-sm text-white/60">
               Pas encore de compte ?{" "}
               <Link
-                href={`/${locale}/inscription`}
+                href={`/${locale}/inscription?callbackUrl=${encodeURIComponent(callbackUrl)}`}
                 className="text-primary hover:text-secondary transition-colors font-medium"
               >
                 S&apos;inscrire
@@ -140,4 +144,8 @@ export default function ConnexionPage() {
       </motion.div>
     </div>
   );
+}
+
+export default function ConnexionPage() {
+  return <Suspense fallback={<div className="sherrie-page min-h-screen" />}><ConnexionContent /></Suspense>;
 }

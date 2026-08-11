@@ -3,16 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { PackageOpen, ShoppingBag, Sparkles } from "lucide-react";
+import { PackageOpen, Search, ShoppingBag, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AUDIENCE_LABELS, CATEGORY_LABELS, colorSwatchValue, formatPrice, type ProductAudienceValue, type ProductCategoryValue } from "@/lib/shop";
 import type { ShopProduct } from "@/lib/shop-types";
+import FavoriteButton from "@/components/shop/FavoriteButton";
 
 const copy = {
-  fr: { all: "Tout", collection: "Collection", audience: "Pour qui", product: "Type", discover: "Voir le produit", empty: "Aucun produit ne correspond à ces filtres.", featured: "À la une", soldOut: "Épuisé" },
-  en: { all: "All", collection: "Collection", audience: "For whom", product: "Type", discover: "View product", empty: "No product matches these filters.", featured: "Featured", soldOut: "Sold out" },
-  ko: { all: "전체", collection: "컬렉션", audience: "대상", product: "유형", discover: "상품 보기", empty: "필터와 일치하는 상품이 없습니다.", featured: "추천", soldOut: "품절" },
+  fr: { all: "Tout", collection: "Collection", audience: "Pour qui", product: "Type", color: "Couleur", size: "Taille", search: "Rechercher un modèle, une couleur, une taille…", discover: "Voir le produit", empty: "Aucun produit ne correspond à ces filtres.", featured: "À la une", soldOut: "Épuisé" },
+  en: { all: "All", collection: "Collection", audience: "For whom", product: "Type", color: "Colour", size: "Size", search: "Search a model, colour or size…", discover: "View product", empty: "No product matches these filters.", featured: "Featured", soldOut: "Sold out" },
+  ko: { all: "전체", collection: "컬렉션", audience: "대상", product: "유형", color: "색상", size: "사이즈", search: "모델, 색상 또는 사이즈 검색…", discover: "상품 보기", empty: "필터와 일치하는 상품이 없습니다.", featured: "추천", soldOut: "품절" },
 };
+
+function normalized(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
 
 function localizedProduct(product: ShopProduct, locale: string) {
   if (locale === "en") return { name: product.nameEn || product.name, description: product.descriptionEn || product.description };
@@ -26,17 +31,36 @@ export default function ShopCatalog({ products }: { products: ShopProduct[] }) {
   const [category, setCategory] = useState<"ALL" | ProductCategoryValue>("ALL");
   const [collection, setCollection] = useState("ALL");
   const [audience, setAudience] = useState<"ALL" | ProductAudienceValue>("ALL");
+  const [color, setColor] = useState("ALL");
+  const [size, setSize] = useState("ALL");
+  const [query, setQuery] = useState("");
   const collections = useMemo(() => [...new Set(products.map((product) => product.collection))], [products]);
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))],
     [products],
   );
+  const colors = useMemo(() => [...new Set(products.flatMap((product) => product.colors))].sort((a, b) => a.localeCompare(b, locale)), [locale, products]);
+  const sizes = useMemo(() => [...new Set(products.flatMap((product) => product.sizes))], [products]);
   const shown = products.filter((product) => {
     if (collection !== "ALL" && product.collection !== collection) return false;
     if (category !== "ALL" && product.category !== category) return false;
     if (audience === "MIXTE" && product.audience !== "MIXTE") return false;
     if (audience === "HOMME" && !["HOMME", "MIXTE"].includes(product.audience)) return false;
     if (audience === "FEMME" && !["FEMME", "MIXTE"].includes(product.audience)) return false;
+    if (color !== "ALL" && !product.colors.includes(color)) return false;
+    if (size !== "ALL" && !product.sizes.includes(size)) return false;
+    if (query.trim()) {
+      const content = localizedProduct(product, locale);
+      const haystack = normalized([
+        content.name,
+        content.description || "",
+        product.collection,
+        CATEGORY_LABELS[product.category][locale as "fr" | "en" | "ko"] || CATEGORY_LABELS[product.category].fr,
+        ...product.colors,
+        ...product.sizes,
+      ].join(" "));
+      if (!normalized(query.trim()).split(/\s+/).every((term) => haystack.includes(term))) return false;
+    }
     return true;
   });
 
@@ -52,6 +76,10 @@ export default function ShopCatalog({ products }: { products: ShopProduct[] }) {
   return (
     <>
       <div className="mb-8 space-y-4 rounded-[24px] border border-[#c85586]/12 bg-white/20 p-4 backdrop-blur-xl">
+        <label className="relative block">
+          <Search size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a75177]" />
+          <input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder={labels.search} className="w-full rounded-2xl border border-[#c85586]/20 bg-white/45 py-3.5 pl-11 pr-4 text-sm outline-none backdrop-blur-xl transition placeholder:opacity-45 focus:border-[#c85586]" />
+        </label>
         <FilterRow label={labels.collection}>
           <FilterButton active={collection === "ALL"} onClick={() => setCollection("ALL")}>{labels.all}</FilterButton>
           {collections.map((item) => <FilterButton key={item} active={collection === item} onClick={() => setCollection(item)}>{item}</FilterButton>)}
@@ -79,6 +107,14 @@ export default function ShopCatalog({ products }: { products: ShopProduct[] }) {
           </button>
         ))}
         </FilterRow>
+        <FilterRow label={labels.color}>
+          <FilterButton active={color === "ALL"} onClick={() => setColor("ALL")}>{labels.all}</FilterButton>
+          {colors.map((item) => <FilterButton key={item} active={color === item} onClick={() => setColor(item)}><span className="inline-flex items-center gap-2"><span className="h-3.5 w-3.5 rounded-full border border-black/15" style={{ background: colorSwatchValue(item) }} />{item}</span></FilterButton>)}
+        </FilterRow>
+        <FilterRow label={labels.size}>
+          <FilterButton active={size === "ALL"} onClick={() => setSize("ALL")}>{labels.all}</FilterButton>
+          {sizes.map((item) => <FilterButton key={item} active={size === item} onClick={() => setSize(item)}>{item}</FilterButton>)}
+        </FilterRow>
       </div>
 
       {shown.length ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -86,7 +122,7 @@ export default function ShopCatalog({ products }: { products: ShopProduct[] }) {
           const content = localizedProduct(product, locale);
           const unavailable = product.trackStock && product.stock <= 0;
           return (
-            <article key={product.id} className="shop-product-card group overflow-hidden rounded-[28px] border border-[#c85586]/14 bg-white/30 shadow-[0_20px_70px_rgba(60,30,45,.08)] backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-[0_28px_90px_rgba(200,85,134,.15)]">
+            <article key={product.id} className="shop-product-card group relative overflow-hidden rounded-[28px] border border-[#c85586]/14 bg-white/30 shadow-[0_20px_70px_rgba(60,30,45,.08)] backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-[0_28px_90px_rgba(200,85,134,.15)]">
               <Link href={`/${locale}/shop/${product.slug}`} className="block">
                 <div className="relative aspect-[4/5] overflow-hidden bg-[radial-gradient(circle_at_50%_35%,rgba(239,106,164,.16),transparent_58%)]">
                   {product.images[0] ? (
@@ -118,6 +154,7 @@ export default function ShopCatalog({ products }: { products: ShopProduct[] }) {
                   <span className="shop-accent-text mt-5 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#9b4f70]">{labels.discover} <span aria-hidden>→</span></span>
                 </div>
               </Link>
+              <FavoriteButton productId={product.id} className="absolute right-4 top-4 z-10 h-10 w-10" />
             </article>
           );
         })}
