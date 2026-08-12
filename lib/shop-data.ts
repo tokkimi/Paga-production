@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Product, ProductImage } from "@prisma/client";
 import type { ShopProduct } from "@/lib/shop-types";
+import { getActiveProductColors, getProductColorSettings } from "@/lib/shop";
 
 export function serializeProduct(product: Product & { images: ProductImage[] }): ShopProduct {
   return {
@@ -22,7 +23,8 @@ export function serializeProduct(product: Product & { images: ProductImage[] }):
     priceCents: product.priceCents,
     currency: product.currency,
     sizes: product.sizes,
-    colors: product.colors,
+    colors: getActiveProductColors(product.colors, product.colorSettings),
+    colorSettings: getProductColorSettings(product.colors, product.colorSettings),
     stock: product.stock,
     trackStock: product.trackStock,
     isActive: product.isActive,
@@ -33,6 +35,7 @@ export function serializeProduct(product: Product & { images: ProductImage[] }):
       url: image.url,
       pathname: image.pathname,
       alt: image.alt,
+      color: image.color,
       order: image.order,
     })),
   };

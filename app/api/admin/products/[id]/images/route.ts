@@ -33,6 +33,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const formData = await request.formData();
   const file = formData.get("file");
+  const requestedColor = String(formData.get("color") || "").trim();
   if (!(file instanceof File) || !file.size) {
     return NextResponse.json({ error: "Aucune image reçue." }, { status: 400 });
   }
@@ -44,6 +45,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
   if (!(await hasValidImageSignature(file))) {
     return NextResponse.json({ error: "Le contenu du fichier ne correspond pas à une image valide." }, { status: 400 });
+  }
+  if (requestedColor && !product.colors.includes(requestedColor)) {
+    return NextResponse.json({ error: "La couleur associée doit appartenir au produit." }, { status: 400 });
   }
 
   const cleanName = file.name
@@ -62,6 +66,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       url: blob.url,
       pathname: blob.pathname,
       alt: product.name,
+      color: requestedColor || null,
       order: product._count.images,
     },
   });

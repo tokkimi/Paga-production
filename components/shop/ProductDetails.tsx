@@ -32,6 +32,20 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
   }, [locale, product]);
   const unavailable = product.trackStock && product.stock <= 0;
   const maxQuantity = product.trackStock ? Math.min(10, product.stock) : 10;
+  const visibleImages = useMemo(() => {
+    if (!color) return product.images;
+    const matching = product.images.filter((image) => image.color === color);
+    const general = product.images.filter((image) => !image.color);
+    // A colour may be available before its dedicated photos are uploaded. In
+    // that case, keep showing the product gallery rather than an empty panel.
+    return matching.length ? [...matching, ...general] : general.length ? general : product.images;
+  }, [color, product.images]);
+  const selectedImage = visibleImages[activeImage] || visibleImages[0];
+
+  const chooseColor = (nextColor: string) => {
+    setColor(nextColor);
+    setActiveImage(0);
+  };
 
   const add = () => {
     if (unavailable) return;
@@ -39,7 +53,7 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
       productId: product.id,
       slug: product.slug,
       name: content.name,
-      image: product.images[0]?.url || null,
+      image: selectedImage?.url || product.images[0]?.url || null,
       priceCents: product.priceCents,
       currency: product.currency,
       size: size || null,
@@ -61,10 +75,10 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
           <div>
             <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] border border-[#c85586]/14 bg-[radial-gradient(circle_at_50%_35%,rgba(239,106,164,.16),transparent_58%)] shadow-[0_24px_90px_rgba(60,30,45,.10)]">
               <FavoriteButton productId={product.id} className="absolute right-5 top-5 z-10 h-12 w-12" />
-              {product.images[activeImage] ? (
+              {selectedImage ? (
                 <Image
-                  src={product.images[activeImage].url}
-                  alt={product.images[activeImage].alt || content.name}
+                  src={selectedImage.url}
+                  alt={selectedImage.alt || content.name}
                   fill
                   preload
                   sizes="(max-width: 1024px) 100vw, 56vw"
@@ -74,9 +88,9 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
                 <div className="flex h-full items-center justify-center"><ShoppingBag size={54} className="text-[#c85586]/22" /></div>
               )}
             </div>
-            {product.images.length > 1 ? (
+            {visibleImages.length > 1 ? (
               <div className="mt-4 grid grid-cols-5 gap-2 sm:grid-cols-6">
-                {product.images.map((image, index) => (
+                {visibleImages.map((image, index) => (
                   <button
                     type="button"
                     key={image.id}
@@ -111,7 +125,7 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
                 <div>
                   <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] opacity-48">{labels.color} <span className="ml-2 text-[#c85586] opacity-100">{color}</span></p>
                   <div className="flex flex-wrap gap-2">
-                    {product.colors.map((item) => <button type="button" key={item} onClick={() => setColor(item)} title={item} aria-label={`${labels.color} ${item}`} className={`h-9 w-9 rounded-full border-2 p-1 transition ${color === item ? "scale-110 border-[#c85586] shadow-[0_0_0_3px_rgba(200,85,134,.18)]" : "border-black/10 hover:scale-105"}`}><span className="block h-full w-full rounded-full border border-black/10" style={{ background: colorSwatchValue(item) }} /></button>)}
+                    {product.colors.map((item) => <button type="button" key={item} onClick={() => chooseColor(item)} title={item} aria-label={`${labels.color} ${item}`} className={`h-9 w-9 rounded-full border-2 p-1 transition ${color === item ? "scale-110 border-[#c85586] shadow-[0_0_0_3px_rgba(200,85,134,.18)]" : "border-black/10 hover:scale-105"}`}><span className="block h-full w-full rounded-full border border-black/10" style={{ background: colorSwatchValue(item) }} /></button>)}
                   </div>
                 </div>
               ) : null}

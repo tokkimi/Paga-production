@@ -290,6 +290,19 @@ const products: MerchProduct[] = [
   },
 ];
 
+function imageColor(product: MerchProduct, file: string) {
+  const rules: Array<[string, string]> = [
+    ["tee-classic-black", "Noir"],
+    ["tee-classic-white", "Blanc"],
+    ["tee-classic-grey", "Gris chiné"],
+    ["tee-raglan-black", "Blanc / Noir"],
+    ["tee-raglan-red", "Blanc / Rouge"],
+    ["tee-raglan-navy", "Blanc / Bleu marine"],
+  ];
+  const match = rules.find(([marker]) => file.includes(marker));
+  return match?.[1] || (product.colors.length === 1 ? product.colors[0] : null);
+}
+
 function contentType(file: string) {
   if (file.endsWith(".png")) return "image/png";
   if (file.endsWith(".jpg") || file.endsWith(".jpeg")) return "image/jpeg";
@@ -340,7 +353,7 @@ async function main() {
           contentType: contentType(image.file),
           token: blobToken!,
         });
-        uploadedImages.push({ url: blob.url, pathname: blob.pathname, alt: image.alt, order });
+        uploadedImages.push({ url: blob.url, pathname: blob.pathname, alt: image.alt, color: imageColor(product, image.file), order });
       }
 
       const data = {
@@ -357,6 +370,7 @@ async function main() {
         currency: "EUR",
         sizes: product.sizes,
         colors: product.colors,
+        colorSettings: product.colors.map((name) => ({ name, active: true })),
         stock: 0,
         trackStock: false,
         isActive: true,

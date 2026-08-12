@@ -1,10 +1,12 @@
 import type { ProductAudienceValue, ProductCategoryValue } from "@/lib/shop";
+import type { ProductColorSetting } from "@/lib/shop";
 
 export type ShopImage = {
   id: string;
   url: string;
   pathname: string;
   alt: string | null;
+  color: string | null;
   order: number;
 };
 
@@ -26,6 +28,7 @@ export type ShopProduct = {
   currency: string;
   sizes: string[];
   colors: string[];
+  colorSettings: ProductColorSetting[];
   stock: number;
   trackStock: boolean;
   isActive: boolean;

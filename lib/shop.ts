@@ -14,6 +14,11 @@ export type ProductCategoryValue = (typeof PRODUCT_CATEGORIES)[number];
 export const PRODUCT_AUDIENCES = ["MIXTE", "HOMME", "FEMME"] as const;
 export type ProductAudienceValue = (typeof PRODUCT_AUDIENCES)[number];
 
+export type ProductColorSetting = {
+  name: string;
+  active: boolean;
+};
+
 export const AUDIENCE_LABELS: Record<ProductAudienceValue, { fr: string; en: string; ko: string }> = {
   MIXTE: { fr: "Mixte", en: "Unisex", ko: "공용" },
   HOMME: { fr: "Homme", en: "Men", ko: "남성" },
@@ -108,6 +113,38 @@ export function normalizeOptionList(value: unknown) {
   return [...new Set(String(value ?? "").split(",").map((item) => item.trim()).filter(Boolean))].slice(0, 30);
 }
 
+function colorSettingsFromUnknown(value: unknown) {
+  if (!Array.isArray(value)) return [] as ProductColorSetting[];
+  const seen = new Set<string>();
+  const settings: ProductColorSetting[] = [];
+  for (const item of value) {
+    const name = typeof item === "string"
+      ? item.trim()
+      : item && typeof item === "object" && "name" in item
+        ? String(item.name ?? "").trim()
+        : "";
+    if (!name || seen.has(name.toLowerCase())) continue;
+    seen.add(name.toLowerCase());
+    settings.push({
+      name: name.slice(0, 80),
+      active: !(item && typeof item === "object" && "active" in item && item.active === false),
+    });
+  }
+  return settings.slice(0, 30);
+}
+
+export function getProductColorSettings(colors: string[], value?: unknown): ProductColorSetting[] {
+  const configured = colorSettingsFromUnknown(value);
+  const byName = new Map(configured.map((item) => [item.name.toLocaleLowerCase(), item]));
+  const ordered = colors.map((name) => byName.get(name.toLocaleLowerCase()) || { name, active: true });
+  const extras = configured.filter((item) => !colors.some((name) => name.toLocaleLowerCase() === item.name.toLocaleLowerCase()));
+  return [...ordered, ...extras];
+}
+
+export function getActiveProductColors(colors: string[], value?: unknown) {
+  return getProductColorSettings(colors, value).filter((item) => item.active).map((item) => item.name);
+}
+
 export function normalizeProductSlug(value: unknown) {
   return String(value ?? "")
     .normalize("NFD")
@@ -136,6 +173,7 @@ export type ProductInput = {
   currency: string;
   sizes: string[];
   colors: string[];
+  colorSettings: ProductColorSetting[];
   stock: number;
   trackStock: boolean;
   isActive: boolean;
@@ -169,6 +207,10 @@ export function parseProductInput(body: Record<string, unknown>): ProductInput {
     return text || null;
   };
 
+  const colors = normalizeOptionList(body.colors);
+  const configuredColors = colorSettingsFromUnknown(body.colorSettings);
+  const colorSettings = getProductColorSettings(colors, configuredColors);
+
   return {
     slug,
     name,
@@ -185,7 +227,8 @@ export function parseProductInput(body: Record<string, unknown>): ProductInput {
     priceCents,
     currency: "EUR",
     sizes: normalizeOptionList(body.sizes),
-    colors: normalizeOptionList(body.colors),
+    colors,
+    colorSettings,
     stock,
     trackStock: Boolean(body.trackStock),
     isActive: body.isActive !== false,

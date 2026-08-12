@@ -4,6 +4,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { getActiveProductColors } from "@/lib/shop";
 
 type CheckoutItem = {
   productId?: unknown;
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     const productIds = [...new Set(normalizedItems.map((item) => item.productId).filter(Boolean))];
     const products = await prisma.product.findMany({
       where: { id: { in: productIds }, isActive: true },
-      include: { images: { orderBy: { order: "asc" }, take: 1 } },
+      include: { images: { orderBy: { order: "asc" } } },
     });
     const productMap = new Map(products.map((product) => [product.id, product]));
 
@@ -58,13 +59,17 @@ export async function POST(request: Request) {
       if (product.sizes.length && (!item.size || !product.sizes.includes(item.size))) {
         throw new Error(`Choisissez une taille valide pour ${product.name}.`);
       }
-      if (product.colors.length && (!item.color || !product.colors.includes(item.color))) {
+      const activeColors = getActiveProductColors(product.colors, product.colorSettings);
+      if (activeColors.length && (!item.color || !activeColors.includes(item.color))) {
         throw new Error(`Choisissez une couleur valide pour ${product.name}.`);
       }
       if (product.trackStock && item.quantity > product.stock) {
         throw new Error(`Stock insuffisant pour ${product.name}.`);
       }
-      return { ...item, product };
+      const image = item.color
+        ? product.images.find((candidate) => candidate.color === item.color) || product.images.find((candidate) => !candidate.color)
+        : product.images[0];
+      return { ...item, product, image };
     });
 
     const currencies = new Set(items.map((item) => item.product.currency));
@@ -141,7 +146,7 @@ export async function POST(request: Request) {
               description: [item.size && `Taille ${item.size}`, item.color && `Couleur ${item.color}`]
                 .filter(Boolean)
                 .join(" · ") || undefined,
-              images: item.product.images[0]?.url ? [item.product.images[0].url] : undefined,
+              images: item.image?.url ? [item.image.url] : undefined,
               metadata: { productId: item.product.id },
             },
           },

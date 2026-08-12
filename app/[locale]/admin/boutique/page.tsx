@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Edit2, ImagePlus, Package, Plus, ShoppingBag, Star, Trash2, Truck, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { AUDIENCE_LABELS, CATEGORY_LABELS, PRODUCT_AUDIENCES, PRODUCT_CATEGORIES, formatPrice, normalizeProductSlug, type ProductAudienceValue, type ProductCategoryValue } from "@/lib/shop";
+import { AUDIENCE_LABELS, CATEGORY_LABELS, PRODUCT_AUDIENCES, PRODUCT_CATEGORIES, colorSwatchValue, formatPrice, getProductColorSettings, normalizeProductSlug, type ProductAudienceValue, type ProductCategoryValue, type ProductColorSetting } from "@/lib/shop";
 import type { ShopProduct } from "@/lib/shop-types";
 
 type ShopOrderStatus = "PENDING" | "AWAITING_PAYMENT" | "PAID" | "PROCESSING" | "SHIPPED" | "COMPLETED" | "CANCELLED";
@@ -53,6 +53,7 @@ const EMPTY_FORM = {
   price: "",
   sizes: "",
   colors: "",
+  colorSettings: [] as ProductColorSetting[],
   stock: "0",
   trackStock: false,
   isActive: true,
@@ -74,6 +75,7 @@ export default function AdminShopPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [files, setFiles] = useState<File[]>([]);
   const [dragging, setDragging] = useState(false);
+  const [uploadColor, setUploadColor] = useState("");
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState("");
   const [error, setError] = useState("");
@@ -99,6 +101,7 @@ export default function AdminShopPage() {
     setEditId(null);
     setForm(EMPTY_FORM);
     setFiles([]);
+    setUploadColor("");
     setError("");
     setShowForm(true);
   };
@@ -121,6 +124,7 @@ export default function AdminShopPage() {
       price: (product.priceCents / 100).toFixed(2),
       sizes: product.sizes.join(", "),
       colors: product.colors.join(", "),
+      colorSettings: getProductColorSettings(product.colors, product.colorSettings),
       stock: String(product.stock),
       trackStock: product.trackStock,
       isActive: product.isActive,
@@ -128,6 +132,7 @@ export default function AdminShopPage() {
       order: String(product.order),
     });
     setFiles([]);
+    setUploadColor(product.colors[0] || "");
     setError("");
     setShowForm(true);
   };
@@ -135,6 +140,20 @@ export default function AdminShopPage() {
   const addFiles = (incoming: FileList | File[]) => {
     const accepted = Array.from(incoming).filter((file) => file.type.startsWith("image/") && file.size <= 4 * 1024 * 1024);
     setFiles((current) => [...current, ...accepted].slice(0, 12));
+  };
+
+  const updateColors = (value: string) => {
+    const names = [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))].slice(0, 30);
+    setForm((current) => ({
+      ...current,
+      colors: value,
+      colorSettings: names.map((name) => current.colorSettings.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase()) || { name, active: true }),
+    }));
+    if (uploadColor && !names.includes(uploadColor)) setUploadColor("");
+  };
+
+  const toggleColor = (name: string) => {
+    setForm((current) => ({ ...current, colorSettings: current.colorSettings.map((item) => item.name === name ? { ...item, active: !item.active } : item) }));
   };
 
   const save = async () => {
@@ -160,6 +179,7 @@ export default function AdminShopPage() {
         setProgress(`Envoi de l'image ${index + 1}/${files.length}...`);
         const imageBody = new FormData();
         imageBody.append("file", files[index]);
+        if (uploadColor) imageBody.append("color", uploadColor);
         const upload = await fetch(`/api/admin/products/${product.id}/images`, { method: "POST", body: imageBody });
         if (!upload.ok) {
           const uploadError = (await upload.json()) as { error?: string };
@@ -192,7 +212,17 @@ export default function AdminShopPage() {
   };
 
   const makeCover = async (productId: string, imageId: string) => {
-    await fetch(`/api/admin/products/${productId}/images/${imageId}`, { method: "PATCH" });
+    await fetch(`/api/admin/products/${productId}/images/${imageId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ makeCover: true }) });
+    await load();
+  };
+
+  const updateImageColor = async (productId: string, imageId: string, color: string) => {
+    const response = await fetch(`/api/admin/products/${productId}/images/${imageId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ color: color || null }),
+    });
+    if (!response.ok) return alert("Impossible d'associer la couleur à cette image.");
     await load();
   };
 
@@ -246,6 +276,7 @@ export default function AdminShopPage() {
                     <p className="text-[9px] font-black uppercase tracking-widest text-[#ff8dba]">{product.collection} · {AUDIENCE_LABELS[product.audience].fr} · {CATEGORY_LABELS[product.category].fr}</p>
                     <div className="mt-2 flex justify-between gap-4"><h2 className="font-black uppercase">{product.name}</h2><strong className="text-[#ff8dba]">{formatPrice(product.priceCents, product.currency)}</strong></div>
                     <p className="mt-2 text-xs text-white/40">{product.sizes.length ? product.sizes.join(" · ") : "Taille unique"}{product.colors.length ? ` · ${product.colors.join(" · ")}` : ""}</p>
+                    {product.colors.length ? <p className="mt-1 text-[10px] text-white/35">{getProductColorSettings(product.colors, product.colorSettings).filter((item) => item.active).length} couleur(s) active(s) sur {product.colors.length}</p> : null}
                     <p className="mt-1 text-xs text-white/40">{product.trackStock ? `Stock : ${product.stock}` : "Stock non suivi"} · {product.images.length} image(s)</p>
 
                     {product.images.length ? (
@@ -253,7 +284,9 @@ export default function AdminShopPage() {
                         {product.images.map((image, index) => (
                           <div key={image.id} className={`relative h-20 w-24 shrink-0 overflow-hidden rounded-xl border ${index === 0 ? "border-yellow-300/80" : "border-white/10"}`}>
                             <Image src={image.url} alt="" fill sizes="96px" className="object-cover" />
-                            <div className="absolute inset-x-1 bottom-1 flex items-center gap-1 rounded-lg bg-black/80 p-1 backdrop-blur-md">
+                            <div className="absolute inset-x-1 bottom-1 space-y-1 rounded-lg bg-black/80 p-1 backdrop-blur-md">
+                              {product.colors.length ? <select value={image.color || ""} onChange={(event) => updateImageColor(product.id, image.id, event.target.value)} className="w-full rounded-md bg-black/60 px-1 py-1 text-[8px] font-bold text-white" aria-label="Couleur associée à l'image"><option value="">Toutes les couleurs</option>{product.colors.map((color) => <option key={color} value={color}>{color}</option>)}</select> : null}
+                              <div className="flex items-center gap-1">
                               <button
                                 type="button"
                                 onClick={() => makeCover(product.id, image.id)}
@@ -265,6 +298,7 @@ export default function AdminShopPage() {
                                 {index === 0 ? "Principale" : "Choisir"}
                               </button>
                               <button type="button" onClick={() => removeImage(product.id, image.id)} className="rounded-md bg-red-500/15 p-1.5 text-red-300" title="Supprimer" aria-label="Supprimer l'image"><Trash2 size={11} /></button>
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -336,7 +370,8 @@ export default function AdminShopPage() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-3"><Field label="Catégorie"><select className="form-input" value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value as ProductCategoryValue }))}>{PRODUCT_CATEGORIES.map((category) => <option key={category} value={category}>{CATEGORY_LABELS[category].fr}</option>)}</select></Field><Field label="Prix TTC (€) *"><input inputMode="decimal" className="form-input" value={form.price} onChange={(event) => setForm((current) => ({ ...current, price: event.target.value }))} placeholder="49,00" /></Field></div>
                     <Field label="Tailles, séparées par des virgules"><input className="form-input" value={form.sizes} onChange={(event) => setForm((current) => ({ ...current, sizes: event.target.value }))} placeholder="XS, S, M, L, XL" /></Field>
-                    <Field label="Couleurs, séparées par des virgules"><input className="form-input" value={form.colors} onChange={(event) => setForm((current) => ({ ...current, colors: event.target.value }))} placeholder="Noir, Blanc, Rose" /></Field>
+                    <Field label="Couleurs, séparées par des virgules"><input className="form-input" value={form.colors} onChange={(event) => updateColors(event.target.value)} placeholder="Noir, Blanc, Rose" /></Field>
+                    {form.colorSettings.length ? <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-3"><p className="mb-2 text-[10px] font-black uppercase tracking-wider text-white/45">Couleurs disponibles en ligne</p><div className="flex flex-wrap gap-2">{form.colorSettings.map((item) => <button type="button" key={item.name} onClick={() => toggleColor(item.name)} className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-[10px] font-bold transition ${item.active ? "border-[#ff8dba]/45 bg-[#ef6aa4]/15 text-white" : "border-white/10 bg-black/15 text-white/35 line-through"}`} title={item.active ? "Désactiver cette couleur" : "Activer cette couleur"}><span className="h-3 w-3 rounded-full border border-black/20" style={{ background: colorSwatchValue(item.name) }} />{item.name}</button>)}</div><p className="mt-2 text-[10px] text-white/35">Clique une couleur pour l’activer ou la désactiver dans la boutique.</p></div> : null}
                     <div className="grid grid-cols-2 gap-3"><Field label="Stock"><input type="number" min="0" className="form-input" value={form.stock} onChange={(event) => setForm((current) => ({ ...current, stock: event.target.value }))} /></Field><Field label="Ordre d'affichage"><input type="number" min="0" className="form-input" value={form.order} onChange={(event) => setForm((current) => ({ ...current, order: event.target.value }))} /></Field></div>
 
                     <div
@@ -351,6 +386,7 @@ export default function AdminShopPage() {
                       <p className="mt-1 text-[10px] text-white/35">JPG, PNG, WebP ou AVIF · 4 Mo max par image · 12 images max</p>
                       <label className="mt-4 inline-flex cursor-pointer rounded-full border border-[#ff8dba]/35 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-[#ff8dba]">Choisir des images<input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" onChange={(event) => { if (event.target.files) addFiles(event.target.files); event.target.value = ""; }} /></label>
                     </div>
+                    {form.colorSettings.length ? <Field label="Associer les nouvelles images à cette couleur"><select className="form-input" value={uploadColor} onChange={(event) => setUploadColor(event.target.value)}><option value="">Toutes les couleurs / visuel général</option>{form.colorSettings.map((item) => <option key={item.name} value={item.name}>{item.name}{item.active ? "" : " (masquée)"}</option>)}</select></Field> : null}
                     {files.length ? <div className="space-y-2">{files.map((file, index) => <div key={`${file.name}-${index}`} className="flex items-center justify-between rounded-xl bg-white/[0.045] px-3 py-2 text-xs"><span className="min-w-0 truncate">{file.name} <span className="text-white/30">· {fileSize(file.size)}</span></span><button type="button" onClick={() => setFiles((current) => current.filter((_, itemIndex) => itemIndex !== index))} className="ml-3 text-red-300"><X size={14} /></button></div>)}</div> : null}
 
                     <div className="grid gap-3 sm:grid-cols-3">

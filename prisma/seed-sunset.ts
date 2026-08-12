@@ -485,6 +485,10 @@ const products: SunsetProduct[] = [
   },
 ];
 
+function imageColor(product: SunsetProduct) {
+  return product.colors.length === 1 ? product.colors[0] : null;
+}
+
 function contentType(file: string) {
   if (file.endsWith(".jpg") || file.endsWith(".jpeg")) return "image/jpeg";
   return "image/webp";
@@ -533,7 +537,7 @@ async function main() {
           contentType: contentType(image.file),
           token: blobToken!,
         });
-        uploadedImages.push({ url: blob.url, pathname: blob.pathname, alt: image.alt, order });
+        uploadedImages.push({ url: blob.url, pathname: blob.pathname, alt: image.alt, color: imageColor(product), order });
       }
 
       const data = {
@@ -550,6 +554,7 @@ async function main() {
         currency: "EUR",
         sizes: product.sizes,
         colors: product.colors,
+        colorSettings: product.colors.map((name) => ({ name, active: true })),
         stock: 0,
         trackStock: false,
         isActive: true,
