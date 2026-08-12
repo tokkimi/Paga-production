@@ -36,9 +36,9 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
     if (!color) return product.images;
     const matching = product.images.filter((image) => image.color === color);
     const general = product.images.filter((image) => !image.color);
-    // A colour may be available before its dedicated photos are uploaded. In
-    // that case, keep showing the product gallery rather than an empty panel.
-    return matching.length ? [...matching, ...general] : general.length ? general : product.images;
+    // Once a colour has a dedicated gallery, never mix it with generic or
+    // another-colour visuals. Generic images remain the fallback only.
+    return matching.length ? matching : general.length ? general : product.images;
   }, [color, product.images]);
   const selectedImage = visibleImages[activeImage] || visibleImages[0];
 
