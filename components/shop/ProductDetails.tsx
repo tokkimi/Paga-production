@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Check, ChevronLeft, Minus, Plus, ShoppingBag } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AUDIENCE_LABELS, CATEGORY_LABELS, colorSwatchValue, formatPrice } from "@/lib/shop";
 import type { ShopProduct } from "@/lib/shop-types";
 import { useShopCart } from "@/components/shop/ShopCartProvider";
@@ -20,9 +20,7 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
   const locale = useLocale();
   const labels = copy[locale as keyof typeof copy] ?? copy.fr;
   const { addItem } = useShopCart();
-  const [activeImage, setActiveImage] = useState(0);
   const [size, setSize] = useState(product.sizes[0] || "");
-  const [color, setColor] = useState(product.colors[0] || "");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const content = useMemo(() => {
@@ -32,6 +30,15 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
   }, [locale, product]);
   const unavailable = product.trackStock && product.stock <= 0;
   const maxQuantity = product.trackStock ? Math.min(10, product.stock) : 10;
+  const colorImageCount = useMemo(() => new Map(
+    product.colors.map((item) => [item, product.images.filter((image) => image.color === item).length]),
+  ), [product.colors, product.images]);
+  const hasColourGalleries = [...colorImageCount.values()].some((count) => count > 0);
+  const purchasableColors = useMemo(
+    () => hasColourGalleries ? product.colors.filter((item) => (colorImageCount.get(item) || 0) > 0) : product.colors,
+    [colorImageCount, hasColourGalleries, product.colors],
+  );
+  const [color, setColor] = useState(purchasableColors[0] || "");
   const visibleImages = useMemo(() => {
     if (!color) return product.images;
     const matching = product.images.filter((image) => image.color === color);
@@ -40,11 +47,17 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
     // another-colour visuals. Generic images remain the fallback only.
     return matching.length ? matching : general.length ? general : product.images;
   }, [color, product.images]);
-  const selectedImage = visibleImages[activeImage] || visibleImages[0];
+  const [activeImageId, setActiveImageId] = useState<string | null>(visibleImages[0]?.id || null);
+  const selectedImage = visibleImages.find((image) => image.id === activeImageId) || visibleImages[0];
+
+  useEffect(() => {
+    if (!visibleImages.some((image) => image.id === activeImageId)) setActiveImageId(visibleImages[0]?.id || null);
+  }, [activeImageId, visibleImages]);
 
   const chooseColor = (nextColor: string) => {
     setColor(nextColor);
-    setActiveImage(0);
+    const first = product.images.find((image) => image.color === nextColor) || product.images.find((image) => !image.color) || null;
+    setActiveImageId(first?.id || null);
   };
 
   const add = () => {
@@ -77,6 +90,7 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
               <FavoriteButton productId={product.id} className="absolute right-5 top-5 z-10 h-12 w-12" />
               {selectedImage ? (
                 <Image
+                  key={selectedImage.id}
                   src={selectedImage.url}
                   alt={selectedImage.alt || content.name}
                   fill
@@ -94,8 +108,8 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
                   <button
                     type="button"
                     key={image.id}
-                    onClick={() => setActiveImage(index)}
-                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${activeImage === index ? "border-[#c85586]" : "border-transparent opacity-58 hover:opacity-100"}`}
+                    onClick={() => setActiveImageId(image.id)}
+                    className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${selectedImage?.id === image.id ? "border-[#c85586]" : "border-transparent opacity-58 hover:opacity-100"}`}
                     aria-label={`Image ${index + 1}`}
                   >
                     <Image src={image.url} alt="" fill sizes="120px" className="object-cover" />
@@ -121,11 +135,11 @@ export default function ProductDetails({ product }: { product: ShopProduct }) {
                 ) : <p className="text-sm opacity-58">{labels.standard}</p>}
               </div>
 
-              {product.colors.length ? (
+              {purchasableColors.length ? (
                 <div>
                   <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] opacity-48">{labels.color} <span className="ml-2 text-[#c85586] opacity-100">{color}</span></p>
                   <div className="flex flex-wrap gap-2">
-                    {product.colors.map((item) => <button type="button" key={item} onClick={() => chooseColor(item)} title={item} aria-label={`${labels.color} ${item}`} className={`h-9 w-9 rounded-full border-2 p-1 transition ${color === item ? "scale-110 border-[#c85586] shadow-[0_0_0_3px_rgba(200,85,134,.18)]" : "border-black/10 hover:scale-105"}`}><span className="block h-full w-full rounded-full border border-black/10" style={{ background: colorSwatchValue(item) }} /></button>)}
+                    {purchasableColors.map((item) => <button type="button" key={item} onClick={() => chooseColor(item)} title={item} aria-label={`${labels.color} ${item}`} className={`h-9 w-9 rounded-full border-2 p-1 transition ${color === item ? "scale-110 border-[#c85586] shadow-[0_0_0_3px_rgba(200,85,134,.18)]" : "border-black/10 hover:scale-105"}`}><span className="block h-full w-full rounded-full border border-black/10" style={{ background: colorSwatchValue(item) }} /></button>)}
                   </div>
                 </div>
               ) : null}
